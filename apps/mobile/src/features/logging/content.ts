@@ -9,6 +9,7 @@ export const LOG_COPY = {
     "cervical-fluid": "Cervical fluid",
     "lh-test": "Ovulation (LH) test",
     intimacy: "Intimacy",
+    "pregnancy-test": "Log pregnancy test",
   },
   logToday: { done: "Done for today" },
   temperature: { save: "Save temperature", history: "View temperature history" },
@@ -16,6 +17,13 @@ export const LOG_COPY = {
   symptom: { save: "Save symptoms", history: "View symptom history" },
   medications: { add: "Add medication", done: "Done", manage: "Manage medications" },
   cervicalFluid: { save: "Save cervical fluid" },
+  pregnancyTest: {
+    resultQuestion: "What did the test show?",
+    typeQuestion: "Test type",
+    save: "Save result",
+  },
+  supplement: { save: "Add to routine", compare: "Compare all supplements", recommended: "Recommended" },
+  basalGuide: { setReminder: "Set daily reminder", logToday: "Log today's temperature" },
   lhTest: {
     aiReading: "AI reading",
     match: "{percent}% match",

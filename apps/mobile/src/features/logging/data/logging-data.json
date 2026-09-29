@@ -1,6 +1,10 @@
 {
   "overview": {
-    "loggedKinds": ["temperature", "mood", "symptom"],
+    "loggedKinds": [
+      "temperature",
+      "mood",
+      "symptom"
+    ],
     "summary": {
       "title": "High chance of conception today",
       "description": "{count} of {total} signs logged · Log LH & cervical fluid for a sharper prediction"
@@ -14,34 +18,96 @@
     "default": 36.6,
     "caption": "Basal body temperature",
     "timesOfDay": [
-      { "id": "morning", "label": "Morning" },
-      { "id": "afternoon", "label": "Afternoon" },
-      { "id": "evening", "label": "Evening" }
+      {
+        "id": "morning",
+        "label": "Morning"
+      },
+      {
+        "id": "afternoon",
+        "label": "Afternoon"
+      },
+      {
+        "id": "evening",
+        "label": "Evening"
+      }
     ],
     "defaultTimeOfDay": "morning"
   },
   "mood": {
     "notePlaceholder": "e.g. Feeling hopeful today",
     "options": [
-      { "id": "great", "label": "Great", "icon": "wink" },
-      { "id": "good", "label": "Good", "icon": "smile" },
-      { "id": "okay", "label": "Okay", "icon": "meh" },
-      { "id": "low", "label": "Low", "icon": "sad" },
-      { "id": "hard", "label": "Hard", "icon": "angry" }
+      {
+        "id": "great",
+        "label": "Great",
+        "icon": "wink"
+      },
+      {
+        "id": "good",
+        "label": "Good",
+        "icon": "smile"
+      },
+      {
+        "id": "okay",
+        "label": "Okay",
+        "icon": "meh"
+      },
+      {
+        "id": "low",
+        "label": "Low",
+        "icon": "sad"
+      },
+      {
+        "id": "hard",
+        "label": "Hard",
+        "icon": "angry"
+      }
     ]
   },
   "symptoms": [
-    { "id": "cramping", "label": "Cramping" },
-    { "id": "bloating", "label": "Bloating" },
-    { "id": "headache", "label": "Headache" },
-    { "id": "fatigue", "label": "Fatigue" },
-    { "id": "nausea", "label": "Nausea" },
-    { "id": "tender_breasts", "label": "Tender breasts" }
+    {
+      "id": "cramping",
+      "label": "Cramping"
+    },
+    {
+      "id": "bloating",
+      "label": "Bloating"
+    },
+    {
+      "id": "headache",
+      "label": "Headache"
+    },
+    {
+      "id": "fatigue",
+      "label": "Fatigue"
+    },
+    {
+      "id": "nausea",
+      "label": "Nausea"
+    },
+    {
+      "id": "tender_breasts",
+      "label": "Tender breasts"
+    }
   ],
   "medications": [
-    { "id": "prenatal", "name": "Prenatal vitamin", "time": "9:00 AM", "taken": true },
-    { "id": "folic", "name": "Folic acid", "time": "9:00 AM", "taken": true },
-    { "id": "progesterone", "name": "Progesterone", "time": "8:00 PM", "taken": false }
+    {
+      "id": "prenatal",
+      "name": "Prenatal vitamin",
+      "time": "9:00 AM",
+      "taken": true
+    },
+    {
+      "id": "folic",
+      "name": "Folic acid",
+      "time": "9:00 AM",
+      "taken": true
+    },
+    {
+      "id": "progesterone",
+      "name": "Progesterone",
+      "time": "8:00 PM",
+      "taken": false
+    }
   ],
   "cervicalFluid": {
     "subtitle": "Check your underwear or tissue. What did it look like today?",
@@ -50,41 +116,61 @@
         "id": "dry",
         "label": "Dry",
         "description": "No fluid noticed",
-        "tag": { "label": "Low", "tone": "neutral" },
+        "tag": {
+          "label": "Low",
+          "tone": "neutral"
+        },
         "insight": "Dry days are common outside your fertile window."
       },
       {
         "id": "sticky",
         "label": "Sticky",
         "description": "Thick, crumbly, pasty",
-        "tag": { "label": "Low", "tone": "neutral" },
+        "tag": {
+          "label": "Low",
+          "tone": "neutral"
+        },
         "insight": "Sticky fluid usually shows up before your fertile window opens."
       },
       {
         "id": "creamy",
         "label": "Creamy",
         "description": "White, lotion-like",
-        "tag": { "label": "Medium", "tone": "warning" },
+        "tag": {
+          "label": "Medium",
+          "tone": "warning"
+        },
         "insight": "Creamy fluid means fertility is rising — your fertile window is getting close."
       },
       {
         "id": "watery",
         "label": "Watery",
         "description": "Clear, wet, slippery",
-        "tag": { "label": "High", "tone": "info" },
+        "tag": {
+          "label": "High",
+          "tone": "info"
+        },
         "insight": "Watery fluid signals high fertility — a great time to try."
       },
       {
         "id": "egg_white",
         "label": "Egg white",
         "description": "Stretchy, clear like raw egg",
-        "tag": { "label": "Peak", "tone": "primary", "emphasis": true },
+        "tag": {
+          "label": "Peak",
+          "tone": "primary",
+          "emphasis": true
+        },
         "insight": "Egg-white fluid means peak fertility — today & tomorrow are your best days to try."
       }
     ]
   },
   "lhTest": {
-    "reading": { "resultId": "peak", "label": "Peak — LH surge detected", "confidencePercent": 94 },
+    "reading": {
+      "resultId": "peak",
+      "label": "Peak — LH surge detected",
+      "confidencePercent": 94
+    },
     "results": [
       {
         "id": "negative",
@@ -105,16 +191,160 @@
   },
   "intimacy": {
     "subtitle": "Private to you. Used only to check if your timing matches your fertile window.",
-    "score": { "done": 3, "total": 4 },
+    "score": {
+      "done": 3,
+      "total": 4
+    },
     "days": [
-      { "weekday": "Mon", "date": 17, "status": "logged" },
-      { "weekday": "Tue", "date": 18, "status": "none" },
-      { "weekday": "Wed", "date": 19, "status": "logged" },
-      { "weekday": "Thu", "date": 20, "status": "logged" },
-      { "weekday": "Fri", "date": 21, "status": "today" },
-      { "weekday": "Sat", "date": 22, "status": "best" },
-      { "weekday": "Sun", "date": 23, "status": "none" }
+      {
+        "weekday": "Mon",
+        "date": 17,
+        "status": "logged"
+      },
+      {
+        "weekday": "Tue",
+        "date": 18,
+        "status": "none"
+      },
+      {
+        "weekday": "Wed",
+        "date": 19,
+        "status": "logged"
+      },
+      {
+        "weekday": "Thu",
+        "date": 20,
+        "status": "logged"
+      },
+      {
+        "weekday": "Fri",
+        "date": 21,
+        "status": "today"
+      },
+      {
+        "weekday": "Sat",
+        "date": 22,
+        "status": "best"
+      },
+      {
+        "weekday": "Sun",
+        "date": 23,
+        "status": "none"
+      }
     ],
     "insight": "Great timing! Every 1–2 days during the fertile window is ideal — no need for daily pressure."
+  },
+  "pregnancyTest": {
+    "warning": "You're 6 DPO. Testing before 12 DPO often shows a false negative — best from 4 June.",
+    "results": [
+      {
+        "id": "negative",
+        "label": "Negative",
+        "icon": "minus",
+        "tone": "neutral"
+      },
+      {
+        "id": "faint_line",
+        "label": "Faint line",
+        "icon": "circle-dashed",
+        "tone": "warning"
+      },
+      {
+        "id": "positive",
+        "label": "Positive",
+        "icon": "plus",
+        "tone": "success"
+      }
+    ],
+    "testTypes": [
+      {
+        "id": "strip",
+        "label": "Strip"
+      },
+      {
+        "id": "digital",
+        "label": "Digital"
+      },
+      {
+        "id": "blood_hcg",
+        "label": "Blood (hCG)"
+      }
+    ],
+    "photo": {
+      "title": "Add a photo",
+      "description": "Helps compare faint lines day by day"
+    }
+  },
+  "supplements": {
+    "prenatal-vitamin": {
+      "title": "Prenatal vitamin",
+      "subtitle": "Take daily with food",
+      "icon": "pill",
+      "defaultProductId": "ovacare",
+      "products": [
+        {
+          "id": "ovacare",
+          "name": "OvaCare Prenatal Complete",
+          "rating": 4.8,
+          "reviews": "1.2k",
+          "price": "$24.99",
+          "recommended": true
+        },
+        {
+          "id": "naturemade",
+          "name": "NatureMade Prenatal Multi",
+          "rating": 4.6,
+          "reviews": "890",
+          "price": "$18.50"
+        },
+        {
+          "id": "elevit",
+          "name": "Elevit Prenatal",
+          "rating": 4.7,
+          "reviews": "2.1k",
+          "price": "$29.00"
+        }
+      ]
+    },
+    "folic-acid": {
+      "title": "Folic acid 400mcg",
+      "subtitle": "Supports early fetal development",
+      "icon": "flask",
+      "defaultProductId": "blackmores",
+      "products": [
+        {
+          "id": "blackmores",
+          "name": "Blackmores Folic Acid 400mcg",
+          "rating": 4.9,
+          "reviews": "3.4k",
+          "price": "$9.99",
+          "recommended": true
+        },
+        {
+          "id": "naturesown",
+          "name": "Nature's Own Folic Acid",
+          "rating": 4.5,
+          "reviews": "1.1k",
+          "price": "$7.50"
+        },
+        {
+          "id": "swisse",
+          "name": "Swisse Folic Acid",
+          "rating": 4.6,
+          "reviews": "760",
+          "price": "$11.20"
+        }
+      ]
+    }
+  },
+  "basalGuide": {
+    "title": "Track basal temperature daily",
+    "subtitle": "Improves ovulation prediction accuracy by up to 20%",
+    "steps": [
+      "Measure immediately upon waking, before getting out of bed",
+      "Use the same thermometer at the same time every morning",
+      "Log your reading in the app to build an accurate trend"
+    ],
+    "tip": "Even a few hours of extra sleep can affect your reading — try to stay consistent."
   }
 }

@@ -28,6 +28,12 @@ interface BottomSheetProps {
   visible: boolean;
   onClose: () => void;
   title?: string;
+  /** Small line under the title. */
+  subtitle?: string;
+  /** Replaces the title block on the left of the header (e.g. an icon box). The close button stays. */
+  headerLeft?: ReactNode;
+  /** Space between header and content. Default 20. */
+  gap?: number;
   children: ReactNode;
 }
 
@@ -35,7 +41,15 @@ interface BottomSheetProps {
  * App-wide bottom sheet: dimmed overlay + sheet that slides up to fit its content.
  * Use it for any modal content (date picker, log forms, confirmations, ...).
  */
-export function BottomSheet({ visible, onClose, title, children }: BottomSheetProps) {
+export function BottomSheet({
+  visible,
+  onClose,
+  title,
+  subtitle,
+  headerLeft,
+  gap = 20,
+  children,
+}: BottomSheetProps) {
   const insets = useSafeAreaInsets();
   const { height: windowHeight } = useWindowDimensions();
 
@@ -80,12 +94,17 @@ export function BottomSheet({ visible, onClose, title, children }: BottomSheetPr
 
         <Animated.View
           onLayout={(e) => setSheetHeight(e.nativeEvent.layout.height)}
-          style={[styles.sheet, { paddingBottom: Math.max(insets.bottom, 30) }, sheetStyle]}
+          style={[styles.sheet, { gap, paddingBottom: Math.max(insets.bottom, 30) }, sheetStyle]}
         >
           <View style={styles.handle} />
-          {title ? (
+          {title || headerLeft ? (
             <View style={styles.headRow}>
-              <Text style={styles.title}>{title}</Text>
+              {headerLeft ?? (
+                <View style={styles.titleBlock}>
+                  <Text style={styles.title}>{title}</Text>
+                  {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
+                </View>
+              )}
               <Pressable
                 accessibilityRole="button"
                 accessibilityLabel="Close"
@@ -108,7 +127,6 @@ const styles = StyleSheet.create({
   overlay: { backgroundColor: colors.overlay },
   sheet: {
     alignItems: "center",
-    gap: 20,
     paddingTop: 10,
     paddingHorizontal: 20,
     backgroundColor: colors.surface,
@@ -132,7 +150,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
   },
+  titleBlock: { flex: 1, gap: 2 },
   title: { fontFamily: fonts.bold, fontSize: 17, color: colors.ink },
+  subtitle: { fontFamily: fonts.medium, fontSize: 12, color: colors.inkMuted },
   close: {
     width: 32,
     height: 32,

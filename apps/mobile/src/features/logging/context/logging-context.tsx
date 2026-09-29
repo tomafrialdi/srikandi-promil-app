@@ -66,7 +66,8 @@ export function LoggingProvider({ children }: { children: ReactNode }) {
   const save = useCallback(
     async (input: SaveLogInput) => {
       await loggingApi.save(input);
-      setLogged((cur) => (cur.includes(input.kind) ? cur : [...cur, input.kind]));
+      const { kind } = input;
+      if (kind !== "supplement") setLogged((cur) => (cur.includes(kind) ? cur : [...cur, kind]));
       if (returnTo) {
         setActive(returnTo);
         setReturnTo(null);

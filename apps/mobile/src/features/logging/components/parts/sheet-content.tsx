@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { View } from "react-native";
 
-/** Stretches a sheet's content to full width with the standard 20px rhythm. */
-export function SheetContent({ children }: { children: ReactNode }) {
-  return <View style={{ alignSelf: "stretch", gap: 20 }}>{children}</View>;
+/** Stretches a sheet's content to full width with a vertical rhythm (default 20px). */
+export function SheetContent({ gap = 20, children }: { gap?: number; children: ReactNode }) {
+  return <View style={{ alignSelf: "stretch", gap }}>{children}</View>;
 }

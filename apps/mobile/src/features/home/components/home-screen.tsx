@@ -5,7 +5,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useTabBarClearance } from "@/components/tab-bar/tab-bar";
 import { colors } from "@/constants/theme";
 import { useLogging } from "@/features/logging/context/logging-context";
-import { QUICK_ACTION_TO_KIND } from "@/features/logging/log-kinds";
+import { QUICK_ACTION_TO_KIND, RECOMMENDATION_TO_KIND } from "@/features/logging/log-kinds";
 import { useHomeDashboard } from "../hooks/use-home-dashboard";
 import { logMood } from "../services/home-api";
 import { ContentLibrarySection } from "./content-library-section";
@@ -47,7 +47,6 @@ export function HomeScreen() {
             config={data.quickActions}
             onActionPress={(action) => {
               const kind = QUICK_ACTION_TO_KIND[action.id];
-              // TODO: "preg-test" opens its own page once it is built.
               if (kind) openLog(kind);
             }}
           />
@@ -56,7 +55,14 @@ export function HomeScreen() {
           <DailyCheckInCard checkIn={data.checkIn} onMoodSelect={logMood} />
         </View>
         <View style={styles.padded}>
-          <RecommendationsSection data={data.recommendations} />
+          <RecommendationsSection
+            data={data.recommendations}
+            onItemPress={(item) => {
+              // TODO: "obgyn" (Consult an OB-GYN) has no screen yet.
+              const kind = RECOMMENDATION_TO_KIND[item.id];
+              if (kind) openLog(kind);
+            }}
+          />
         </View>
         <View style={styles.padded}>
           <DailyTipCard tip={data.tip} />

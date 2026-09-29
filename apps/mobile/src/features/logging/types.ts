@@ -1,17 +1,20 @@
 import type { Tone } from "@/constants/theme";
 
-export type LogKind =
-  | "log-today"
+/** Sheets that record a daily sign. They get a tile (and a check) in the "Log today" hub. */
+export type TrackerKind =
   | "temperature"
   | "mood"
   | "symptom"
   | "medications"
   | "cervical-fluid"
   | "lh-test"
-  | "intimacy";
+  | "intimacy"
+  | "pregnancy-test";
 
-/** Kinds that record something (everything except the "Log today" hub). */
-export type TrackerKind = Exclude<LogKind, "log-today">;
+/** Supplement pickers opened from the Home recommendations. */
+export type SupplementKind = "prenatal-vitamin" | "folic-acid";
+
+export type LogKind = "log-today" | TrackerKind | SupplementKind | "basal-temperature-guide";
 
 export type MoodIconName = "wink" | "smile" | "meh" | "sad" | "angry";
 
@@ -40,6 +43,32 @@ export interface FluidOption extends Option {
 
 export interface LhResultOption extends Option {
   insight: string;
+}
+
+export type PregnancyResultIcon = "minus" | "circle-dashed" | "plus";
+
+export interface PregnancyResultOption extends Option {
+  icon: PregnancyResultIcon;
+  tone: Tone;
+}
+
+export interface SupplementProduct {
+  id: string;
+  name: string;
+  rating: number;
+  /** Display text, e.g. "1.2k". */
+  reviews: string;
+  /** Display text including currency, e.g. "$24.99". */
+  price: string;
+  recommended?: boolean;
+}
+
+export interface SupplementCatalog {
+  title: string;
+  subtitle: string;
+  icon: "pill" | "flask";
+  defaultProductId: string;
+  products: SupplementProduct[];
 }
 
 export type IntimacyDayStatus = "logged" | "today" | "best" | "none";
@@ -75,6 +104,15 @@ export interface LoggingData {
     reading: { resultId: string; label: string; confidencePercent: number } | null;
     results: LhResultOption[];
   };
+  pregnancyTest: {
+    /** Shown when testing is likely too early; null hides it. */
+    warning: string | null;
+    results: PregnancyResultOption[];
+    testTypes: Option[];
+    photo: { title: string; description: string };
+  };
+  supplements: Record<SupplementKind, SupplementCatalog>;
+  basalGuide: { title: string; subtitle: string; steps: string[]; tip: string };
   intimacy: {
     subtitle: string;
     score: { done: number; total: number };
@@ -91,4 +129,7 @@ export type SaveLogInput =
   | { kind: "medications"; takenIds: string[] }
   | { kind: "cervical-fluid"; fluidId: string }
   | { kind: "lh-test"; resultId: string }
-  | { kind: "intimacy"; hadIntimacy: boolean };
+  | { kind: "intimacy"; hadIntimacy: boolean }
+  | { kind: "pregnancy-test"; resultId: string; testTypeId: string }
+  /** Not a daily sign: adds the chosen product to the user's routine. */
+  | { kind: "supplement"; category: SupplementKind; productId: string };

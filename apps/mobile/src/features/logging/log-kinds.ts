@@ -11,13 +11,10 @@ import {
 } from "phosphor-react-native";
 
 import type { Tone } from "@/constants/theme";
-import type { TrackerKind } from "./types";
-
-/** Key of a tile in the "Log today" grid. "pregnancy-test" opens its own page, not a sheet. */
-export type TrackerKey = TrackerKind | "pregnancy-test";
+import type { LogKind, TrackerKind } from "./types";
 
 export interface TrackerTile {
-  key: TrackerKey;
+  key: TrackerKind;
   label: string;
   icon: Icon;
   tone: Tone;
@@ -44,4 +41,12 @@ export const QUICK_ACTION_TO_KIND: Record<string, TrackerKind | undefined> = {
   fluid: "cervical-fluid",
   "lh-test": "lh-test",
   intimacy: "intimacy",
+  "preg-test": "pregnancy-test",
+};
+
+/** Home recommendation ids (home-dashboard.json) -> the sheet they open. */
+export const RECOMMENDATION_TO_KIND: Record<string, LogKind | undefined> = {
+  prenatal: "prenatal-vitamin",
+  folic: "folic-acid",
+  bbt: "basal-temperature-guide",
 };

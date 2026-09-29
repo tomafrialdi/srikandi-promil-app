@@ -5,8 +5,8 @@ import { ButtonPrimary } from "@/components/button-primary";
 import { colors, fonts, radius, tones } from "@/constants/theme";
 import { LOG_COPY } from "../../content";
 import { useLogging } from "../../context/logging-context";
-import { TRACKER_TILES, type TrackerKey } from "../../log-kinds";
-import type { LoggingData } from "../../types";
+import { TRACKER_TILES } from "../../log-kinds";
+import type { LoggingData, TrackerKind } from "../../types";
 import { SheetContent } from "../parts/sheet-content";
 
 const COLUMNS = 4;
@@ -14,6 +14,7 @@ const COLUMNS = 4;
 /** The "Log today" hub: fertility summary + a tile per tracker, with a check on the ones done. */
 export function LogTodaySheet({ overview }: { overview: LoggingData["overview"] }) {
   const { logged, openFromHub, closeLog } = useLogging();
+  const handleTilePress = (key: TrackerKind) => openFromHub(key);
 
   const description = overview.summary.description
     .replace("{count}", String(logged.length))
@@ -21,15 +22,6 @@ export function LogTodaySheet({ overview }: { overview: LoggingData["overview"] 
 
   const rows: (typeof TRACKER_TILES)[] = [];
   for (let i = 0; i < TRACKER_TILES.length; i += COLUMNS) rows.push(TRACKER_TILES.slice(i, i + COLUMNS));
-
-  const handleTilePress = (key: TrackerKey) => {
-    if (key === "pregnancy-test") {
-      // TODO: navigate to the pregnancy test page once it is built.
-      closeLog();
-      return;
-    }
-    openFromHub(key);
-  };
 
   return (
     <SheetContent>
@@ -47,7 +39,7 @@ export function LogTodaySheet({ overview }: { overview: LoggingData["overview"] 
         {rows.map((row, r) => (
           <View key={r} style={styles.row}>
             {row.map((tile) => {
-              const done = tile.key !== "pregnancy-test" && logged.includes(tile.key);
+              const done = logged.includes(tile.key);
               const tone = tones[tile.tone];
               return (
                 <Pressable

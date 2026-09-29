@@ -1,15 +1,21 @@
-import { useState } from "react";
+import { Pulse } from "phosphor-react-native";
+import { useState, type ReactNode } from "react";
+import { StyleSheet, View } from "react-native";
 
 import { BottomSheet } from "@/components/bottom-sheet";
+import { colors, radius } from "@/constants/theme";
 import { LOG_COPY } from "../content";
 import { useLogging } from "../context/logging-context";
-import type { LogKind } from "../types";
+import type { LogKind, LoggingData } from "../types";
+import { BasalGuideSheet } from "./sheets/basal-guide-sheet";
 import { CervicalFluidSheet } from "./sheets/cervical-fluid-sheet";
 import { IntimacySheet } from "./sheets/intimacy-sheet";
 import { LhTestSheet } from "./sheets/lh-test-sheet";
 import { LogTodaySheet } from "./sheets/log-today-sheet";
 import { MedicationsSheet } from "./sheets/medications-sheet";
 import { MoodSheet } from "./sheets/mood-sheet";
+import { PregnancyTestSheet } from "./sheets/pregnancy-test-sheet";
+import { SupplementSheet } from "./sheets/supplement-sheet";
 import { SymptomSheet } from "./sheets/symptom-sheet";
 import { TemperatureSheet } from "./sheets/temperature-sheet";
 
@@ -28,13 +34,38 @@ export function LogSheetHost() {
   if (!data || !shown) return null;
 
   return (
-    <BottomSheet visible={active !== null} onClose={closeLog} title={LOG_COPY.titles[shown]}>
+    <BottomSheet visible={active !== null} onClose={closeLog} {...headerFor(shown, data)}>
       {renderSheet(shown, data)}
     </BottomSheet>
   );
 }
 
-function renderSheet(kind: LogKind, data: NonNullable<ReturnType<typeof useLogging>["data"]>) {
+/** Header props (title, subtitle, custom left, spacing) for each sheet. */
+function headerFor(
+  kind: LogKind,
+  data: LoggingData,
+): { title?: string; subtitle?: string; headerLeft?: ReactNode; gap?: number } {
+  switch (kind) {
+    case "prenatal-vitamin":
+    case "folic-acid": {
+      const { title, subtitle } = data.supplements[kind];
+      return { title, subtitle, gap: 16 };
+    }
+    case "basal-temperature-guide":
+      return {
+        gap: 18,
+        headerLeft: (
+          <View style={styles.guideIcon}>
+            <Pulse size={20} color={colors.success} />
+          </View>
+        ),
+      };
+    default:
+      return { title: LOG_COPY.titles[kind] };
+  }
+}
+
+function renderSheet(kind: LogKind, data: LoggingData) {
   switch (kind) {
     case "log-today":
       return <LogTodaySheet overview={data.overview} />;
@@ -52,5 +83,23 @@ function renderSheet(kind: LogKind, data: NonNullable<ReturnType<typeof useLoggi
       return <LhTestSheet config={data.lhTest} />;
     case "intimacy":
       return <IntimacySheet config={data.intimacy} />;
+    case "pregnancy-test":
+      return <PregnancyTestSheet config={data.pregnancyTest} />;
+    case "prenatal-vitamin":
+    case "folic-acid":
+      return <SupplementSheet category={kind} catalog={data.supplements[kind]} />;
+    case "basal-temperature-guide":
+      return <BasalGuideSheet guide={data.basalGuide} />;
   }
 }
+
+const styles = StyleSheet.create({
+  guideIcon: {
+    width: 44,
+    height: 44,
+    borderRadius: radius.md,
+    backgroundColor: colors.successSoft,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+});
