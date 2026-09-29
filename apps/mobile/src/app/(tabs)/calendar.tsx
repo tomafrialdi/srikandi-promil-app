@@ -1,5 +1,5 @@
-import { ComingSoonScreen } from "@/components/coming-soon-screen";
+import { CalendarScreen } from "@/features/calendar/components/calendar-screen";
 
 export default function CalendarRoute() {
-  return <ComingSoonScreen title="Calendar" />;
+  return <CalendarScreen />;
 }

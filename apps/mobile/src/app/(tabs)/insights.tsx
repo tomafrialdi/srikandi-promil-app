@@ -1,5 +1,5 @@
-import { ComingSoonScreen } from "@/components/coming-soon-screen";
+import { InsightsScreen } from "@/features/insights/components/insights-screen";
 
 export default function InsightsRoute() {
-  return <ComingSoonScreen title="Insights" />;
+  return <InsightsScreen />;
 }
