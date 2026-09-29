@@ -24,6 +24,8 @@
           "placeholder": "DD / MM / YYYY",
           "minDate": "-100y",
           "maxDate": "today",
+          "minAge": 18,
+          "minAgeMessage": "You need to be at least 18 years old to use Srikandi Promil.",
           "required": true
         },
         {
@@ -32,21 +34,25 @@
             {
               "type": "number",
               "key": "heightCm",
-              "label": "Height (cm)",
+              "label": "Height",
               "icon": "ruler",
               "placeholder": "165",
+              "unit": "cm",
               "min": 100,
               "max": 250,
+              "initialValue": 165,
               "required": true
             },
             {
               "type": "number",
               "key": "weightKg",
-              "label": "Weight (kg)",
+              "label": "Weight",
               "icon": "scales",
               "placeholder": "58",
+              "unit": "kg",
               "min": 30,
-              "max": 250,
+              "max": 200,
+              "initialValue": 58,
               "required": true
             }
           ]
@@ -72,11 +78,13 @@
         {
           "type": "number",
           "key": "cycleLengthDays",
-          "label": "Average cycle length (days)",
+          "label": "Average cycle length",
           "icon": "repeat",
           "placeholder": "28",
+          "unit": "days",
           "min": 15,
           "max": 60,
+          "initialValue": 28,
           "required": true
         },
         {

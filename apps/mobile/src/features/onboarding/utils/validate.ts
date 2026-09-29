@@ -1,16 +1,18 @@
+import { REQUIRED_MESSAGE } from "@/components/form/field-shell";
 import type {
   Answers,
   DateField,
   FieldConfig,
   InputField,
   MultiChoiceField,
+  NumberField,
   OnboardingStep,
   SingleChoiceField,
   StepErrors,
 } from "../types";
-import { maskedDateToIso } from "./date";
+import { parseMaskedDate, resolveDateBound } from "./date";
 
-export type ValueField = InputField | DateField | SingleChoiceField | MultiChoiceField;
+export type ValueField = InputField | NumberField | DateField | SingleChoiceField | MultiChoiceField;
 
 /** Flattens `row` groups so callers can iterate every field that holds a value. */
 export function flattenFields(fields: FieldConfig[]): ValueField[] {
@@ -28,12 +30,16 @@ export function validateStep(step: OnboardingStep, answers: Answers): StepErrors
     const value = answers[field.key];
 
     if (isEmpty(value)) {
-      if (field.required) errors[field.key] = `${field.label} is required`;
+      if (field.required) errors[field.key] = REQUIRED_MESSAGE;
       continue;
     }
 
     if (field.type === "date" && typeof value === "string") {
-      if (!maskedDateToIso(value)) errors[field.key] = "Enter a valid date";
+      const date = parseMaskedDate(value);
+      const youngest = field.minAge ? resolveDateBound(`-${field.minAge}y`) : undefined;
+      if (!date) errors[field.key] = "Enter a valid date";
+      else if (youngest && date > youngest)
+        errors[field.key] = field.minAgeMessage ?? `You must be at least ${field.minAge} years old`;
     }
 
     if (field.type === "number" && typeof value === "string") {

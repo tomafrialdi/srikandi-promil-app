@@ -16,12 +16,24 @@ interface BaseField {
 }
 
 export interface InputField extends BaseField {
-  type: "text" | "number";
+  type: "text";
   icon?: IconName;
   placeholder?: string;
-  min?: number;
-  max?: number;
   autoCapitalize?: "none" | "sentences" | "words" | "characters";
+}
+
+/** Tap to open a roulette-style number wheel (no keyboard). */
+export interface NumberField extends BaseField {
+  type: "number";
+  icon?: IconName;
+  placeholder?: string;
+  /** Shown inside the field on the right, e.g. "cm". */
+  unit?: string;
+  min: number;
+  max: number;
+  step?: number;
+  /** Where the wheel starts when the field is still empty. */
+  initialValue?: number;
 }
 
 /**
@@ -34,6 +46,9 @@ export interface DateField extends BaseField {
   placeholder?: string;
   minDate?: string;
   maxDate?: string;
+  /** Youngest allowed age in years. Later dates are shown but blocked with `minAgeMessage`. */
+  minAge?: number;
+  minAgeMessage?: string;
 }
 
 export interface ChoiceOption {
@@ -60,11 +75,12 @@ export interface MultiChoiceField extends BaseField {
 /** Lays child fields side by side. */
 export interface RowField {
   type: "row";
-  fields: (InputField | DateField)[];
+  fields: (InputField | NumberField | DateField)[];
 }
 
 export type FieldConfig =
   | InputField
+  | NumberField
   | DateField
   | SingleChoiceField
   | MultiChoiceField

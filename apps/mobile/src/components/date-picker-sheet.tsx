@@ -1,6 +1,7 @@
-import { CaretDown, CaretLeft, CaretRight } from "phosphor-react-native";
+import { CaretDown, CaretLeft, CaretRight, Warning } from "phosphor-react-native";
 import { useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import Animated, { FadeIn } from "react-native-reanimated";
 
 import { colors, fonts, radius } from "@/constants/theme";
 import {
@@ -26,6 +27,12 @@ interface DatePickerSheetProps {
   confirmLabel?: string;
   minDate?: Date;
   maxDate?: Date;
+  /**
+   * Dates after this one stay visible but can't be picked; tapping one shows
+   * `blockedMessage` as a warning (e.g. "must be at least 18 years old").
+   */
+  blockedAfter?: Date;
+  blockedMessage?: string;
 }
 
 export function DatePickerSheet({
@@ -37,22 +44,29 @@ export function DatePickerSheet({
   confirmLabel = "Confirm",
   minDate,
   maxDate,
+  blockedAfter,
+  blockedMessage,
 }: DatePickerSheetProps) {
   const today = startOfDay(new Date());
   const min = minDate ? startOfDay(minDate) : undefined;
   const max = maxDate ? startOfDay(maxDate) : undefined;
+  const blocked = blockedAfter ? startOfDay(blockedAfter) : undefined;
 
   const [selected, setSelected] = useState<Date | null>(value ?? null);
   const [cursor, setCursor] = useState({ year: today.getFullYear(), month: today.getMonth() });
   const [mode, setMode] = useState<"days" | "years">("days");
+  const [showWarning, setShowWarning] = useState(false);
 
   // Reset to the current value each time the sheet opens.
   const [wasVisible, setWasVisible] = useState(visible);
   if (visible !== wasVisible) {
     setWasVisible(visible);
     if (visible) {
-      const anchor = value ?? (max && today > max ? max : today);
+      let anchor = value ?? blocked ?? today;
+      if (max && anchor > max) anchor = max;
+      if (min && anchor < min) anchor = min;
       setSelected(value ?? null);
+      setShowWarning(false);
       setCursor({ year: anchor.getFullYear(), month: anchor.getMonth() });
       setMode("days");
     }
@@ -70,6 +84,7 @@ export function DatePickerSheet({
   const shiftMonth = (delta: number) => {
     const d = new Date(cursor.year, cursor.month + delta, 1);
     setCursor({ year: d.getFullYear(), month: d.getMonth() });
+    setShowWarning(false);
   };
 
   const pickYear = (year: number) => {
@@ -78,9 +93,20 @@ export function DatePickerSheet({
     if (min && year === min.getFullYear()) month = Math.max(month, min.getMonth());
     setCursor({ year, month });
     setMode("days");
+    setShowWarning(false);
   };
 
   const isDisabled = (d: Date) => (min && d < min) || (max && d > max);
+  const isBlocked = (d: Date) => !!blocked && d > blocked;
+
+  const pickDay = (d: Date) => {
+    if (isBlocked(d)) {
+      setShowWarning(true);
+      return;
+    }
+    setShowWarning(false);
+    setSelected(d);
+  };
 
   return (
     <BottomSheet visible={visible} onClose={onClose} title={title}>
@@ -119,11 +145,12 @@ export function DatePickerSheet({
                 const isSelected = !!selected && isSameDay(date, selected);
                 const isToday = isSameDay(date, today);
                 const disabled = !!isDisabled(date);
+                const dimmed = disabled || isBlocked(date);
                 return (
                   <Pressable
                     key={i}
                     disabled={disabled}
-                    onPress={() => setSelected(date)}
+                    onPress={() => pickDay(date)}
                     style={styles.cell}
                   >
                     <View
@@ -136,7 +163,7 @@ export function DatePickerSheet({
                       <Text
                         style={[
                           styles.dayText,
-                          disabled && styles.dayTextDisabled,
+                          dimmed && styles.dayTextDisabled,
                           isSelected && styles.dayTextSelected,
                         ]}
                       >
@@ -169,6 +196,13 @@ export function DatePickerSheet({
           </ScrollView>
         )}
       </View>
+
+      {showWarning && blockedMessage ? (
+        <Animated.View entering={FadeIn.duration(180)} accessibilityRole="alert" style={styles.warning}>
+          <Warning size={16} color={colors.warningInk} />
+          <Text style={styles.warningText}>{blockedMessage}</Text>
+        </Animated.View>
+      ) : null}
 
       <ButtonPrimary
         label={confirmLabel}
@@ -249,6 +283,16 @@ const styles = StyleSheet.create({
   dayText: { fontFamily: fonts.semibold, fontSize: 13, color: colors.ink },
   dayTextDisabled: { color: colors.inkFaint, opacity: 0.5 },
   dayTextSelected: { color: colors.white },
+  warning: {
+    alignSelf: "stretch",
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: 10,
+    padding: 12,
+    borderRadius: radius.sm,
+    backgroundColor: colors.warningSoft,
+  },
+  warningText: { flex: 1, fontFamily: fonts.semibold, fontSize: 12, lineHeight: 17, color: colors.warningInk },
   yearGrid: { flexDirection: "row", flexWrap: "wrap", gap: 10 },
   year: {
     width: "22.5%",

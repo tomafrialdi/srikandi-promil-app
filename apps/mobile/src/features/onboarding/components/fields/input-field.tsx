@@ -17,9 +17,8 @@ export function InputField({ field, value, error, onChange }: Props) {
       placeholder={field.placeholder}
       value={value}
       error={error}
-      keyboardType={field.type === "number" ? "decimal-pad" : "default"}
       autoCapitalize={field.autoCapitalize ?? "none"}
-      onChange={(text) => onChange(field.type === "number" ? text.replace(/[^0-9.]/g, "") : text)}
+      onChange={onChange}
     />
   );
 }

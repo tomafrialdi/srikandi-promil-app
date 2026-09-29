@@ -1,3 +1,5 @@
+import { REQUIRED_MESSAGE } from "@/components/form/field-shell";
+
 /** All user-facing copy for the auth screens, in one place. */
 export const AUTH_COPY = {
   signUp: {
@@ -42,9 +44,9 @@ export const AUTH_COPY = {
     switchAction: "Create account",
   },
   errors: {
-    emailRequired: "Enter your email",
+    emailRequired: REQUIRED_MESSAGE,
     emailInvalid: "Enter a valid email",
-    passwordRequired: "Enter your password",
+    passwordRequired: REQUIRED_MESSAGE,
     passwordShort: "Use at least 8 characters",
     invalidCredentials: "Incorrect email or password",
     invalidCode: "That code isn't right. Please try again.",

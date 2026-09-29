@@ -1,13 +1,10 @@
-import { useMemo, useState } from "react";
-import { Keyboard, Pressable, Text } from "react-native";
+import { useState } from "react";
 
 import { DatePickerSheet } from "@/components/date-picker-sheet";
-import { colors } from "@/constants/theme";
+import { SelectField } from "@/components/form/select-field";
 import { ICONS } from "../../icons";
 import type { DateField as DateFieldConfig } from "../../types";
 import { formatDate, parseMaskedDate, resolveDateBound } from "../../utils/date";
-import { FieldShell } from "@/components/form/field-shell";
-import { fieldStyles as styles } from "@/components/form/field-styles";
 
 interface Props {
   field: DateFieldConfig;
@@ -18,40 +15,32 @@ interface Props {
 
 export function DateField({ field, value, error, onChange }: Props) {
   const [open, setOpen] = useState(false);
-  const Icon = field.icon ? ICONS[field.icon] : null;
-
-  const minDate = useMemo(() => resolveDateBound(field.minDate), [field.minDate]);
-  const maxDate = useMemo(() => resolveDateBound(field.maxDate), [field.maxDate]);
 
   return (
-    <FieldShell label={field.label} error={error}>
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel={field.label}
-        onPress={() => {
-          Keyboard.dismiss();
-          setOpen(true);
-        }}
-        style={[styles.box, open && styles.boxFocused, error ? styles.boxError : null]}
-      >
-        {Icon ? <Icon size={18} color={colors.inkFaint} /> : null}
-        <Text style={[styles.value, !value && styles.placeholder]}>
-          {value || field.placeholder}
-        </Text>
-      </Pressable>
-
+    <>
+      <SelectField
+        label={field.label}
+        icon={field.icon ? ICONS[field.icon] : undefined}
+        value={value}
+        placeholder={field.placeholder}
+        error={error}
+        active={open}
+        onPress={() => setOpen(true)}
+      />
       <DatePickerSheet
         visible={open}
         title={field.label}
         value={parseMaskedDate(value)}
-        minDate={minDate}
-        maxDate={maxDate}
+        minDate={resolveDateBound(field.minDate)}
+        maxDate={resolveDateBound(field.maxDate)}
+        blockedAfter={field.minAge ? resolveDateBound(`-${field.minAge}y`) : undefined}
+        blockedMessage={field.minAgeMessage}
         onClose={() => setOpen(false)}
         onConfirm={(date) => {
           onChange(formatDate(date));
           setOpen(false);
         }}
       />
-    </FieldShell>
+    </>
   );
 }

@@ -1,8 +1,8 @@
 import { Eye, EyeSlash, type Icon } from "phosphor-react-native";
 import { useState } from "react";
-import { Pressable, TextInput, View, type TextInputProps } from "react-native";
+import { Pressable, StyleSheet, Text, TextInput, View, type TextInputProps } from "react-native";
 
-import { colors } from "@/constants/theme";
+import { colors, fonts } from "@/constants/theme";
 import { FieldShell } from "./field-shell";
 import { fieldStyles as styles } from "./field-styles";
 
@@ -24,6 +24,8 @@ interface TextFieldProps
   error?: string;
   /** Hides the text and shows a show/hide toggle. */
   secure?: boolean;
+  /** Short unit / hint shown inside the field on the right, e.g. "cm". */
+  suffix?: string;
 }
 
 /** Labelled single-line text input used across the app (onboarding, auth, ...). */
@@ -34,6 +36,7 @@ export function TextField({
   icon: LeadingIcon,
   error,
   secure,
+  suffix,
   ...inputProps
 }: TextFieldProps) {
   const [focused, setFocused] = useState(false);
@@ -54,6 +57,7 @@ export function TextField({
           onBlur={() => setFocused(false)}
           style={styles.value}
         />
+        {suffix ? <Text style={localStyles.suffix}>{suffix}</Text> : null}
         {secure ? (
           <Pressable
             accessibilityRole="button"
@@ -72,3 +76,7 @@ export function TextField({
     </FieldShell>
   );
 }
+
+const localStyles = StyleSheet.create({
+  suffix: { fontFamily: fonts.semibold, fontSize: 13, color: colors.inkMuted },
+});

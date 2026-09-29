@@ -14,6 +14,7 @@ export const colors = {
   infoSoft: "#DCEAF9",
   warning: "#E0A030",
   warningSoft: "#FBEFD9",
+  warningInk: "#9A6A12",
   error: "#D64545",
   overlay: "#14140F8A",
   shadow: "#1A1A18",
