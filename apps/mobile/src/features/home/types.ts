@@ -62,7 +62,14 @@ export interface HomeDashboard {
     ctaLabel: string;
   };
   quickActions: { columns: number; items: QuickAction[] };
-  checkIn: { title: string; subtitle: string; streakDays: number; moods: Mood[] };
+  checkIn: {
+    title: string;
+    subtitle: string;
+    streakDays: number;
+    /** Today's saved check-in mood (highlighted on the card); null when not checked in yet. */
+    selectedMoodId: string | null;
+    moods: Mood[];
+  };
   recommendations: { title: string; subtitle: string; items: Recommendation[] };
   tip: { title: string; body: string };
   library: { title: string; subtitle: string; actionLabel: string; articles: Article[] };

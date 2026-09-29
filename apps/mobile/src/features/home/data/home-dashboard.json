@@ -1,5 +1,7 @@
 {
-  "user": { "name": "Amara" },
+  "user": {
+    "name": "Amara"
+  },
   "hasUnreadNotifications": true,
   "cycle": {
     "phaseLabel": "Fertile window",
@@ -11,14 +13,54 @@
   "quickActions": {
     "columns": 4,
     "items": [
-      { "id": "temp", "label": "Temp", "icon": "thermometer", "tone": "error" },
-      { "id": "mood", "label": "Mood", "icon": "smiley", "tone": "warning" },
-      { "id": "symptom", "label": "Symptom", "icon": "drop", "tone": "info" },
-      { "id": "meds", "label": "Meds", "icon": "pill", "tone": "success" },
-      { "id": "fluid", "label": "Fluid", "icon": "waves", "tone": "info" },
-      { "id": "lh-test", "label": "LH test", "icon": "test-tube", "tone": "primary" },
-      { "id": "intimacy", "label": "Intimacy", "icon": "heart", "tone": "primary" },
-      { "id": "preg-test", "label": "Preg. test", "icon": "scan", "tone": "success" }
+      {
+        "id": "temp",
+        "label": "Temp",
+        "icon": "thermometer",
+        "tone": "error"
+      },
+      {
+        "id": "mood",
+        "label": "Mood",
+        "icon": "smiley",
+        "tone": "warning"
+      },
+      {
+        "id": "symptom",
+        "label": "Symptom",
+        "icon": "drop",
+        "tone": "info"
+      },
+      {
+        "id": "meds",
+        "label": "Meds",
+        "icon": "pill",
+        "tone": "success"
+      },
+      {
+        "id": "fluid",
+        "label": "Fluid",
+        "icon": "waves",
+        "tone": "info"
+      },
+      {
+        "id": "lh-test",
+        "label": "LH test",
+        "icon": "test-tube",
+        "tone": "primary"
+      },
+      {
+        "id": "intimacy",
+        "label": "Intimacy",
+        "icon": "heart",
+        "tone": "primary"
+      },
+      {
+        "id": "preg-test",
+        "label": "Preg. test",
+        "icon": "scan",
+        "tone": "success"
+      }
     ]
   },
   "checkIn": {
@@ -26,21 +68,70 @@
     "subtitle": "Daily check-in · private to you",
     "streakDays": 12,
     "moods": [
-      { "id": "low", "emoji": "😞", "label": "Low" },
-      { "id": "heavy", "emoji": "😔", "label": "Heavy" },
-      { "id": "okay", "emoji": "😐", "label": "Okay" },
-      { "id": "good", "emoji": "🙂", "label": "Good" },
-      { "id": "hopeful", "emoji": "😊", "label": "Hopeful" }
-    ]
+      {
+        "id": "low",
+        "emoji": "😞",
+        "label": "Low"
+      },
+      {
+        "id": "heavy",
+        "emoji": "😔",
+        "label": "Heavy"
+      },
+      {
+        "id": "okay",
+        "emoji": "😐",
+        "label": "Okay"
+      },
+      {
+        "id": "good",
+        "emoji": "🙂",
+        "label": "Good"
+      },
+      {
+        "id": "hopeful",
+        "emoji": "😊",
+        "label": "Hopeful"
+      }
+    ],
+    "selectedMoodId": null
   },
   "recommendations": {
     "title": "Recommended for you",
     "subtitle": "Based on your cycle and profile",
     "items": [
-      { "id": "prenatal", "title": "Prenatal vitamin", "description": "Take daily with food", "icon": "pill", "tone": "info", "tag": "Supplement" },
-      { "id": "folic", "title": "Folic acid 400mcg", "description": "Supports early fetal development", "icon": "flask", "tone": "info", "tag": "Supplement" },
-      { "id": "obgyn", "title": "Consult an OB-GYN", "description": "Recommended after 3 tracked cycles", "icon": "stethoscope", "tone": "primary", "tag": "Specialist visit" },
-      { "id": "bbt", "title": "Track basal temperature daily", "description": "Improves ovulation prediction accuracy", "icon": "pulse", "tone": "success", "tag": "Lifestyle" }
+      {
+        "id": "prenatal",
+        "title": "Prenatal vitamin",
+        "description": "Take daily with food",
+        "icon": "pill",
+        "tone": "info",
+        "tag": "Supplement"
+      },
+      {
+        "id": "folic",
+        "title": "Folic acid 400mcg",
+        "description": "Supports early fetal development",
+        "icon": "flask",
+        "tone": "info",
+        "tag": "Supplement"
+      },
+      {
+        "id": "obgyn",
+        "title": "Consult an OB-GYN",
+        "description": "Recommended after 3 tracked cycles",
+        "icon": "stethoscope",
+        "tone": "primary",
+        "tag": "Specialist visit"
+      },
+      {
+        "id": "bbt",
+        "title": "Track basal temperature daily",
+        "description": "Improves ovulation prediction accuracy",
+        "icon": "pulse",
+        "tone": "success",
+        "tag": "Lifestyle"
+      }
     ]
   },
   "tip": {
@@ -79,8 +170,18 @@
     "title": "Recent notes",
     "actionLabel": "See all",
     "items": [
-      { "id": "n1", "date": "May 20", "text": "Mild cramping, feeling optimistic", "icon": "smiley" },
-      { "id": "n2", "date": "May 19", "text": "Basal temp logged: 36.6°C", "icon": "thermometer" }
+      {
+        "id": "n1",
+        "date": "May 20",
+        "text": "Mild cramping, feeling optimistic",
+        "icon": "smiley"
+      },
+      {
+        "id": "n2",
+        "date": "May 19",
+        "text": "Basal temp logged: 36.6°C",
+        "icon": "thermometer"
+      }
     ]
   }
 }

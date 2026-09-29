@@ -7,7 +7,6 @@ import { colors } from "@/constants/theme";
 import { useLogging } from "@/features/logging/context/logging-context";
 import { QUICK_ACTION_TO_KIND, RECOMMENDATION_TO_KIND } from "@/features/logging/log-kinds";
 import { useHomeDashboard } from "../hooks/use-home-dashboard";
-import { logMood } from "../services/home-api";
 import { ContentLibrarySection } from "./content-library-section";
 import { CycleHeroCard } from "./cycle-hero-card";
 import { DailyCheckInCard } from "./daily-checkin-card";
@@ -53,7 +52,10 @@ export function HomeScreen() {
           />
         </View>
         <View style={styles.padded}>
-          <DailyCheckInCard checkIn={data.checkIn} onMoodSelect={logMood} />
+          <DailyCheckInCard
+            checkIn={data.checkIn}
+            onMoodSelect={(moodId) => router.push({ pathname: "/check-in", params: { mood: moodId } })}
+          />
         </View>
         <View style={styles.padded}>
           <RecommendationsSection

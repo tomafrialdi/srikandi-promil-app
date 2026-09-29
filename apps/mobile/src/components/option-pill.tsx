@@ -6,7 +6,7 @@ interface OptionPillProps {
   label: string;
   selected: boolean;
   onPress: () => void;
-  /** Stretches to share a row equally with sibling pills. Default true. */
+  /** Stretches to share a row equally with sibling pills. Default true. Otherwise the pill hugs its label. */
   fill?: boolean;
 }
 
@@ -17,7 +17,7 @@ export function OptionPill({ label, selected, onPress, fill = true }: OptionPill
       accessibilityRole="button"
       accessibilityState={{ selected }}
       onPress={onPress}
-      style={[styles.pill, fill && styles.fill, selected && styles.selected]}
+      style={[styles.pill, fill ? styles.fill : styles.hug, selected && styles.selected]}
     >
       <Text style={[styles.label, selected && styles.labelSelected]} numberOfLines={1}>
         {label}
@@ -38,6 +38,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.card,
   },
   fill: { flex: 1 },
+  hug: { paddingVertical: 9, paddingHorizontal: 14 },
   selected: { borderColor: colors.primary, backgroundColor: colors.primarySoft },
   label: { fontFamily: fonts.semibold, fontSize: 12, color: colors.inkMuted },
   labelSelected: { color: colors.primary },

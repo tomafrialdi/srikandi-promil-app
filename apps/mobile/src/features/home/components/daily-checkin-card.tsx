@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { colors, fonts, radius } from "@/constants/theme";
@@ -6,12 +5,12 @@ import type { HomeDashboard } from "../types";
 
 interface DailyCheckInCardProps {
   checkIn: HomeDashboard["checkIn"];
-  onMoodSelect?: (moodId: string) => void;
+  /** Opens the full check-in screen with this mood preselected. */
+  onMoodSelect: (moodId: string) => void;
 }
 
+/** "How are you feeling today?": tapping an emoji opens the Daily check-in. */
 export function DailyCheckInCard({ checkIn, onMoodSelect }: DailyCheckInCardProps) {
-  const [selected, setSelected] = useState<string | null>(null);
-
   return (
     <View style={styles.card}>
       <View style={styles.head}>
@@ -26,17 +25,14 @@ export function DailyCheckInCard({ checkIn, onMoodSelect }: DailyCheckInCardProp
 
       <View style={styles.moods}>
         {checkIn.moods.map((mood) => {
-          const active = mood.id === selected;
+          const active = mood.id === checkIn.selectedMoodId;
           return (
             <Pressable
               key={mood.id}
               accessibilityRole="button"
               accessibilityLabel={mood.label}
               accessibilityState={{ selected: active }}
-              onPress={() => {
-                setSelected(mood.id);
-                onMoodSelect?.(mood.id);
-              }}
+              onPress={() => onMoodSelect(mood.id)}
               style={[styles.mood, active && styles.moodActive]}
             >
               <Text style={styles.emoji}>{mood.emoji}</Text>
