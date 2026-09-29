@@ -1,98 +1,100 @@
-import * as Device from 'expo-device';
-import { Platform, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import Flower2 from "lucide-react-native/icons/flower-2";
+import { StyleSheet, Text, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { AnimatedIcon } from '@/components/animated-icon';
-import { HintRow } from '@/components/hint-row';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { WebBadge } from '@/components/web-badge';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+import { ButtonPrimary } from "@/components/button-primary";
+import { colors, fonts } from "@/constants/theme";
 
-function getDevMenuHint() {
-  if (Platform.OS === 'web') {
-    return <ThemedText type="small">use browser devtools</ThemedText>;
-  }
-  if (Device.isDevice) {
-    return (
-      <ThemedText type="small">
-        shake device or press <ThemedText type="code">m</ThemedText> in terminal
-      </ThemedText>
-    );
-  }
-  const shortcut = Platform.OS === 'android' ? 'cmd+m (or ctrl+m)' : 'cmd+d';
+export default function Splash() {
+  const insets = useSafeAreaInsets();
+
   return (
-    <ThemedText type="small">
-      press <ThemedText type="code">{shortcut}</ThemedText>
-    </ThemedText>
-  );
-}
+    <View style={styles.container}>
+      <View style={styles.center}>
+        <View style={styles.mark}>
+          <Flower2 size={44} color={colors.white} />
+        </View>
+        <View style={styles.textWrap}>
+          <Text style={styles.appName}>SRIKANDI PROMIL</Text>
+          <Text style={styles.tagline}>
+            Your gentle companion on the path to pregnancy
+          </Text>
+        </View>
+      </View>
 
-export default function HomeScreen() {
-  return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.heroSection}>
-          <AnimatedIcon />
-          <ThemedText type="title" style={styles.title}>
-            Welcome to&nbsp;Expo
-          </ThemedText>
-        </ThemedView>
-
-        <ThemedText type="code" style={styles.code}>
-          get started
-        </ThemedText>
-
-        <ThemedView type="backgroundElement" style={styles.stepContainer}>
-          <HintRow
-            title="Try editing"
-            hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
-          />
-          <HintRow title="Dev tools" hint={getDevMenuHint()} />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
-          />
-        </ThemedView>
-
-        {Platform.OS === 'web' && <WebBadge />}
-      </SafeAreaView>
-    </ThemedView>
+      <View style={[styles.footer, { paddingBottom: Math.max(insets.bottom, 44) }]}>
+        <ButtonPrimary
+          label="Create account"
+          backgroundColor={colors.white}
+          labelColor={colors.primary}
+          style={styles.cta}
+        />
+        <View style={styles.loginRow}>
+          <Text style={styles.loginHint}>Already have an account?</Text>
+          <Text style={styles.loginLink}>Log in</Text>
+        </View>
+      </View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    flexDirection: 'row',
+    backgroundColor: colors.primary,
   },
-  safeArea: {
+  center: {
     flex: 1,
-    paddingHorizontal: Spacing.four,
-    alignItems: 'center',
-    gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
-    maxWidth: MaxContentWidth,
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 20,
   },
-  heroSection: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
+  mark: {
+    width: 88,
+    height: 88,
+    borderRadius: 28,
+    backgroundColor: colors.whiteGlass,
+    alignItems: "center",
+    justifyContent: "center",
   },
-  title: {
-    textAlign: 'center',
+  textWrap: {
+    alignItems: "center",
+    gap: 6,
   },
-  code: {
-    textTransform: 'uppercase',
+  appName: {
+    fontFamily: fonts.bold,
+    fontSize: 30,
+    color: colors.white,
   },
-  stepContainer: {
-    gap: Spacing.three,
-    alignSelf: 'stretch',
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
+  tagline: {
+    width: 260,
+    textAlign: "center",
+    fontFamily: fonts.medium,
+    fontSize: 14,
+    color: colors.whiteSoft,
+  },
+  footer: {
+    paddingHorizontal: 28,
+    alignItems: "center",
+    gap: 16,
+  },
+  cta: {
+    alignSelf: "stretch",
+  },
+  loginRow: {
+    flexDirection: "row",
+    gap: 6,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  loginHint: {
+    fontFamily: fonts.medium,
+    fontSize: 13,
+    color: colors.whiteSoft,
+  },
+  loginLink: {
+    fontFamily: fonts.bold,
+    fontSize: 13,
+    color: colors.white,
   },
 });
