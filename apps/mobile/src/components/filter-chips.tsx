@@ -8,6 +8,8 @@ interface FilterChipsProps<T extends string> {
   onChange: (id: T) => void;
   /** Left / right padding of the scrolling row, so chips align with the page but scroll edge to edge. */
   sidePadding?: number;
+  /** "sm" is compact (notifications), "md" is roomier (search screens). */
+  size?: "sm" | "md";
 }
 
 /** Horizontal single-select pill filters. */
@@ -16,12 +18,13 @@ export function FilterChips<T extends string>({
   value,
   onChange,
   sidePadding = 20,
+  size = "sm",
 }: FilterChipsProps<T>) {
   return (
     <ScrollView
       horizontal
       showsHorizontalScrollIndicator={false}
-      contentContainerStyle={[styles.row, { paddingHorizontal: sidePadding }]}
+      contentContainerStyle={[styles.row, size === "md" && styles.rowMd, { paddingHorizontal: sidePadding }]}
     >
       {options.map((option) => {
         const active = option.id === value;
@@ -31,7 +34,7 @@ export function FilterChips<T extends string>({
             accessibilityRole="button"
             accessibilityState={{ selected: active }}
             onPress={() => onChange(option.id)}
-            style={[styles.chip, active && styles.chipActive]}
+            style={[styles.chip, size === "md" && styles.chipMd, active && styles.chipActive]}
           >
             <Text style={[styles.label, active && styles.labelActive]}>{option.label}</Text>
           </Pressable>
@@ -43,6 +46,7 @@ export function FilterChips<T extends string>({
 
 const styles = StyleSheet.create({
   row: { gap: 6 },
+  rowMd: { gap: 8 },
   chip: {
     paddingVertical: 8,
     paddingHorizontal: 10,
@@ -51,6 +55,7 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
     backgroundColor: colors.card,
   },
+  chipMd: { paddingVertical: 9, paddingHorizontal: 14 },
   chipActive: { borderColor: colors.primary, backgroundColor: colors.primary },
   label: { fontFamily: fonts.semibold, fontSize: 12, color: colors.inkMuted },
   labelActive: { color: colors.white },

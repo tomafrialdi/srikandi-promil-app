@@ -1,0 +1,107 @@
+{
+  "list": [
+    {
+      "id": "bunda",
+      "kind": "clinic",
+      "name": "Bunda Women's Clinic",
+      "typeLabel": "OB-GYN",
+      "category": "ob-gyn",
+      "availability": { "label": "Open now", "tone": "success", "openNow": true },
+      "rating": 4.8,
+      "address": "Jl. Sudirman No. 12",
+      "distanceKm": 0.8,
+      "phone": "+62211234567",
+      "whatsapp": "62811234567",
+      "location": { "lat": -6.2088, "lng": 106.8456 }
+    },
+    {
+      "id": "harapan",
+      "kind": "clinic",
+      "name": "RS Ibu & Anak Harapan",
+      "typeLabel": "Fertility clinic",
+      "category": "fertility-clinic",
+      "availability": { "label": "Open now", "tone": "success", "openNow": true },
+      "rating": 4.6,
+      "address": "Jl. Gatot Subroto No. 45",
+      "distanceKm": 1.4,
+      "phone": "+62217654321",
+      "whatsapp": "62817654321",
+      "location": { "lat": -6.2297, "lng": 106.8175 }
+    },
+    {
+      "id": "dr-sarah",
+      "kind": "doctor",
+      "name": "Dr. Sarah Lestari, SpOG",
+      "typeLabel": "OB-GYN specialist",
+      "category": "ob-gyn",
+      "availability": { "label": "By appointment", "tone": "warning", "openNow": false },
+      "rating": 4.9,
+      "address": "Klinik Kasih, Jl. Melati No. 8",
+      "distanceKm": 2.1,
+      "phone": "+62215551234",
+      "whatsapp": "62815551234",
+      "location": { "lat": -6.1944, "lng": 106.8229 }
+    }
+  ],
+  "details": {
+    "bunda": {
+      "id": "bunda",
+      "name": "Bunda Women's Clinic",
+      "coverImageUrl": null,
+      "tags": [
+        { "label": "BPJS accepted", "tone": "success", "verified": true },
+        { "label": "Fertility clinic", "tone": "primary" }
+      ],
+      "rating": 4.8,
+      "reviewCount": 312,
+      "distanceKm": 1.2,
+      "hoursLabel": "Open · until 20:00",
+      "phone": "+62211234567",
+      "whatsapp": "62811234567",
+      "location": { "lat": -6.2088, "lng": 106.8456 },
+      "bpjs": {
+        "title": "Using BPJS Kesehatan?",
+        "description": "Initial OB-GYN consult & basic tests are covered with a referral from your Faskes 1. IUI/IVF are self-paid."
+      },
+      "costs": [
+        { "label": "OB-GYN consultation", "value": "Rp250–400rb", "badge": "BPJS" },
+        { "label": "Fertility workup (HSG, hormone)", "value": "Rp1.5–3jt" },
+        { "label": "IUI program / cycle", "value": "Rp4–7jt" },
+        { "label": "IVF program / cycle", "value": "Rp65–90jt" }
+      ],
+      "costNote": "Prices are community-reported estimates, updated May 2026. Confirm with the clinic.",
+      "doctors": [
+        { "id": "d1", "name": "dr. Sarah Lestari, SpOG-KFER", "description": "Fertility & IVF · 14 yrs" },
+        { "id": "d2", "name": "dr. Andi Wibowo, SpOG", "description": "PCOS & hormones · 9 yrs" }
+      ],
+      "review": {
+        "author": "Anonymous · IUI patient",
+        "rating": 5,
+        "text": "“dr. Sarah was so patient explaining every step. Pregnant after our 2nd IUI here 🤍”"
+      }
+    },
+    "harapan": {
+      "id": "harapan",
+      "name": "RS Ibu & Anak Harapan",
+      "coverImageUrl": null,
+      "tags": [{ "label": "Fertility clinic", "tone": "primary" }],
+      "rating": 4.6,
+      "reviewCount": 187,
+      "distanceKm": 1.4,
+      "hoursLabel": "Open · until 21:00",
+      "phone": "+62217654321",
+      "whatsapp": "62817654321",
+      "location": { "lat": -6.2297, "lng": 106.8175 },
+      "bpjs": null,
+      "costs": [
+        { "label": "OB-GYN consultation", "value": "Rp300–450rb" },
+        { "label": "Fertility workup (HSG, hormone)", "value": "Rp2–3.5jt" },
+        { "label": "IUI program / cycle", "value": "Rp5–8jt" },
+        { "label": "IVF program / cycle", "value": "Rp70–95jt" }
+      ],
+      "costNote": "Prices are community-reported estimates, updated May 2026. Confirm with the clinic.",
+      "doctors": [{ "id": "d3", "name": "dr. Maya Putri, SpOG-KFER", "description": "Fertility & IVF · 11 yrs" }],
+      "review": null
+    }
+  }
+}

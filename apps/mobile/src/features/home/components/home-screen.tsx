@@ -58,7 +58,10 @@ export function HomeScreen() {
           <RecommendationsSection
             data={data.recommendations}
             onItemPress={(item) => {
-              // TODO: "obgyn" (Consult an OB-GYN) has no screen yet.
+              if (item.id === "obgyn") {
+                router.push("/specialists");
+                return;
+              }
               const kind = RECOMMENDATION_TO_KIND[item.id];
               if (kind) openLog(kind);
             }}
