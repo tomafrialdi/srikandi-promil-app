@@ -4,6 +4,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useTabBarClearance } from "@/components/tab-bar/tab-bar";
 import { colors } from "@/constants/theme";
+import { useLogging } from "@/features/logging/context/logging-context";
+import { QUICK_ACTION_TO_KIND } from "@/features/logging/log-kinds";
 import { useHomeDashboard } from "../hooks/use-home-dashboard";
 import { logMood } from "../services/home-api";
 import { ContentLibrarySection } from "./content-library-section";
@@ -18,6 +20,7 @@ import { RecommendationsSection } from "./recommendations-section";
 /** Home dashboard: sections top to bottom, each fed by one slice of `HomeDashboard`. */
 export function HomeScreen() {
   const { data } = useHomeDashboard();
+  const { openLog } = useLogging();
   const bottomClearance = useTabBarClearance();
 
   if (!data) return <SafeAreaView style={styles.safe} />;
@@ -28,7 +31,7 @@ export function HomeScreen() {
         contentContainerStyle={[styles.content, { paddingBottom: bottomClearance }]}
         showsVerticalScrollIndicator={false}
       >
-        {/* TODO: wire the onPress handlers below (log sheets, article / notes screens). */}
+        {/* TODO: wire the remaining handlers (article and notes screens). */}
         <View style={styles.padded}>
           <GreetingHeader
             name={data.user.name}
@@ -37,10 +40,17 @@ export function HomeScreen() {
           />
         </View>
         <View style={styles.padded}>
-          <CycleHeroCard cycle={data.cycle} />
+          <CycleHeroCard cycle={data.cycle} onLogPress={() => openLog("log-today")} />
         </View>
         <View style={styles.padded}>
-          <QuickActionsGrid config={data.quickActions} />
+          <QuickActionsGrid
+            config={data.quickActions}
+            onActionPress={(action) => {
+              const kind = QUICK_ACTION_TO_KIND[action.id];
+              // TODO: "preg-test" opens its own page once it is built.
+              if (kind) openLog(kind);
+            }}
+          />
         </View>
         <View style={styles.padded}>
           <DailyCheckInCard checkIn={data.checkIn} onMoodSelect={logMood} />

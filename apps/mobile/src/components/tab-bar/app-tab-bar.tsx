@@ -23,7 +23,11 @@ export const TAB_CONFIG: Record<string, TabConfig> = {
 };
 
 /** Connects the presentational `TabBar` to expo-router's tab navigation state. */
-export function AppTabBar({ state, navigation }: TabBarProps) {
+export function AppTabBar({
+  state,
+  navigation,
+  onAddPress,
+}: TabBarProps & { /** Runs when an action tab (the "+" button) is pressed. */ onAddPress?: () => void }) {
   const items: TabBarItem[] = state.routes.flatMap((route, index) => {
     const config = TAB_CONFIG[route.name];
     if (!config) return [];
@@ -31,7 +35,7 @@ export function AppTabBar({ state, navigation }: TabBarProps) {
     const active = state.index === index;
     const onPress = () => {
       if (config.action) {
-        // TODO: open the "add log" sheet (temperature, mood, symptom, ...).
+        onAddPress?.();
         return;
       }
       const event = navigation.emit({ type: "tabPress", target: route.key, canPreventDefault: true });

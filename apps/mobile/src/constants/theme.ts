@@ -1,6 +1,8 @@
 export const colors = {
   primary: "#C13D68",
   primarySoft: "#F6DEE6",
+  primaryTint: "#C13D681A",
+  primaryTintStrong: "#C13D6833",
   surface: "#FAF9F6",
   surfaceAlt: "#F1EFE9",
   card: "#FFFFFF",

@@ -1,0 +1,35 @@
+/** Fixed UI copy for the log sheets (data-driven copy lives in data/logging-data.json). */
+export const LOG_COPY = {
+  titles: {
+    "log-today": "Log today",
+    temperature: "Log temperature",
+    mood: "Log mood",
+    symptom: "Log symptoms",
+    medications: "Medications",
+    "cervical-fluid": "Cervical fluid",
+    "lh-test": "Ovulation (LH) test",
+    intimacy: "Intimacy",
+  },
+  logToday: { done: "Done for today" },
+  temperature: { save: "Save temperature", history: "View temperature history" },
+  mood: { noteLabel: "Add a quick note (optional)", save: "Save mood", history: "View mood history" },
+  symptom: { save: "Save symptoms", history: "View symptom history" },
+  medications: { add: "Add medication", done: "Done", manage: "Manage medications" },
+  cervicalFluid: { save: "Save cervical fluid" },
+  lhTest: {
+    aiReading: "AI reading",
+    match: "{percent}% match",
+    retake: "Retake photo",
+    manual: "Or choose result manually",
+    save: "Save LH result",
+  },
+  intimacy: {
+    yes: "Yes, today",
+    no: "Not today",
+    timingTitle: "Fertile window timing",
+    score: "{done} of {total}",
+    legendLogged: "Logged",
+    legendBest: "Best days",
+    save: "Save",
+  },
+} as const;

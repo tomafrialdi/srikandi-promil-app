@@ -1,7 +1,9 @@
 import { X } from "phosphor-react-native";
 import { useEffect, useState, type ReactNode } from "react";
 import {
+  KeyboardAvoidingView,
   Modal,
+  Platform,
   Pressable,
   StyleSheet,
   Text,
@@ -64,7 +66,10 @@ export function BottomSheet({ visible, onClose, title, children }: BottomSheetPr
       statusBarTranslucent
       onRequestClose={onClose}
     >
-      <View style={styles.root}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        style={styles.root}
+      >
         <Animated.View style={[StyleSheet.absoluteFill, styles.overlay, overlayStyle]}>
           <Pressable
             style={StyleSheet.absoluteFill}
@@ -93,7 +98,7 @@ export function BottomSheet({ visible, onClose, title, children }: BottomSheetPr
           ) : null}
           {children}
         </Animated.View>
-      </View>
+      </KeyboardAvoidingView>
     </Modal>
   );
 }
