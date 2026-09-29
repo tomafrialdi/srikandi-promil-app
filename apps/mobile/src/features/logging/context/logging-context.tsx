@@ -8,8 +8,9 @@ import {
   type ReactNode,
 } from "react";
 
+import { toIsoDate } from "@/features/calendar/utils/dates";
 import { loggingApi } from "../api/logging-api";
-import type { LogKind, LoggingData, SaveLogInput, TrackerKind } from "../types";
+import type { LogKind, LoggingData, SaveLogInput, TodayEntries, TrackerKind } from "../types";
 
 interface LoggingContextValue {
   /** Null until the first load finishes. */
@@ -18,6 +19,8 @@ interface LoggingContextValue {
   active: LogKind | null;
   /** Trackers logged today. */
   logged: TrackerKind[];
+  /** Values logged today, shared by every sheet and "New note". */
+  entries: TodayEntries;
   /** Opens a sheet from anywhere in the app. */
   openLog: (kind: LogKind) => void;
   /** Opens a tracker from the "Log today" hub; after saving, the hub is shown again. */
@@ -25,7 +28,11 @@ interface LoggingContextValue {
   closeLog: () => void;
   /** Saves a log, marks it as done, then returns to the hub or closes. */
   save: (input: SaveLogInput) => Promise<void>;
+  /** Saves a "New note". Signs it contains are synced to today's logs when the note is for today. */
+  saveNote: (input: Extract<SaveLogInput, { kind: "note" }>) => Promise<void>;
 }
+
+const EMPTY_ENTRIES: TodayEntries = { mood: null, symptomIds: [], temperature: null };
 
 const LoggingContext = createContext<LoggingContextValue | null>(null);
 
@@ -33,6 +40,7 @@ const LoggingContext = createContext<LoggingContextValue | null>(null);
 export function LoggingProvider({ children }: { children: ReactNode }) {
   const [data, setData] = useState<LoggingData | null>(null);
   const [logged, setLogged] = useState<TrackerKind[]>([]);
+  const [entries, setEntries] = useState<TodayEntries>(EMPTY_ENTRIES);
   const [active, setActive] = useState<LogKind | null>(null);
   const [returnTo, setReturnTo] = useState<LogKind | null>(null);
 
@@ -42,6 +50,7 @@ export function LoggingProvider({ children }: { children: ReactNode }) {
       if (cancelled) return;
       setData(d);
       setLogged(d.overview.loggedKinds);
+      setEntries(d.today);
     });
     return () => {
       cancelled = true;
@@ -67,7 +76,17 @@ export function LoggingProvider({ children }: { children: ReactNode }) {
     async (input: SaveLogInput) => {
       await loggingApi.save(input);
       const { kind } = input;
-      if (kind !== "supplement") setLogged((cur) => (cur.includes(kind) ? cur : [...cur, kind]));
+      if (kind !== "supplement" && kind !== "note") {
+        setLogged((cur) => (cur.includes(kind) ? cur : [...cur, kind]));
+      }
+      setEntries((cur) => {
+        if (input.kind === "mood") return { ...cur, mood: { moodId: input.moodId, note: input.note } };
+        if (input.kind === "symptom") return { ...cur, symptomIds: input.symptomIds };
+        if (input.kind === "temperature") {
+          return { ...cur, temperature: { celsius: input.celsius, timeOfDay: input.timeOfDay } };
+        }
+        return cur;
+      });
       if (returnTo) {
         setActive(returnTo);
         setReturnTo(null);
@@ -78,9 +97,28 @@ export function LoggingProvider({ children }: { children: ReactNode }) {
     [returnTo],
   );
 
+  const saveNote = useCallback(async (input: Extract<SaveLogInput, { kind: "note" }>) => {
+    await loggingApi.save(input);
+    if (input.date !== toIsoDate(new Date())) return; // Only today's note feeds today's logs.
+
+    const synced: TrackerKind[] = [];
+    if (input.moodId) synced.push("mood");
+    if (input.symptomIds && input.symptomIds.length > 0) synced.push("symptom");
+    if (input.celsius !== undefined) synced.push("temperature");
+    setLogged((cur) => [...cur, ...synced.filter((k) => !cur.includes(k))]);
+    setEntries((cur) => ({
+      mood: input.moodId ? { moodId: input.moodId, note: cur.mood?.note } : cur.mood,
+      symptomIds: input.symptomIds && input.symptomIds.length > 0 ? input.symptomIds : cur.symptomIds,
+      temperature:
+        input.celsius !== undefined
+          ? { celsius: input.celsius, timeOfDay: cur.temperature?.timeOfDay ?? "morning" }
+          : cur.temperature,
+    }));
+  }, []);
+
   const value = useMemo(
-    () => ({ data, active, logged, openLog, openFromHub, closeLog, save }),
-    [data, active, logged, openLog, openFromHub, closeLog, save],
+    () => ({ data, active, logged, entries, openLog, openFromHub, closeLog, save, saveNote }),
+    [data, active, logged, entries, openLog, openFromHub, closeLog, save, saveNote],
   );
 
   return <LoggingContext.Provider value={value}>{children}</LoggingContext.Provider>;

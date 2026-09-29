@@ -79,6 +79,13 @@ export interface IntimacyDay {
   status: IntimacyDayStatus;
 }
 
+/** What the user already logged today. Sheets and "New note" start from these values. */
+export interface TodayEntries {
+  mood: { moodId: string; note?: string } | null;
+  symptomIds: string[];
+  temperature: { celsius: number; timeOfDay: string } | null;
+}
+
 /** Everything the log sheets show. The backend returns this shape from `getData()`. */
 export interface LoggingData {
   overview: {
@@ -95,7 +102,15 @@ export interface LoggingData {
     timesOfDay: Option[];
     defaultTimeOfDay: string;
   };
+  /** Values already logged today (for prefilling and the "Log today" checks). */
+  today: TodayEntries;
   mood: { options: MoodOption[]; notePlaceholder: string };
+  note: {
+    flowOptions: Option[];
+    defaultFlowId: string;
+    textPlaceholder: string;
+    temperature: { min: number; max: number };
+  };
   symptoms: Option[];
   medications: Medication[];
   cervicalFluid: { subtitle: string; options: FluidOption[] };
@@ -131,5 +146,16 @@ export type SaveLogInput =
   | { kind: "lh-test"; resultId: string }
   | { kind: "intimacy"; hadIntimacy: boolean }
   | { kind: "pregnancy-test"; resultId: string; testTypeId: string }
+  /** "New note": several signs at once for a given day. The backend fans them out to the matching logs. */
+  | {
+      kind: "note";
+      /** "YYYY-MM-DD". */
+      date: string;
+      moodId?: string;
+      symptomIds?: string[];
+      celsius?: number;
+      flowId?: string;
+      text?: string;
+    }
   /** Not a daily sign: adds the chosen product to the user's routine. */
   | { kind: "supplement"; category: SupplementKind; productId: string };

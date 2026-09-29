@@ -1,38 +1,22 @@
-import {
-  PencilSimpleLine,
-  Smiley,
-  SmileyAngry,
-  SmileyMeh,
-  SmileySad,
-  SmileyWink,
-  type Icon,
-} from "phosphor-react-native";
+import { PencilSimpleLine } from "phosphor-react-native";
 import { useState } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { ButtonPrimary } from "@/components/button-primary";
 import { TextField } from "@/components/form/text-field";
 import { LinkButton } from "@/components/link-button";
-import { colors, fonts } from "@/constants/theme";
 import { LOG_COPY } from "../../content";
 import { useLogging } from "../../context/logging-context";
-import type { LoggingData, MoodIconName } from "../../types";
+import type { LoggingData } from "../../types";
+import { MoodPicker } from "../parts/mood-picker";
 import { SheetContent } from "../parts/sheet-content";
 
 const copy = LOG_COPY.mood;
 
-const MOOD_ICONS: Record<MoodIconName, Icon> = {
-  wink: SmileyWink,
-  smile: Smiley,
-  meh: SmileyMeh,
-  sad: SmileySad,
-  angry: SmileyAngry,
-};
-
 export function MoodSheet({ config }: { config: LoggingData["mood"] }) {
-  const { save } = useLogging();
-  const [moodId, setMoodId] = useState<string | null>(null);
-  const [note, setNote] = useState("");
+  const { save, entries } = useLogging();
+  // Start from what was already logged today (from this sheet or "New note").
+  const [moodId, setMoodId] = useState<string | null>(entries.mood?.moodId ?? null);
+  const [note, setNote] = useState(entries.mood?.note ?? "");
   const [saving, setSaving] = useState(false);
 
   const handleSave = async () => {
@@ -47,25 +31,7 @@ export function MoodSheet({ config }: { config: LoggingData["mood"] }) {
 
   return (
     <SheetContent>
-      <View style={styles.row}>
-        {config.options.map((option) => {
-          const selected = option.id === moodId;
-          const MoodIcon = MOOD_ICONS[option.icon];
-          const color = selected ? colors.primary : colors.inkFaint;
-          return (
-            <Pressable
-              key={option.id}
-              accessibilityRole="button"
-              accessibilityState={{ selected }}
-              onPress={() => setMoodId(option.id)}
-              style={[styles.card, selected && styles.cardSelected]}
-            >
-              <MoodIcon size={22} color={color} />
-              <Text style={[styles.label, { color }]}>{option.label}</Text>
-            </Pressable>
-          );
-        })}
-      </View>
+      <MoodPicker options={config.options} value={moodId} onChange={setMoodId} />
 
       <TextField
         label={copy.noteLabel}
@@ -82,21 +48,3 @@ export function MoodSheet({ config }: { config: LoggingData["mood"] }) {
     </SheetContent>
   );
 }
-
-const styles = StyleSheet.create({
-  row: { flexDirection: "row", gap: 10 },
-  card: {
-    flex: 1,
-    alignItems: "center",
-    gap: 6,
-    paddingVertical: 12,
-    paddingHorizontal: 2,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.card,
-  },
-  cardSelected: { borderColor: colors.primary, backgroundColor: colors.primarySoft },
-  label: { fontFamily: fonts.semibold, fontSize: 10 },
-});
-

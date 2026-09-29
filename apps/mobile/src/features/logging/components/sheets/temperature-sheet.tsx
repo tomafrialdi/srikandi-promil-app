@@ -14,9 +14,10 @@ import { ValueStepper } from "../parts/value-stepper";
 const copy = LOG_COPY.temperature;
 
 export function TemperatureSheet({ config }: { config: LoggingData["temperature"] }) {
-  const { save } = useLogging();
-  const [celsius, setCelsius] = useState(config.default);
-  const [timeOfDay, setTimeOfDay] = useState(config.defaultTimeOfDay);
+  const { save, entries } = useLogging();
+  // Start from what was already logged today (from this sheet or "New note").
+  const [celsius, setCelsius] = useState(entries.temperature?.celsius ?? config.default);
+  const [timeOfDay, setTimeOfDay] = useState(entries.temperature?.timeOfDay ?? config.defaultTimeOfDay);
   const [saving, setSaving] = useState(false);
 
   // Round to one decimal so repeated +0.1 steps don't drift (36.6 + 0.1 = 36.7, not 36.700000001).

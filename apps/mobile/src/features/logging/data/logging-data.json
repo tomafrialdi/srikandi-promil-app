@@ -346,5 +346,44 @@
       "Log your reading in the app to build an accurate trend"
     ],
     "tip": "Even a few hours of extra sleep can affect your reading — try to stay consistent."
+  },
+  "today": {
+    "mood": {
+      "moodId": "good"
+    },
+    "symptomIds": [
+      "cramping",
+      "fatigue"
+    ],
+    "temperature": {
+      "celsius": 36.6,
+      "timeOfDay": "morning"
+    }
+  },
+  "note": {
+    "flowOptions": [
+      {
+        "id": "none",
+        "label": "None"
+      },
+      {
+        "id": "light",
+        "label": "Light"
+      },
+      {
+        "id": "medium",
+        "label": "Medium"
+      },
+      {
+        "id": "heavy",
+        "label": "Heavy"
+      }
+    ],
+    "defaultFlowId": "none",
+    "textPlaceholder": "Write anything you noticed today…",
+    "temperature": {
+      "min": 35,
+      "max": 42
+    }
   }
 }

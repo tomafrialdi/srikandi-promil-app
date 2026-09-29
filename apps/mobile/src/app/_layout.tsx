@@ -32,7 +32,7 @@ export default function RootLayout() {
   return (
     <Stack screenOptions={{ headerShown: false }}>
       {/* Home is the root of the signed-in app: no swipe-back to the splash. */}
-      <Stack.Screen name="(tabs)" options={{ gestureEnabled: false }} />
+      <Stack.Screen name="(app)" options={{ gestureEnabled: false }} />
     </Stack>
   );
 }
