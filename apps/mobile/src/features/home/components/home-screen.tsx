@@ -37,6 +37,7 @@ export function HomeScreen() {
             name={data.user.name}
             hasUnread={data.hasUnreadNotifications}
             onBellPress={() => router.push("/notifications")}
+            onCommunityPress={() => router.push("/community")}
           />
         </View>
         <View style={styles.padded}>

@@ -25,8 +25,8 @@ export default function TabsLayout() {
       <Tabs.Screen name="home" />
       <Tabs.Screen name="calendar" />
       <Tabs.Screen name="add" />
-      <Tabs.Screen name="community" />
       <Tabs.Screen name="insights" />
+      <Tabs.Screen name="account" />
     </Tabs>
   );
 }

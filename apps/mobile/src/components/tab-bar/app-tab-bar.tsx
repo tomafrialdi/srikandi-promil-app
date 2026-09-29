@@ -1,5 +1,5 @@
 import type { Tabs } from "expo-router";
-import { CalendarDots, ChartBar, House, Plus, UsersThree, type Icon } from "phosphor-react-native";
+import { CalendarDots, ChartBar, House, Plus, User, type Icon } from "phosphor-react-native";
 import type { ComponentProps } from "react";
 
 import { TabBar, type TabBarItem } from "./tab-bar";
@@ -18,8 +18,8 @@ export const TAB_CONFIG: Record<string, TabConfig> = {
   home: { label: "Home", icon: House },
   calendar: { label: "Calendar", icon: CalendarDots },
   add: { label: "Add", icon: Plus, action: true },
-  community: { label: "Community", icon: UsersThree },
   insights: { label: "Insights", icon: ChartBar },
+  account: { label: "Account", icon: User },
 };
 
 /** Connects the presentational `TabBar` to expo-router's tab navigation state. */

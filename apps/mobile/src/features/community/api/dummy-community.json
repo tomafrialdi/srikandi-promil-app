@@ -1,0 +1,71 @@
+{
+  "me": { "alias": "Kupu_Biru27" },
+  "groups": [
+    { "id": "ttc-6", "label": "TTC 6+ months" },
+    { "id": "pcos", "label": "PCOS" },
+    { "id": "ivf-iui", "label": "IVF & IUI" },
+    { "id": "2ww", "label": "2WW" }
+  ],
+  "posts": [
+    {
+      "id": "p1",
+      "authorAlias": "Melati_Senja",
+      "groupId": "ttc-6",
+      "minutesAgo": 120,
+      "body": "Cycle 11 and finally saw a clear peak on my LH strip! Anyone else with PCOS get a peak after starting inositol?",
+      "hugCount": 42,
+      "replyCount": 18,
+      "hugged": false
+    },
+    {
+      "id": "p2",
+      "authorAlias": "Bunga_Pagi",
+      "groupId": "ttc-6",
+      "minutesAgo": 1440,
+      "body": "Tips for answering “kapan punya anak?” at family events without crying in the bathroom?",
+      "hugCount": 214,
+      "replyCount": 93,
+      "hugged": true
+    },
+    {
+      "id": "p3",
+      "authorAlias": "Kopi_Senja",
+      "groupId": "ttc-6",
+      "minutesAgo": 2900,
+      "body": "Month 8 and my partner just started taking vitamins with me. Small wins count too 🤍",
+      "hugCount": 128,
+      "replyCount": 24,
+      "hugged": false
+    },
+    {
+      "id": "p4",
+      "authorAlias": "Anon_Rindu",
+      "groupId": "2ww",
+      "minutesAgo": 300,
+      "body": "9 DPO and trying so hard not to test. How do you all stay distracted? 😅",
+      "hugCount": 87,
+      "replyCount": 56,
+      "hugged": false
+    },
+    {
+      "id": "p5",
+      "authorAlias": "Lavender_Hari",
+      "groupId": "pcos",
+      "minutesAgo": 600,
+      "body": "Anyone tried seed cycling alongside metformin? Curious how your cycle length changed.",
+      "hugCount": 35,
+      "replyCount": 12,
+      "hugged": false
+    },
+    {
+      "id": "p6",
+      "authorAlias": "Cempaka_Biru",
+      "groupId": "ivf-iui",
+      "minutesAgo": 4300,
+      "body": "Transfer day is tomorrow. Nervous but hopeful — sending hugs to everyone in the same stage.",
+      "hugCount": 301,
+      "replyCount": 77,
+      "hugged": true
+    }
+  ]
+}
