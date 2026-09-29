@@ -50,9 +50,24 @@ export interface Note {
   icon: HomeIconName;
 }
 
+export interface CommunityPreview {
+  title: string;
+  subtitle: string;
+  /** Small avatars shown side by side; `tone` picks the color. */
+  members: { initial: string; tone: Tone }[];
+  latestPost: {
+    body: string;
+    author: string;
+    groupLabel: string;
+    /** e.g. "2h". */
+    ageLabel: string;
+    hugCount: number;
+  };
+}
+
 /** Everything the Home screen shows. The backend returns this shape. */
 export interface HomeDashboard {
-  user: { name: string };
+  user: { name: string; /** Profile photo; initials are shown when missing. */ avatarUrl?: string | null };
   hasUnreadNotifications: boolean;
   cycle: {
     phaseLabel: string;
@@ -74,4 +89,5 @@ export interface HomeDashboard {
   tip: { title: string; body: string };
   library: { title: string; subtitle: string; actionLabel: string; articles: Article[] };
   notes: { title: string; actionLabel: string; items: Note[] };
+  community: CommunityPreview;
 }

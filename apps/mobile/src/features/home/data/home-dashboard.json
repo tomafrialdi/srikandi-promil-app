@@ -1,6 +1,7 @@
 {
   "user": {
-    "name": "Amara"
+    "name": "Amara",
+    "avatarUrl": null
   },
   "hasUnreadNotifications": true,
   "cycle": {
@@ -183,5 +184,30 @@
         "icon": "thermometer"
       }
     ]
+  },
+  "community": {
+    "title": "Community",
+    "subtitle": "Anonymous support, day and night",
+    "members": [
+      {
+        "initial": "M",
+        "tone": "warning"
+      },
+      {
+        "initial": "B",
+        "tone": "success"
+      },
+      {
+        "initial": "K",
+        "tone": "info"
+      }
+    ],
+    "latestPost": {
+      "body": "Cycle 11 and finally saw a clear peak on my LH strip!",
+      "author": "Melati_Senja",
+      "groupLabel": "TTC 6+ months",
+      "ageLabel": "2h",
+      "hugCount": 42
+    }
   }
 }
