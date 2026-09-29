@@ -9,12 +9,15 @@ interface ButtonOutlineProps {
   disabled?: boolean;
   /** Smaller padding, used inside cards. */
   compact?: boolean;
+  /** "danger" is red on a soft red fill (log out, delete ...). */
+  tone?: "default" | "danger";
   icon?: Icon;
   style?: ViewStyle;
 }
 
 /** Secondary button: pill with a border and no fill. */
-export function ButtonOutline({ label, onPress, disabled, compact, icon: LeadingIcon, style }: ButtonOutlineProps) {
+export function ButtonOutline({ label, onPress, disabled, compact, tone = "default", icon: LeadingIcon, style }: ButtonOutlineProps) {
+  const danger = tone === "danger";
   return (
     <Pressable
       accessibilityRole="button"
@@ -23,12 +26,13 @@ export function ButtonOutline({ label, onPress, disabled, compact, icon: Leading
       style={({ pressed }) => [
         styles.button,
         compact ? styles.compact : styles.regular,
+        danger && styles.danger,
         { opacity: disabled ? 0.6 : pressed ? 0.85 : 1 },
         style,
       ]}
     >
-      {LeadingIcon ? <LeadingIcon size={16} color={colors.ink} /> : null}
-      <Text style={styles.label}>{label}</Text>
+      {LeadingIcon ? <LeadingIcon size={16} color={danger ? colors.error : colors.ink} /> : null}
+      <Text style={[styles.label, danger && styles.labelDanger]}>{label}</Text>
     </Pressable>
   );
 }
@@ -46,5 +50,7 @@ const styles = StyleSheet.create({
   },
   regular: { paddingVertical: 16, paddingHorizontal: 24 },
   compact: { paddingVertical: 10, paddingHorizontal: 16 },
+  danger: { borderColor: colors.errorSoft, backgroundColor: colors.errorSoft },
   label: { fontFamily: fonts.bold, fontSize: 15, color: colors.ink },
+  labelDanger: { color: colors.error },
 });

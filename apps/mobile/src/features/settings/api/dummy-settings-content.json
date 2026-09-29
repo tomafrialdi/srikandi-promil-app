@@ -1,0 +1,42 @@
+{
+  "faqs": [
+    {
+      "id": "fertile-window",
+      "question": "How is my fertile window calculated?",
+      "answer": "We use your logged cycle length, period start dates, and symptoms to estimate ovulation and the days around it when conception is most likely."
+    },
+    {
+      "id": "log-symptoms",
+      "question": "How do I log symptoms?",
+      "answer": "Tap the + button in the tab bar, or use “Log today” on Home. Pick your mood and symptoms, then save. You can edit them any time the same day."
+    },
+    {
+      "id": "export-data",
+      "question": "Can I export my cycle data?",
+      "answer": "Yes. Go to Settings › Doctor report to create a PDF of your cycles, symptoms and temperature that you can share with your doctor."
+    },
+    {
+      "id": "change-cycle-length",
+      "question": "How do I change my cycle length?",
+      "answer": "Open Settings › Cycle preferences and update your average cycle length. Predictions adjust as you log more cycles."
+    }
+  ],
+  "privacyPolicy": {
+    "updatedAt": "2026-05-01",
+    "note": "Your health data is encrypted and never sold to third parties.",
+    "sections": [
+      {
+        "title": "Data we collect",
+        "body": "We collect the cycle, symptom, and profile information you choose to log, along with basic device information to keep the app running smoothly."
+      },
+      {
+        "title": "How we use your data",
+        "body": "Your data powers personalized predictions and recommendations. We never share identifiable health data with advertisers."
+      },
+      {
+        "title": "Your rights",
+        "body": "You can export or permanently delete your data at any time from Settings. Contact us if you have questions about how your information is handled."
+      }
+    ]
+  }
+}

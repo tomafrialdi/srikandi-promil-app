@@ -49,3 +49,8 @@ export async function verifyEmailCode(input: { email: string; code: string }): P
 export async function resendVerificationCode(email: string): Promise<void> {
   console.log("[auth] resendVerificationCode", email);
 }
+
+/** Ends the session. TODO(backend): revoke the token and clear stored credentials. */
+export async function signOut(): Promise<void> {
+  console.log("[auth] signOut");
+}

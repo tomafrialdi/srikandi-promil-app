@@ -36,3 +36,9 @@ export function buildMonthGrid(year: number, month: number): (Date | null)[] {
   while (cells.length < 42) cells.push(null);
   return cells;
 }
+
+/** "2026-05-18" -> "May 18, 2026". */
+export function formatIsoDate(iso: string): string {
+  const [year, month, day] = iso.split("-").map(Number);
+  return `${MONTH_NAMES[month - 1].slice(0, 3)} ${day}, ${year}`;
+}

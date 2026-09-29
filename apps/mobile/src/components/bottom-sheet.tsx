@@ -5,6 +5,7 @@ import {
   Modal,
   Platform,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   View,
@@ -34,6 +35,8 @@ interface BottomSheetProps {
   headerLeft?: ReactNode;
   /** Space between header and content. Default 20. */
   gap?: number;
+  /** Lets tall content scroll instead of growing past the screen (forms). */
+  scrollable?: boolean;
   children: ReactNode;
 }
 
@@ -48,6 +51,7 @@ export function BottomSheet({
   subtitle,
   headerLeft,
   gap = 20,
+  scrollable,
   children,
 }: BottomSheetProps) {
   const insets = useSafeAreaInsets();
@@ -94,7 +98,11 @@ export function BottomSheet({
 
         <Animated.View
           onLayout={(e) => setSheetHeight(e.nativeEvent.layout.height)}
-          style={[styles.sheet, { gap, paddingBottom: Math.max(insets.bottom, 30) }, sheetStyle]}
+          style={[
+            styles.sheet,
+            { gap, paddingBottom: Math.max(insets.bottom, 30), maxHeight: windowHeight - insets.top - 16 },
+            sheetStyle,
+          ]}
         >
           <View style={styles.handle} />
           {title || headerLeft ? (
@@ -115,7 +123,18 @@ export function BottomSheet({
               </Pressable>
             </View>
           ) : null}
-          {children}
+          {scrollable ? (
+            <ScrollView
+              style={styles.scroll}
+              contentContainerStyle={styles.scrollContent}
+              keyboardShouldPersistTaps="handled"
+              showsVerticalScrollIndicator={false}
+            >
+              {children}
+            </ScrollView>
+          ) : (
+            children
+          )}
         </Animated.View>
       </KeyboardAvoidingView>
     </Modal>
@@ -138,6 +157,8 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: -4 },
     elevation: 24,
   },
+  scroll: { alignSelf: "stretch", flexShrink: 1 },
+  scrollContent: { gap: 0 },
   handle: {
     width: 40,
     height: 4,

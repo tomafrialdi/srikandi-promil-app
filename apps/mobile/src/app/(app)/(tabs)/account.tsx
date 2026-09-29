@@ -1,6 +1,5 @@
-import { ComingSoonScreen } from "@/components/coming-soon-screen";
+import { SettingsScreen } from "@/features/settings/components/settings-screen";
 
-/** TODO: profile and settings screens. */
 export default function AccountRoute() {
-  return <ComingSoonScreen title="Account" />;
+  return <SettingsScreen />;
 }

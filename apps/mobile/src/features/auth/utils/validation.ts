@@ -1,4 +1,4 @@
-export const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+export { isValidEmail } from "@/utils/validation";
 
 export interface PasswordStrength {
   /** Number of filled bars, 0–4. */

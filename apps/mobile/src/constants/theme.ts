@@ -23,6 +23,8 @@ export const colors = {
   shadow: "#1A1A18",
   white: "#FFFFFF",
   whiteSoft: "#FFFFFFCC",
+  whiteStrong: "#FFFFFFD9",
+  mint: "#8FD19B",
   whiteGlass: "#FFFFFF26",
 } as const;
 
