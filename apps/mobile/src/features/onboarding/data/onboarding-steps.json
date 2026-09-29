@@ -1,0 +1,124 @@
+{
+  "version": 1,
+  "steps": [
+    {
+      "id": "basics",
+      "title": "Let's get to know you",
+      "subtitle": "A few basics help us personalize your fertility insights.",
+      "ctaLabel": "Continue",
+      "fields": [
+        {
+          "type": "text",
+          "key": "fullName",
+          "label": "Full name",
+          "icon": "user",
+          "placeholder": "e.g. Amara Putri",
+          "autoCapitalize": "words",
+          "required": true
+        },
+        {
+          "type": "date",
+          "key": "birthDate",
+          "label": "Date of birth",
+          "icon": "cake",
+          "placeholder": "DD / MM / YYYY",
+          "required": true
+        },
+        {
+          "type": "row",
+          "fields": [
+            {
+              "type": "number",
+              "key": "heightCm",
+              "label": "Height (cm)",
+              "icon": "ruler",
+              "placeholder": "165",
+              "min": 100,
+              "max": 250,
+              "required": true
+            },
+            {
+              "type": "number",
+              "key": "weightKg",
+              "label": "Weight (kg)",
+              "icon": "scales",
+              "placeholder": "58",
+              "min": 30,
+              "max": 250,
+              "required": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cycle",
+      "title": "Tell us about your cycle",
+      "subtitle": "This helps us estimate your fertile window accurately.",
+      "ctaLabel": "Continue",
+      "fields": [
+        {
+          "type": "date",
+          "key": "lastPeriodDate",
+          "label": "First day of last period",
+          "icon": "calendar-heart",
+          "placeholder": "Select date",
+          "required": true
+        },
+        {
+          "type": "number",
+          "key": "cycleLengthDays",
+          "label": "Average cycle length (days)",
+          "icon": "repeat",
+          "placeholder": "28",
+          "min": 15,
+          "max": 60,
+          "required": true
+        },
+        {
+          "type": "single-choice",
+          "key": "cycleRegularity",
+          "label": "How regular is your cycle?",
+          "required": true,
+          "options": [
+            { "value": "regular", "label": "Regular" },
+            { "value": "irregular", "label": "Irregular" },
+            { "value": "not_sure", "label": "Not sure" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "journey",
+      "title": "Almost there",
+      "subtitle": "Help us understand your journey so far — this stays private.",
+      "ctaLabel": "Continue",
+      "fields": [
+        {
+          "type": "single-choice",
+          "key": "tryingDuration",
+          "label": "How long have you been trying to conceive?",
+          "columns": 2,
+          "required": true,
+          "options": [
+            { "value": "lt_6_months", "label": "Less than 6 months" },
+            { "value": "6_12_months", "label": "6–12 months" },
+            { "value": "1_2_years", "label": "1–2 years" },
+            { "value": "2_plus_years", "label": "2+ years" }
+          ]
+        },
+        {
+          "type": "multi-choice",
+          "key": "conditions",
+          "label": "Any diagnosed conditions? (optional)",
+          "options": [
+            { "value": "pcos", "label": "PCOS" },
+            { "value": "endometriosis", "label": "Endometriosis" },
+            { "value": "thyroid", "label": "Thyroid condition" },
+            { "value": "not_sure", "label": "Not sure", "exclusive": true }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,4 +1,5 @@
-import Flower2 from "lucide-react-native/icons/flower-2";
+import { Flower } from "phosphor-react-native";
+import { router } from "expo-router";
 import { StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -12,7 +13,7 @@ export default function Splash() {
     <View style={styles.container}>
       <View style={styles.center}>
         <View style={styles.mark}>
-          <Flower2 size={44} color={colors.white} />
+          <Flower size={44} color={colors.white} />
         </View>
         <View style={styles.textWrap}>
           <Text style={styles.appName}>SRIKANDI PROMIL</Text>
@@ -27,6 +28,9 @@ export default function Splash() {
           label="Create account"
           backgroundColor={colors.white}
           labelColor={colors.primary}
+          onPress={() =>
+            router.push({ pathname: "/onboarding/[step]", params: { step: "1" } })
+          }
           style={styles.cta}
         />
         <View style={styles.loginRow}>

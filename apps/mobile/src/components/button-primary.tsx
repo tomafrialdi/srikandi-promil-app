@@ -5,6 +5,7 @@ import { colors, fonts } from "@/constants/theme";
 interface ButtonPrimaryProps {
   label: string;
   onPress?: () => void;
+  disabled?: boolean;
   backgroundColor?: string;
   labelColor?: string;
   style?: ViewStyle;
@@ -13,6 +14,7 @@ interface ButtonPrimaryProps {
 export function ButtonPrimary({
   label,
   onPress,
+  disabled,
   backgroundColor = colors.primary,
   labelColor = colors.white,
   style,
@@ -21,9 +23,10 @@ export function ButtonPrimary({
     <Pressable
       accessibilityRole="button"
       onPress={onPress}
+      disabled={disabled}
       style={({ pressed }) => [
         styles.button,
-        { backgroundColor, opacity: pressed ? 0.85 : 1 },
+        { backgroundColor, opacity: disabled ? 0.6 : pressed ? 0.85 : 1 },
         style,
       ]}
     >
