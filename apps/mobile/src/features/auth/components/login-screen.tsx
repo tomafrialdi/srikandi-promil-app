@@ -11,6 +11,7 @@ import { SocialButtons } from "@/components/social-buttons";
 import { colors, fonts, radius } from "@/constants/theme";
 import { AUTH_COPY } from "../content";
 import { AuthError, signIn, signInWithProvider } from "../services/auth-api";
+import { goToHome } from "@/utils/navigation";
 import { isValidEmail } from "../utils/validation";
 import { AuthScreen, SwitchLink } from "./auth-screen";
 import { ScreenTitle } from "./screen-title";
@@ -46,7 +47,7 @@ export function LoginScreen({ biometricUser }: LoginScreenProps) {
     setSubmitting(true);
     try {
       await signIn({ email: email.trim(), password, remember });
-      // TODO: navigate to the dashboard once the home screen is built.
+      goToHome();
     } catch (e) {
       if (e instanceof AuthError) setFormError(e.message);
       else throw e;

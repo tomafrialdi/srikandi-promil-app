@@ -1,0 +1,86 @@
+{
+  "user": { "name": "Amara" },
+  "hasUnreadNotifications": true,
+  "cycle": {
+    "phaseLabel": "Fertile window",
+    "day": 14,
+    "length": 28,
+    "caption": "Ovulation likely in 1 day",
+    "ctaLabel": "Log today"
+  },
+  "quickActions": {
+    "columns": 4,
+    "items": [
+      { "id": "temp", "label": "Temp", "icon": "thermometer", "tone": "error" },
+      { "id": "mood", "label": "Mood", "icon": "smiley", "tone": "warning" },
+      { "id": "symptom", "label": "Symptom", "icon": "drop", "tone": "info" },
+      { "id": "meds", "label": "Meds", "icon": "pill", "tone": "success" },
+      { "id": "fluid", "label": "Fluid", "icon": "waves", "tone": "info" },
+      { "id": "lh-test", "label": "LH test", "icon": "test-tube", "tone": "primary" },
+      { "id": "intimacy", "label": "Intimacy", "icon": "heart", "tone": "primary" },
+      { "id": "preg-test", "label": "Preg. test", "icon": "scan", "tone": "success" }
+    ]
+  },
+  "checkIn": {
+    "title": "How are you feeling today?",
+    "subtitle": "Daily check-in · private to you",
+    "streakDays": 12,
+    "moods": [
+      { "id": "low", "emoji": "😞", "label": "Low" },
+      { "id": "heavy", "emoji": "😔", "label": "Heavy" },
+      { "id": "okay", "emoji": "😐", "label": "Okay" },
+      { "id": "good", "emoji": "🙂", "label": "Good" },
+      { "id": "hopeful", "emoji": "😊", "label": "Hopeful" }
+    ]
+  },
+  "recommendations": {
+    "title": "Recommended for you",
+    "subtitle": "Based on your cycle and profile",
+    "items": [
+      { "id": "prenatal", "title": "Prenatal vitamin", "description": "Take daily with food", "icon": "pill", "tone": "info", "tag": "Supplement" },
+      { "id": "folic", "title": "Folic acid 400mcg", "description": "Supports early fetal development", "icon": "flask", "tone": "info", "tag": "Supplement" },
+      { "id": "obgyn", "title": "Consult an OB-GYN", "description": "Recommended after 3 tracked cycles", "icon": "stethoscope", "tone": "primary", "tag": "Specialist visit" },
+      { "id": "bbt", "title": "Track basal temperature daily", "description": "Improves ovulation prediction accuracy", "icon": "pulse", "tone": "success", "tag": "Lifestyle" }
+    ]
+  },
+  "tip": {
+    "title": "Today's tip",
+    "body": "Track your temperature at the same time each morning for best accuracy."
+  },
+  "library": {
+    "title": "Health articles",
+    "subtitle": "Curated reads for your journey",
+    "actionLabel": "View all",
+    "articles": [
+      {
+        "id": "fertile-window",
+        "category": "Fertility",
+        "title": "Understanding your fertile window",
+        "readMinutes": 5,
+        "imageUrl": "https://images.unsplash.com/photo-1606805421441-82687fd40af9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080"
+      },
+      {
+        "id": "foods",
+        "category": "Nutrition",
+        "title": "Foods that support conception",
+        "readMinutes": 4,
+        "imageUrl": "https://images.unsplash.com/photo-1490818387583-1baba5e638af?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080"
+      },
+      {
+        "id": "specialist",
+        "category": "Medical",
+        "title": "When it's time to see a specialist",
+        "readMinutes": 6,
+        "imageUrl": "https://images.unsplash.com/photo-1666214280138-358232b8f5e5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080"
+      }
+    ]
+  },
+  "notes": {
+    "title": "Recent notes",
+    "actionLabel": "See all",
+    "items": [
+      { "id": "n1", "date": "May 20", "text": "Mild cramping, feeling optimistic", "icon": "smiley" },
+      { "id": "n2", "date": "May 19", "text": "Basal temp logged: 36.6°C", "icon": "thermometer" }
+    ]
+  }
+}

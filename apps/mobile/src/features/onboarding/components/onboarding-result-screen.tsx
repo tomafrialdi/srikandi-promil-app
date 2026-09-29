@@ -4,20 +4,14 @@ import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { ButtonPrimary } from "@/components/button-primary";
-import { colors, fonts, radius } from "@/constants/theme";
+import { colors, fonts, radius, tones } from "@/constants/theme";
 import { useOnboarding } from "../context/onboarding-context";
-import type { ResultIconName, ResultTone } from "../types";
+import type { ResultIconName } from "../types";
 
 const ICONS: Record<ResultIconName, Icon> = {
   "calendar-heart": CalendarHeart,
   heart: Heart,
   clock: Clock,
-};
-
-const TONES: Record<ResultTone, { bg: string; fg: string }> = {
-  primary: { bg: colors.primarySoft, fg: colors.primary },
-  info: { bg: colors.infoSoft, fg: colors.info },
-  warning: { bg: colors.warningSoft, fg: colors.warning },
 };
 
 export function OnboardingResultScreen() {
@@ -44,7 +38,7 @@ export function OnboardingResultScreen() {
           <View style={styles.cards}>
             {cards.map((card) => {
               const CardIcon = ICONS[card.icon];
-              const tone = TONES[card.tone];
+              const tone = tones[card.tone];
               return (
                 <View key={card.id} style={styles.card}>
                   <View style={[styles.iconWrap, { backgroundColor: tone.bg }]}>

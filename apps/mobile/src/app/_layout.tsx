@@ -29,5 +29,10 @@ export default function RootLayout() {
     return null;
   }
 
-  return <Stack screenOptions={{ headerShown: false }} />;
+  return (
+    <Stack screenOptions={{ headerShown: false }}>
+      {/* Home is the root of the signed-in app: no swipe-back to the splash. */}
+      <Stack.Screen name="(tabs)" options={{ gestureEnabled: false }} />
+    </Stack>
+  );
 }

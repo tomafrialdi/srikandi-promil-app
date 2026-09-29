@@ -16,6 +16,7 @@ export const colors = {
   warningSoft: "#FBEFD9",
   warningInk: "#9A6A12",
   error: "#D64545",
+  errorSoft: "#FAE1E1",
   overlay: "#14140F8A",
   shadow: "#1A1A18",
   white: "#FFFFFF",
@@ -36,3 +37,14 @@ export const radius = {
   lg: 24,
   pill: 100,
 } as const;
+
+/** Soft background + strong foreground pairs for icon wraps, chips and badges. */
+export const tones = {
+  primary: { bg: colors.primarySoft, fg: colors.primary },
+  info: { bg: colors.infoSoft, fg: colors.info },
+  warning: { bg: colors.warningSoft, fg: colors.warning },
+  success: { bg: colors.successSoft, fg: colors.success },
+  error: { bg: colors.errorSoft, fg: colors.error },
+} as const;
+
+export type Tone = keyof typeof tones;

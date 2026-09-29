@@ -10,7 +10,7 @@ import { colors, fonts } from "@/constants/theme";
 import { useOnboarding } from "../context/onboarding-context";
 import { useAnalysisProgress } from "../hooks/use-analysis-progress";
 import { AnalysisTaskItem, type TaskStatus } from "./loading/analysis-task-item";
-import { ProgressRing } from "./loading/progress-ring";
+import { ProgressRing } from "@/components/progress-ring";
 
 export function OnboardingLoadingScreen() {
   const { config } = useOnboarding();

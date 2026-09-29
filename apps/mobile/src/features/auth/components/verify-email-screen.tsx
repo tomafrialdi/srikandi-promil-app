@@ -8,6 +8,7 @@ import { colors, fonts, radius } from "@/constants/theme";
 import { AUTH_COPY } from "../content";
 import { useCountdown } from "../hooks/use-countdown";
 import { AuthError, resendVerificationCode, verifyEmailCode } from "../services/auth-api";
+import { goToHome } from "@/utils/navigation";
 import { formatCountdown } from "../utils/validation";
 import { AuthScreen, SwitchLink } from "./auth-screen";
 import { OtpInput } from "./otp-input";
@@ -29,7 +30,7 @@ export function VerifyEmailScreen() {
     setCodeError(undefined);
     try {
       await verifyEmailCode({ email, code });
-      // TODO: navigate to the dashboard once the home screen is built.
+      goToHome();
     } catch (e) {
       if (e instanceof AuthError) setCodeError(e.message);
       else throw e;

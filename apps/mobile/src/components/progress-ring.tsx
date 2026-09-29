@@ -7,44 +7,54 @@ import { colors } from "@/constants/theme";
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
-const SIZE = 140;
-const STROKE = 10;
-const RADIUS = (SIZE - STROKE) / 2;
-const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
-
 interface ProgressRingProps {
   /** 0..1 */
   progress: SharedValue<number>;
+  size?: number;
+  strokeWidth?: number;
+  color?: string;
+  trackColor?: string;
   children?: ReactNode;
 }
 
-export function ProgressRing({ progress, children }: ProgressRingProps) {
+/** Circular progress (starts at 12 o'clock, clockwise). Children are centered inside. */
+export function ProgressRing({
+  progress,
+  size = 140,
+  strokeWidth = 10,
+  color = colors.primary,
+  trackColor = colors.border,
+  children,
+}: ProgressRingProps) {
+  const radius = (size - strokeWidth) / 2;
+  const circumference = 2 * Math.PI * radius;
+
   const animatedProps = useAnimatedProps(() => ({
-    strokeDashoffset: CIRCUMFERENCE * (1 - progress.get()),
+    strokeDashoffset: circumference * (1 - progress.get()),
   }));
 
   return (
-    <View style={styles.wrap}>
-      <Svg width={SIZE} height={SIZE}>
+    <View style={{ width: size, height: size }}>
+      <Svg width={size} height={size}>
         <Circle
-          cx={SIZE / 2}
-          cy={SIZE / 2}
-          r={RADIUS}
-          stroke={colors.border}
-          strokeWidth={STROKE}
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          stroke={trackColor}
+          strokeWidth={strokeWidth}
           fill="none"
         />
         <AnimatedCircle
-          cx={SIZE / 2}
-          cy={SIZE / 2}
-          r={RADIUS}
-          stroke={colors.primary}
-          strokeWidth={STROKE}
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          stroke={color}
+          strokeWidth={strokeWidth}
           strokeLinecap="round"
-          strokeDasharray={CIRCUMFERENCE}
+          strokeDasharray={circumference}
           animatedProps={animatedProps}
           fill="none"
-          transform={`rotate(-90 ${SIZE / 2} ${SIZE / 2})`}
+          transform={`rotate(-90 ${size / 2} ${size / 2})`}
         />
       </Svg>
       <View style={styles.center}>{children}</View>
@@ -53,7 +63,6 @@ export function ProgressRing({ progress, children }: ProgressRingProps) {
 }
 
 const styles = StyleSheet.create({
-  wrap: { width: SIZE, height: SIZE },
   center: {
     position: "absolute",
     top: 0,
