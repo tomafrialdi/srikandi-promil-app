@@ -1,12 +1,12 @@
 import { CaretRight, Check, Pill, Plus, Syringe } from "phosphor-react-native";
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { Chip } from "@/components/chip";
 import { IconButton } from "@/components/icon-button";
 import { IconCircle } from "@/components/icon-circle";
 import { InsetList } from "@/components/list/inset-list";
 import { ScreenHeader } from "@/components/screen-header";
+import { StickyScreen } from "@/components/sticky-screen";
 import { SectionHeader } from "@/components/section-header";
 import { colors, fonts, radius } from "@/constants/theme";
 import { MONTH_NAMES } from "@/utils/calendar";
@@ -18,10 +18,8 @@ export function TreatmentScreen() {
   const { data, setDone } = useTreatment();
 
   return (
-    <SafeAreaView style={styles.safe}>
-      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+    <StickyScreen header={<ScreenHeader title="My treatment" right={<IconButton icon={Plus} label="Add treatment" />} />}>
         {/* TODO: add a treatment protocol (no design yet). */}
-        <ScreenHeader title="My treatment" right={<IconButton icon={Plus} label="Add treatment" />} />
 
         {data ? (
           <>
@@ -50,8 +48,7 @@ export function TreatmentScreen() {
             </InsetList>
           </>
         ) : null}
-      </ScrollView>
-    </SafeAreaView>
+    </StickyScreen>
   );
 }
 
@@ -113,8 +110,6 @@ function LabRow({ lab }: { lab: LabResult }) {
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: colors.surface },
-  content: { gap: 20, paddingTop: 8, paddingHorizontal: 20, paddingBottom: 32 },
   schedule: { flex: 1, flexDirection: "row", alignItems: "center", gap: 12 },
   scheduleText: { flex: 1, gap: 2 },
   scheduleTitle: { fontFamily: fonts.bold, fontSize: 13, color: colors.ink },

@@ -1,12 +1,12 @@
 import { ArrowsClockwise } from "phosphor-react-native";
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { Chip } from "@/components/chip";
 import { IconCircle } from "@/components/icon-circle";
 import { InsetList } from "@/components/list/inset-list";
 import { InsetToggleItem } from "@/components/list/inset-toggle-item";
 import { ScreenHeader } from "@/components/screen-header";
+import { StickyScreen } from "@/components/sticky-screen";
 import { SectionHeader } from "@/components/section-header";
 import { colors, fonts, radius } from "@/constants/theme";
 import { useDevices } from "../hooks/use-devices";
@@ -17,9 +17,7 @@ export function ConnectedDevicesScreen() {
   const { data, connectingId, connect, setPreference } = useDevices();
 
   return (
-    <SafeAreaView style={styles.safe}>
-      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-        <ScreenHeader title="Connected devices" />
+    <StickyScreen header={<ScreenHeader title="Connected devices" />}>
 
         {data ? (
           <>
@@ -74,8 +72,7 @@ export function ConnectedDevicesScreen() {
             </InsetList>
           </>
         ) : null}
-      </ScrollView>
-    </SafeAreaView>
+    </StickyScreen>
   );
 }
 
@@ -106,8 +103,6 @@ function ConnectButton({ busy, onPress }: { busy: boolean; onPress: () => void }
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: colors.surface },
-  content: { gap: 20, paddingTop: 8, paddingHorizontal: 20, paddingBottom: 32 },
   sync: {
     flexDirection: "row",
     alignItems: "center",

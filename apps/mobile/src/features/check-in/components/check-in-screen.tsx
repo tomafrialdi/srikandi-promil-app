@@ -1,23 +1,14 @@
 import { router, useLocalSearchParams } from "expo-router";
 import { CaretRight, ChatCircleDots, ClockCounterClockwise, Lock } from "phosphor-react-native";
 import { useState } from "react";
-import {
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 
 import { ButtonPrimary } from "@/components/button-primary";
 import { IconButton } from "@/components/icon-button";
 import { IconCircle } from "@/components/icon-circle";
 import { OptionPill } from "@/components/option-pill";
 import { ScreenHeader } from "@/components/screen-header";
+import { StickyScreen } from "@/components/sticky-screen";
 import { colors, fonts } from "@/constants/theme";
 import { checkInApi } from "../api/check-in-api";
 import { useCheckIn } from "../hooks/use-check-in";
@@ -31,15 +22,13 @@ export function CheckInScreen() {
   const { mood } = useLocalSearchParams<{ mood?: string }>();
 
   return (
-    <SafeAreaView style={styles.safe}>
-      {data ? (
-        <CheckInForm data={data} initialMoodId={mood ?? data.today.moodId} />
-      ) : (
-        <View style={styles.header}>
-          <ScreenHeader title="Daily check-in" />
-        </View>
-      )}
-    </SafeAreaView>
+    data ? (
+      <CheckInForm data={data} initialMoodId={mood ?? data.today.moodId} />
+    ) : (
+      <StickyScreen header={<ScreenHeader title="Daily check-in" />}>
+        <View />
+      </StickyScreen>
+    )
   );
 }
 
@@ -68,18 +57,16 @@ function CheckInForm({ data, initialMoodId }: { data: CheckInData; initialMoodId
   };
 
   return (
-    <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === "ios" ? "padding" : undefined}>
-      <ScrollView
-        contentContainerStyle={styles.content}
-        keyboardShouldPersistTaps="handled"
-        showsVerticalScrollIndicator={false}
-      >
-        {/* TODO: open past check-ins (no design yet). */}
+    // TODO: the history button opens past check-ins (no design yet).
+    <StickyScreen
+      keyboardAvoiding
+      header={
         <ScreenHeader
           title="Daily check-in"
           right={<IconButton icon={ClockCounterClockwise} label="Check-in history" />}
         />
-
+      }
+    >
         <View style={styles.intro}>
           <Text style={styles.question}>How are you, really?</Text>
           <Text style={styles.sub}>Trying to conceive is emotional. There&apos;s no right answer here.</Text>
@@ -129,16 +116,11 @@ function CheckInForm({ data, initialMoodId }: { data: CheckInData; initialMoodId
         </Pressable>
 
         <ButtonPrimary label="Save check-in" onPress={handleSave} disabled={!moodId || saving} />
-      </ScrollView>
-    </KeyboardAvoidingView>
+    </StickyScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: colors.surface },
-  flex: { flex: 1 },
-  header: { paddingTop: 8, paddingHorizontal: 20 },
-  content: { gap: 20, paddingTop: 8, paddingHorizontal: 20, paddingBottom: 32 },
   intro: { gap: 8 },
   question: { fontFamily: fonts.bold, fontSize: 24, color: colors.ink },
   sub: { fontFamily: fonts.medium, fontSize: 13, lineHeight: 19, color: colors.inkMuted },

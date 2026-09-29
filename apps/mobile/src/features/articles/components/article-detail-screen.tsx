@@ -1,12 +1,12 @@
 import { router } from "expo-router";
 import { Image } from "expo-image";
 import { BookmarkSimple, ShareNetwork } from "phosphor-react-native";
-import { ScrollView, Share, StyleSheet, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Share, StyleSheet, Text, View } from "react-native";
 
 import { BackButton } from "@/components/back-button";
 import { Chip } from "@/components/chip";
 import { IconButton } from "@/components/icon-button";
+import { StickyScreen } from "@/components/sticky-screen";
 import { colors, fonts } from "@/constants/theme";
 import { useArticleDetail } from "../hooks/use-articles";
 import { ArticleRow } from "./article-row";
@@ -18,23 +18,21 @@ export function ArticleDetailScreen({ id }: { id: string }) {
 
   if (error) {
     return (
-      <SafeAreaView style={styles.safe}>
-        <View style={styles.padded}>
-          <BackButton />
-        </View>
+      <StickyScreen header={<BackButton />}>
         <View style={styles.center}>
           <Text style={styles.errorText}>We couldn’t find this article.</Text>
         </View>
-      </SafeAreaView>
+      </StickyScreen>
     );
   }
 
-  if (!article) return <SafeAreaView style={styles.safe} />;
+  if (!article) return <StickyScreen header={<BackButton />}><View /></StickyScreen>;
 
   return (
-    <SafeAreaView style={styles.safe}>
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.content}>
-        <View style={[styles.padded, styles.headRow]}>
+    <StickyScreen
+      contentStyle={styles.content}
+      header={
+        <View style={styles.headRow}>
           <BackButton />
           <View style={styles.actions}>
             <IconButton
@@ -51,7 +49,8 @@ export function ArticleDetailScreen({ id }: { id: string }) {
             />
           </View>
         </View>
-
+      }
+    >
         <View style={styles.heroWrap}>
           <Image source={{ uri: article.imageUrl }} contentFit="cover" style={styles.hero} />
         </View>
@@ -83,14 +82,13 @@ export function ArticleDetailScreen({ id }: { id: string }) {
             </>
           ) : null}
         </View>
-      </ScrollView>
-    </SafeAreaView>
+    </StickyScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: colors.surface },
-  content: { paddingTop: 8, paddingBottom: 32 },
+  // The hero and body pad themselves, so the scroll area has no side padding.
+  content: { paddingHorizontal: 0, paddingTop: 0 },
   padded: { paddingHorizontal: 20 },
   headRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
   actions: { flexDirection: "row", gap: 8 },

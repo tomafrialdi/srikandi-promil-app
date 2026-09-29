@@ -10,8 +10,7 @@ import {
   type Icon,
 } from "phosphor-react-native";
 import { useState } from "react";
-import { Alert, ScrollView, Share, StyleSheet, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Alert, Share, StyleSheet, Text, View } from "react-native";
 
 import { ButtonOutline } from "@/components/button-outline";
 import { ButtonPrimary } from "@/components/button-primary";
@@ -20,6 +19,7 @@ import { InsetList } from "@/components/list/inset-list";
 import { InsetToggleItem } from "@/components/list/inset-toggle-item";
 import { OptionPill } from "@/components/option-pill";
 import { ScreenHeader } from "@/components/screen-header";
+import { StickyScreen } from "@/components/sticky-screen";
 import { SectionHeader } from "@/components/section-header";
 import { colors, fonts } from "@/constants/theme";
 import { reportApi } from "../api/report-api";
@@ -77,9 +77,7 @@ export function DoctorReportScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.safe}>
-      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-        <ScreenHeader title="Doctor report" right={<IconButton icon={ShareNetwork} label="Share" onPress={handleShare} />} />
+    <StickyScreen header={<ScreenHeader title="Doctor report" right={<IconButton icon={ShareNetwork} label="Share" onPress={handleShare} />} />}>
 
         <Text style={styles.intro}>
           A clinical summary of your cycles to bring to your OB-GYN or fertility specialist.
@@ -114,14 +112,11 @@ export function DoctorReportScreen() {
           <ButtonPrimary label="Export PDF" onPress={handleExport} disabled={!include || busy !== null} />
           <ButtonOutline label="Send to my clinic" onPress={handleSend} disabled={!include || busy !== null} />
         </View>
-      </ScrollView>
-    </SafeAreaView>
+    </StickyScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: colors.surface },
-  content: { gap: 20, paddingTop: 8, paddingHorizontal: 20, paddingBottom: 32 },
   intro: { fontFamily: fonts.medium, fontSize: 13, lineHeight: 19, color: colors.inkMuted },
   ranges: { flexDirection: "row", gap: 8 },
   actions: { gap: 10 },

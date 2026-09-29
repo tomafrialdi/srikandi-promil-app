@@ -10,8 +10,7 @@ import {
   TestTube,
   type Icon,
 } from "phosphor-react-native";
-import { ScrollView, Share, StyleSheet, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Share, StyleSheet, Text, View } from "react-native";
 
 import { ButtonPrimary } from "@/components/button-primary";
 import { IconButton } from "@/components/icon-button";
@@ -19,6 +18,7 @@ import { IconCircle } from "@/components/icon-circle";
 import { InsetList } from "@/components/list/inset-list";
 import { InsetToggleItem } from "@/components/list/inset-toggle-item";
 import { ScreenHeader } from "@/components/screen-header";
+import { StickyScreen } from "@/components/sticky-screen";
 import { SectionHeader } from "@/components/section-header";
 import { colors, fonts } from "@/constants/theme";
 import { partnerApi } from "../api/partner-api";
@@ -51,10 +51,8 @@ export function PartnerScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.safe}>
-      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+    <StickyScreen header={<ScreenHeader title="Partner" right={<IconButton icon={Gear} label="Partner settings" />} />}>
         {/* TODO: open partner settings (disconnect, invite again ...). */}
-        <ScreenHeader title="Partner" right={<IconButton icon={Gear} label="Partner settings" />} />
 
         {data ? (
           <>
@@ -94,14 +92,11 @@ export function PartnerScreen() {
             <ButtonPrimary label={`Send tips to ${data.partner.name}`} onPress={handleSendTips} />
           </>
         ) : null}
-      </ScrollView>
-    </SafeAreaView>
+    </StickyScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: colors.surface },
-  content: { gap: 20, paddingTop: 8, paddingHorizontal: 20, paddingBottom: 32 },
   insight: {
     flexDirection: "row",
     alignItems: "center",

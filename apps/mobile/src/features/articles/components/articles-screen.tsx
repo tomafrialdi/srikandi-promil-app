@@ -1,12 +1,12 @@
 import { router } from "expo-router";
 import { BookmarkSimple } from "phosphor-react-native";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { StyleSheet, Text, View } from "react-native";
 
 import { BackButton } from "@/components/back-button";
 import { FilterChips } from "@/components/filter-chips";
 import { SearchField } from "@/components/form/search-field";
 import { IconButton } from "@/components/icon-button";
+import { StickyBleed, StickyScreen } from "@/components/sticky-screen";
 import { colors, fonts } from "@/constants/theme";
 import { useArticles } from "../hooks/use-articles";
 import { ArticleRow } from "./article-row";
@@ -23,45 +23,44 @@ export function ArticlesScreen() {
   const isEmpty = response && !response.featured && response.articles.length === 0;
 
   return (
-    <SafeAreaView style={styles.safe}>
-      <ScrollView
-        contentContainerStyle={styles.content}
-        keyboardShouldPersistTaps="handled"
-        showsVerticalScrollIndicator={false}
-      >
-        <View style={[styles.padded, styles.headRow]}>
-          <BackButton />
-          <Text style={styles.title}>Articles</Text>
-          {/* TODO: open the saved articles screen. */}
-          <IconButton icon={BookmarkSimple} label="Saved articles" />
-        </View>
-
-        <View style={styles.padded}>
-          <SearchField value={query} onChange={setQuery} placeholder="Search articles" />
-        </View>
-
-        <FilterChips options={filters} value={category} onChange={setCategory} size="md" />
-
-        {response?.featured ? (
-          <View style={styles.padded}>
-            <FeaturedArticleCard article={response.featured} onPress={() => openArticle(response.featured!.id)} />
+    <StickyScreen
+      contentStyle={styles.content}
+      header={
+        <>
+          <View style={styles.headRow}>
+            <BackButton />
+            <Text style={styles.title}>Articles</Text>
+            {/* TODO: open the saved articles screen. */}
+            <IconButton icon={BookmarkSimple} label="Saved articles" />
           </View>
-        ) : null}
 
-        <View style={[styles.padded, styles.list]}>
-          {response?.articles.map((a) => (
-            <ArticleRow key={a.id} article={a} onPress={() => openArticle(a.id)} />
-          ))}
-          {isEmpty ? <Text style={styles.empty}>No articles match your search.</Text> : null}
+          <SearchField value={query} onChange={setQuery} placeholder="Search articles" />
+
+          <StickyBleed>
+            <FilterChips options={filters} value={category} onChange={setCategory} size="md" />
+          </StickyBleed>
+        </>
+      }
+    >
+      {response?.featured ? (
+        <View style={styles.padded}>
+          <FeaturedArticleCard article={response.featured} onPress={() => openArticle(response.featured!.id)} />
         </View>
-      </ScrollView>
-    </SafeAreaView>
+      ) : null}
+
+      <View style={[styles.padded, styles.list]}>
+        {response?.articles.map((a) => (
+          <ArticleRow key={a.id} article={a} onPress={() => openArticle(a.id)} />
+        ))}
+        {isEmpty ? <Text style={styles.empty}>No articles match your search.</Text> : null}
+      </View>
+    </StickyScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: colors.surface },
-  content: { gap: 20, paddingTop: 8, paddingBottom: 32 },
+  // Sections wrap themselves in `padded`, so the scroll area has no side padding.
+  content: { paddingHorizontal: 0 },
   padded: { paddingHorizontal: 20 },
   headRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
   title: { fontFamily: fonts.bold, fontSize: 17, color: colors.ink },

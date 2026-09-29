@@ -10,12 +10,12 @@ import {
   Trash,
   type Icon,
 } from "phosphor-react-native";
-import { Alert, Pressable, ScrollView, StyleSheet, Text } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Alert, Pressable, StyleSheet, Text } from "react-native";
 
 import { InsetList } from "@/components/list/inset-list";
 import { InsetToggleItem } from "@/components/list/inset-toggle-item";
 import { ScreenHeader } from "@/components/screen-header";
+import { StickyScreen } from "@/components/sticky-screen";
 import { SectionHeader } from "@/components/section-header";
 import { colors, fonts } from "@/constants/theme";
 import { signOut } from "@/features/auth/services/auth-api";
@@ -64,9 +64,7 @@ export function PrivacyScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.safe}>
-      <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-        <ScreenHeader title="Privacy & security" />
+    <StickyScreen header={<ScreenHeader title="Privacy & security" />}>
 
         {data ? (
           <>
@@ -120,14 +118,11 @@ export function PrivacyScreen() {
             </InsetList>
           </>
         ) : null}
-      </ScrollView>
-    </SafeAreaView>
+    </StickyScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: colors.surface },
-  content: { gap: 20, paddingTop: 8, paddingHorizontal: 20, paddingBottom: 32 },
   action: { flex: 1, flexDirection: "row", alignItems: "center", gap: 12 },
   actionLabel: { flex: 1, fontFamily: fonts.semibold, fontSize: 13, color: colors.ink },
   danger: { color: colors.error },

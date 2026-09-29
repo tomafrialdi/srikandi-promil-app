@@ -1,13 +1,13 @@
 import Constants from "expo-constants";
 import { router } from "expo-router";
 import { useState } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { StyleSheet, Text, View } from "react-native";
 
 import { ButtonOutline } from "@/components/button-outline";
 import { ListRow } from "@/components/list/list-row";
 import { ListSection } from "@/components/list/list-section";
 import { ToggleRow } from "@/components/list/toggle-row";
+import { StickyScreen } from "@/components/sticky-screen";
 import { useTabBarClearance } from "@/components/tab-bar/tab-bar";
 import { colors, fonts } from "@/constants/theme";
 import { signOut } from "@/features/auth/services/auth-api";
@@ -40,12 +40,13 @@ export function SettingsScreen() {
   };
 
   return (
-    <SafeAreaView edges={["top"]} style={styles.safe}>
-      <ScrollView
-        contentContainerStyle={[styles.content, { paddingBottom: bottomClearance }]}
-        showsVerticalScrollIndicator={false}
+    <>
+      <StickyScreen
+        edges={["top"]}
+        bottomPadding={bottomClearance}
+        contentStyle={styles.content}
+        header={<Text style={styles.title}>Settings</Text>}
       >
-        <Text style={styles.title}>Settings</Text>
 
         {summary ? (
           <>
@@ -81,7 +82,7 @@ export function SettingsScreen() {
         ) : (
           <View />
         )}
-      </ScrollView>
+      </StickyScreen>
 
       {summary ? (
         <SettingsSheets
@@ -93,7 +94,7 @@ export function SettingsScreen() {
           onSaveUnits={updateUnits}
         />
       ) : null}
-    </SafeAreaView>
+    </>
   );
 }
 
@@ -128,8 +129,7 @@ function MenuSection({
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: colors.surface },
-  content: { gap: 26, paddingTop: 8, paddingHorizontal: 20 },
+  content: { gap: 26 },
   title: { textAlign: "center", fontFamily: fonts.bold, fontSize: 17, color: colors.ink },
   version: { textAlign: "center", fontFamily: fonts.medium, fontSize: 11, color: colors.inkFaint },
 });

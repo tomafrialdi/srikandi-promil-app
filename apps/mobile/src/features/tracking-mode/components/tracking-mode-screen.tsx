@@ -1,12 +1,12 @@
 import { router } from "expo-router";
 import { useState } from "react";
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { ButtonPrimary } from "@/components/button-primary";
 import { IconCircle } from "@/components/icon-circle";
 import { InsetList } from "@/components/list/inset-list";
 import { ScreenHeader } from "@/components/screen-header";
+import { StickyScreen } from "@/components/sticky-screen";
 import { SectionHeader } from "@/components/section-header";
 import { colors, fonts, radius } from "@/constants/theme";
 import { trackingModeApi } from "../api/tracking-mode-api";
@@ -18,9 +18,13 @@ export function TrackingModeScreen() {
   const { data } = useTrackingMode();
 
   return (
-    <SafeAreaView style={styles.safe}>
-      {data ? <TrackingModeForm data={data} /> : <ScreenHeader title="Tracking mode" />}
-    </SafeAreaView>
+    data ? (
+      <TrackingModeForm data={data} />
+    ) : (
+      <StickyScreen header={<ScreenHeader title="Tracking mode" />}>
+        <View />
+      </StickyScreen>
+    )
   );
 }
 
@@ -42,9 +46,7 @@ function TrackingModeForm({ data }: { data: TrackingModeData }) {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-      <ScreenHeader title="Tracking mode" />
-
+    <StickyScreen header={<ScreenHeader title="Tracking mode" />}>
       <Text style={styles.intro}>
         Choose what fits your body. We&apos;ll adapt predictions, reminders and content.
       </Text>
@@ -88,13 +90,11 @@ function TrackingModeForm({ data }: { data: TrackingModeData }) {
       </InsetList>
 
       <ButtonPrimary label="Save tracking mode" onPress={handleSave} disabled={saving} />
-    </ScrollView>
+    </StickyScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: colors.surface },
-  content: { gap: 20, paddingTop: 8, paddingHorizontal: 20, paddingBottom: 32 },
   intro: { fontFamily: fonts.medium, fontSize: 13, lineHeight: 19, color: colors.inkMuted },
   modes: { gap: 10 },
   mode: {
