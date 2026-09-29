@@ -31,7 +31,7 @@ export function HomeScreen() {
         contentContainerStyle={[styles.content, { paddingBottom: bottomClearance }]}
         showsVerticalScrollIndicator={false}
       >
-        {/* TODO: wire the remaining handlers (article and notes screens). */}
+        {/* TODO: wire the remaining handlers (notes screen). */}
         <View style={styles.padded}>
           <GreetingHeader
             name={data.user.name}
@@ -70,7 +70,13 @@ export function HomeScreen() {
         <View style={styles.padded}>
           <DailyTipCard tip={data.tip} />
         </View>
-        <ContentLibrarySection data={data.library} />
+        <ContentLibrarySection
+          data={data.library}
+          onViewAllPress={() => router.push("/articles")}
+          onArticlePress={(article) =>
+            router.push({ pathname: "/articles/[id]", params: { id: article.id } })
+          }
+        />
         <View style={styles.padded}>
           <RecentNotesSection data={data.notes} />
         </View>

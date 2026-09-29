@@ -1,0 +1,106 @@
+{
+  "categories": [
+    { "id": "fertility", "label": "Fertility" },
+    { "id": "nutrition", "label": "Nutrition" },
+    { "id": "medical", "label": "Medical" },
+    { "id": "lifestyle", "label": "Lifestyle" }
+  ],
+  "articles": [
+    {
+      "id": "fertile-window",
+      "category": { "id": "fertility", "label": "Fertility" },
+      "title": "Understanding your fertile window",
+      "excerpt": "Learn how to identify your most fertile days and time intimacy for the best chance of conception.",
+      "readMinutes": 5,
+      "author": "Dr. Amelia Wong",
+      "imageUrl": "https://images.unsplash.com/photo-1617131633412-39437b40a16b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080"
+    },
+    {
+      "id": "foods",
+      "category": { "id": "nutrition", "label": "Nutrition" },
+      "title": "Foods that support conception",
+      "excerpt": "Everyday foods that support hormone balance and egg quality while you are trying to conceive.",
+      "readMinutes": 4,
+      "author": "Nadia Putri",
+      "imageUrl": "https://images.unsplash.com/photo-1540420773420-3366772f4999?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080"
+    },
+    {
+      "id": "specialist",
+      "category": { "id": "medical", "label": "Medical" },
+      "title": "When it's time to see a specialist",
+      "excerpt": "How long to keep trying on your own, and the signs that mean it is worth booking a fertility consult.",
+      "readMinutes": 6,
+      "author": "Dr. Amelia Wong",
+      "imageUrl": "https://images.unsplash.com/photo-1631217873436-b0fa88e71f0a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080"
+    },
+    {
+      "id": "emotional-rollercoaster",
+      "category": { "id": "mental-health", "label": "Mental health" },
+      "title": "Coping with the emotional rollercoaster",
+      "excerpt": "Trying to conceive can be heavy. Practical ways to look after your mind through each cycle.",
+      "readMinutes": 7,
+      "author": "Rina Sari, Psi",
+      "imageUrl": "https://images.unsplash.com/photo-1558000221-b63478006ee9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080"
+    },
+    {
+      "id": "opk",
+      "category": { "id": "fertility", "label": "Fertility" },
+      "title": "Understanding ovulation predictor kits",
+      "excerpt": "What LH tests measure, when to start testing, and how to read the lines.",
+      "readMinutes": 3,
+      "author": "Dr. Amelia Wong",
+      "imageUrl": "https://images.unsplash.com/photo-1753120175022-0ff04be3aebb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080"
+    },
+    {
+      "id": "partner-support",
+      "category": { "id": "lifestyle", "label": "Lifestyle" },
+      "title": "Partner support during your TTC journey",
+      "excerpt": "Simple ways for partners to stay involved, informed, and kind to each other.",
+      "readMinutes": 5,
+      "author": "Nadia Putri",
+      "imageUrl": "https://images.unsplash.com/photo-1549062572-b4280938a25f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080"
+    }
+  ],
+  "details": {
+    "fertile-window": {
+      "id": "fertile-window",
+      "category": { "id": "fertility", "label": "Fertility" },
+      "title": "Understanding your fertile window",
+      "readMinutes": 5,
+      "author": "Dr. Amelia Wong",
+      "imageUrl": "https://images.unsplash.com/photo-1608228079968-c7681afb8f1d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+      "publishedAt": "2026-05-18",
+      "bookmarked": false,
+      "body": [
+        {
+          "type": "paragraph",
+          "text": "If you're trying to conceive, understanding your fertile window can make a real difference. This is the span of days each cycle when pregnancy is most likely to happen — and knowing exactly when it falls can help you plan intimacy with confidence."
+        },
+        { "type": "heading", "text": "What is the fertile window?" },
+        {
+          "type": "paragraph",
+          "text": "Your fertile window typically spans six days: the five days leading up to ovulation and the day of ovulation itself. Sperm can survive in the body for up to five days, while an egg is viable for only 12 to 24 hours after release."
+        },
+        { "type": "heading", "text": "Signs of ovulation to watch for" },
+        {
+          "type": "bullets",
+          "items": [
+            "Egg-white, slippery cervical mucus",
+            "A slight rise in basal body temperature",
+            "Mild one-sided pelvic twinge (mittelschmerz)",
+            "Increased libido and heightened sense of smell"
+          ]
+        },
+        {
+          "type": "quote",
+          "text": "Tracking just two or three signs together is far more reliable than relying on the calendar alone."
+        },
+        {
+          "type": "paragraph",
+          "text": "The most accurate approach combines temperature tracking, cervical mucus checks, and ovulation predictor kits. Logging all three in Srikandi Promil helps our predictions get sharper with every cycle you track."
+        }
+      ],
+      "relatedIds": ["foods", "opk"]
+    }
+  }
+}
