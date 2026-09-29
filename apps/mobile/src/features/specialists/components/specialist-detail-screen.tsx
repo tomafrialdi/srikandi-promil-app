@@ -1,15 +1,17 @@
+import { useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
-import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { BackButton } from "@/components/back-button";
 import { ButtonOutline } from "@/components/button-outline";
 import { ButtonPrimary } from "@/components/button-primary";
+import { StickyScreen } from "@/components/sticky-screen";
 import { colors, fonts } from "@/constants/theme";
 import { callPhone, openWhatsApp } from "@/utils/external-links";
 import { useSpecialistDetail } from "../hooks/use-specialists";
 import { BpjsCard } from "./detail/bpjs-card";
 import { CostList } from "./detail/cost-list";
-import { DetailCover } from "./detail/detail-cover";
+import { COVER_HEIGHT, DetailCover, DetailTopBar, TOP_BAR_CONTENT_HEIGHT } from "./detail/detail-cover";
 import { DetailHeader } from "./detail/detail-header";
 import { DoctorsList } from "./detail/doctors-list";
 import { ReviewCard } from "./detail/review-card";
@@ -18,25 +20,37 @@ export function SpecialistDetailScreen({ id }: { id: string }) {
   const { detail, error } = useSpecialistDetail(id);
   const insets = useSafeAreaInsets();
 
+  // The pinned bar turns solid once the photo has scrolled up beneath it.
+  const [solid, setSolid] = useState(false);
+  const solidAfter = COVER_HEIGHT - (insets.top + TOP_BAR_CONTENT_HEIGHT);
+
   if (error) {
     return (
-      <SafeAreaView style={styles.safe}>
-        <View style={styles.errorHead}>
-          <BackButton />
-        </View>
+      <StickyScreen header={<BackButton />}>
         <View style={styles.center}>
           <Text style={styles.errorText}>We couldn’t find this clinic.</Text>
         </View>
-      </SafeAreaView>
+      </StickyScreen>
     );
   }
 
-  if (!detail) return <View style={styles.safe} />;
+  if (!detail) {
+    return (
+      <StickyScreen header={<BackButton />}>
+        <View />
+      </StickyScreen>
+    );
+  }
 
   return (
     <View style={styles.safe}>
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scroll}>
-        <DetailCover imageUrl={detail.coverImageUrl} shareMessage={`${detail.name} on Srikandi Promil`} />
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scroll}
+        scrollEventThrottle={16}
+        onScroll={(e) => setSolid(e.nativeEvent.contentOffset.y > solidAfter)}
+      >
+        <DetailCover imageUrl={detail.coverImageUrl} />
 
         <View style={styles.content}>
           <DetailHeader detail={detail} />
@@ -47,6 +61,8 @@ export function SpecialistDetailScreen({ id }: { id: string }) {
           {detail.review ? <ReviewCard review={detail.review} /> : null}
         </View>
       </ScrollView>
+
+      <DetailTopBar shareMessage={`${detail.name} on Srikandi Promil`} solid={solid} />
 
       <View style={[styles.actionBar, { paddingBottom: Math.max(insets.bottom, 16) }]}>
         <ButtonOutline label="Call" style={styles.action} onPress={() => callPhone(detail.phone)} />
@@ -74,7 +90,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface,
   },
   action: { flex: 1 },
-  errorHead: { paddingTop: 8, paddingHorizontal: 20 },
   center: { flex: 1, alignItems: "center", justifyContent: "center" },
   errorText: { fontFamily: fonts.medium, fontSize: 14, color: colors.inkMuted },
 });

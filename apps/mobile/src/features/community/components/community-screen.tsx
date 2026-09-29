@@ -6,7 +6,7 @@ import { BackButton } from "@/components/back-button";
 import { ButtonPrimary } from "@/components/button-primary";
 import { FilterChips } from "@/components/filter-chips";
 import { IconButton } from "@/components/icon-button";
-import { StickyBleed, StickyScreen } from "@/components/sticky-screen";
+import { StickyScreen } from "@/components/sticky-screen";
 import { colors, fonts } from "@/constants/theme";
 import { useCommunity } from "../hooks/use-community";
 import { AnonymousBanner } from "./anonymous-banner";
@@ -43,9 +43,8 @@ export function CommunityScreen() {
             <AnonymousBanner alias={feed.me.alias} />
           </View>
 
-          <StickyBleed>
-            <FilterChips options={feed.groups} value={activeGroupId} onChange={setGroupId} size="md" />
-          </StickyBleed>
+          {/* Already outside the padded header: FilterChips adds its own 20px side padding. */}
+          <FilterChips options={feed.groups} value={activeGroupId} onChange={setGroupId} size="md" />
 
           <View style={[styles.padded, styles.posts]}>
             {feed.posts.map((post) => (

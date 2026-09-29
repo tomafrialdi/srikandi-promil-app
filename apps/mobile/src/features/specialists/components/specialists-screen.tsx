@@ -1,10 +1,10 @@
 import { router } from "expo-router";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { StyleSheet, Text, View } from "react-native";
 
 import { BackButton } from "@/components/back-button";
 import { FilterChips } from "@/components/filter-chips";
 import { SearchField } from "@/components/form/search-field";
+import { StickyBleed, StickyScreen } from "@/components/sticky-screen";
 import { colors, fonts } from "@/constants/theme";
 import { useSpecialists } from "../hooks/use-specialists";
 import type { SpecialistFilter } from "../types";
@@ -22,57 +22,56 @@ export function SpecialistsScreen() {
   const { query, setQuery, filter, setFilter, results } = useSpecialists();
 
   return (
-    <SafeAreaView style={styles.safe}>
-      <ScrollView
-        contentContainerStyle={styles.content}
-        keyboardShouldPersistTaps="handled"
-        showsVerticalScrollIndicator={false}
-      >
-        <View style={[styles.padded, styles.headRow]}>
-          <BackButton />
-          <Text style={styles.title}>Find a specialist</Text>
-          <View style={styles.spacer} />
-        </View>
+    <StickyScreen
+      contentStyle={styles.content}
+      header={
+        <>
+          <View style={styles.headRow}>
+            <BackButton />
+            <Text style={styles.title}>Find a specialist</Text>
+            <View style={styles.spacer} />
+          </View>
 
-        <View style={styles.padded}>
           <SearchField value={query} onChange={setQuery} placeholder="Search clinics or doctors" />
-        </View>
 
-        <FilterChips options={FILTERS} value={filter} onChange={setFilter} size="md" />
+          <StickyBleed>
+            <FilterChips options={FILTERS} value={filter} onChange={setFilter} size="md" />
+          </StickyBleed>
+        </>
+      }
+    >
+      <View style={styles.padded}>
+        <MapPreview pinCount={results?.length ?? 0} />
+      </View>
 
-        <View style={styles.padded}>
-          <MapPreview pinCount={results?.length ?? 0} />
-        </View>
+      <View style={[styles.padded, styles.listHead]}>
+        <Text style={styles.listTitle}>Nearby specialists</Text>
+        {results ? <Text style={styles.count}>{results.length} found</Text> : null}
+      </View>
 
-        <View style={[styles.padded, styles.listHead]}>
-          <Text style={styles.listTitle}>Nearby specialists</Text>
-          {results ? <Text style={styles.count}>{results.length} found</Text> : null}
-        </View>
-
-        <View style={[styles.padded, styles.list]}>
-          {results?.map((s) => (
-            <SpecialistCard
-              key={s.id}
-              specialist={s}
-              onPress={
-                s.kind === "clinic"
-                  ? () => router.push({ pathname: "/specialists/[id]", params: { id: s.id } })
-                  : undefined // TODO: doctor profile screen (no design yet).
-              }
-            />
-          ))}
-          {results && results.length === 0 ? (
-            <Text style={styles.empty}>No specialists match your search.</Text>
-          ) : null}
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+      <View style={[styles.padded, styles.list]}>
+        {results?.map((s) => (
+          <SpecialistCard
+            key={s.id}
+            specialist={s}
+            onPress={
+              s.kind === "clinic"
+                ? () => router.push({ pathname: "/specialists/[id]", params: { id: s.id } })
+                : undefined // TODO: doctor profile screen (no design yet).
+            }
+          />
+        ))}
+        {results && results.length === 0 ? (
+          <Text style={styles.empty}>No specialists match your search.</Text>
+        ) : null}
+      </View>
+    </StickyScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: colors.surface },
-  content: { gap: 20, paddingTop: 8, paddingBottom: 32 },
+  // Sections wrap themselves in `padded`, so the scroll area has no side padding.
+  content: { paddingHorizontal: 0 },
   padded: { paddingHorizontal: 20 },
   headRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
   title: { fontFamily: fonts.bold, fontSize: 17, color: colors.ink },
