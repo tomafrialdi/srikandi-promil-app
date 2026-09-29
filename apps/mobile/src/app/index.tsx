@@ -28,14 +28,18 @@ export default function Splash() {
           label="Create account"
           backgroundColor={colors.white}
           labelColor={colors.primary}
-          onPress={() =>
-            router.push({ pathname: "/onboarding/[step]", params: { step: "1" } })
-          }
+          onPress={() => router.push("/onboarding")}
           style={styles.cta}
         />
         <View style={styles.loginRow}>
           <Text style={styles.loginHint}>Already have an account?</Text>
-          <Text style={styles.loginLink}>Log in</Text>
+          <Text
+            accessibilityRole="link"
+            onPress={() => router.push("/login")}
+            style={styles.loginLink}
+          >
+            Log in
+          </Text>
         </View>
       </View>
     </View>

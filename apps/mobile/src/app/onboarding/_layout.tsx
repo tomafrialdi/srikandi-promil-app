@@ -16,7 +16,10 @@ export default function OnboardingLayout() {
 
   return (
     <OnboardingProvider config={config}>
-      <Stack screenOptions={{ headerShown: false }} />
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="loading" options={{ gestureEnabled: false }} />
+        <Stack.Screen name="result" options={{ gestureEnabled: false }} />
+      </Stack>
     </OnboardingProvider>
   );
 }

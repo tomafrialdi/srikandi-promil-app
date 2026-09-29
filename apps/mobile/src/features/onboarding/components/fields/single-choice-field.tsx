@@ -2,7 +2,7 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { colors, fonts } from "@/constants/theme";
 import type { SingleChoiceField as SingleChoiceConfig } from "../../types";
-import { FieldShell } from "./field-shell";
+import { FieldShell } from "@/components/form/field-shell";
 
 interface Props {
   field: SingleChoiceConfig;

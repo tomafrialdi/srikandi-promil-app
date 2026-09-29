@@ -3,7 +3,7 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import { colors, fonts } from "@/constants/theme";
 import { ICONS } from "../../icons";
 import type { MultiChoiceField as MultiChoiceConfig } from "../../types";
-import { FieldShell } from "./field-shell";
+import { FieldShell } from "@/components/form/field-shell";
 
 interface Props {
   field: MultiChoiceConfig;

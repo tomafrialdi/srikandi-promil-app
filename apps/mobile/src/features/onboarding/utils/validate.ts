@@ -1,5 +1,6 @@
 import type {
   Answers,
+  DateField,
   FieldConfig,
   InputField,
   MultiChoiceField,
@@ -9,7 +10,7 @@ import type {
 } from "../types";
 import { maskedDateToIso } from "./date";
 
-export type ValueField = InputField | SingleChoiceField | MultiChoiceField;
+export type ValueField = InputField | DateField | SingleChoiceField | MultiChoiceField;
 
 /** Flattens `row` groups so callers can iterate every field that holds a value. */
 export function flattenFields(fields: FieldConfig[]): ValueField[] {

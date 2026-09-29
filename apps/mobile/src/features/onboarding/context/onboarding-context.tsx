@@ -10,17 +10,21 @@ import {
 import { submitOnboarding } from "../services/onboarding-api";
 import type {
   AnswerValue,
+  ResultValues,
   Answers,
   OnboardingConfig,
   StepErrors,
 } from "../types";
 import { buildPayload } from "../utils/payload";
+import { calculateResult } from "../utils/result";
 import { flattenFields, validateStep } from "../utils/validate";
 
 interface OnboardingContextValue {
   config: OnboardingConfig;
   answers: Answers;
   errors: StepErrors;
+  /** Predictions derived from the answers; null until the required answers exist. */
+  result: ResultValues | null;
   setAnswer: (key: string, value: AnswerValue) => void;
   /** Validates a step, stores its errors, and returns true when it passes. */
   validate: (stepIndex: number) => boolean;
@@ -74,9 +78,12 @@ export function OnboardingProvider({
     [config, answers],
   );
 
+  // TODO(backend): replace the local estimate with the server-side prediction.
+  const result = useMemo(() => calculateResult(answers), [answers]);
+
   const value = useMemo(
-    () => ({ config, answers, errors, setAnswer, validate, submit }),
-    [config, answers, errors, setAnswer, validate, submit],
+    () => ({ config, answers, errors, result, setAnswer, validate, submit }),
+    [config, answers, errors, result, setAnswer, validate, submit],
   );
 
   return (

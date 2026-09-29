@@ -2,6 +2,7 @@ import { StyleSheet, View } from "react-native";
 
 import { useOnboarding } from "../context/onboarding-context";
 import type { FieldConfig } from "../types";
+import { DateField } from "./fields/date-field";
 import { InputField } from "./fields/input-field";
 import { MultiChoiceField } from "./fields/multi-choice-field";
 import { SingleChoiceField } from "./fields/single-choice-field";
@@ -22,9 +23,18 @@ export function FieldRenderer({ field }: { field: FieldConfig }) {
         </View>
       );
 
+    case "date":
+      return (
+        <DateField
+          field={field}
+          value={(answers[field.key] as string | undefined) ?? ""}
+          error={errors[field.key]}
+          onChange={(v) => setAnswer(field.key, v)}
+        />
+      );
+
     case "text":
     case "number":
-    case "date":
       return (
         <InputField
           field={field}

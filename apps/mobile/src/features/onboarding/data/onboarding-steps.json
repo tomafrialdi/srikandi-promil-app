@@ -22,6 +22,8 @@
           "label": "Date of birth",
           "icon": "cake",
           "placeholder": "DD / MM / YYYY",
+          "minDate": "-100y",
+          "maxDate": "today",
           "required": true
         },
         {
@@ -63,6 +65,8 @@
           "label": "First day of last period",
           "icon": "calendar-heart",
           "placeholder": "Select date",
+          "minDate": "-1y",
+          "maxDate": "today",
           "required": true
         },
         {
@@ -120,5 +124,28 @@
         }
       ]
     }
-  ]
+  ],
+  "loading": {
+    "title": "Analyzing your answers",
+    "subtitle": "We're building your personalized fertility profile",
+    "footnote": "Your data is private and encrypted",
+    "ctaLabel": "See my results",
+    "tasks": [
+      { "id": "review", "label": "Reviewing your cycle data", "durationMs": 1800 },
+      { "id": "window", "label": "Calculating your fertile window", "durationMs": 2200 },
+      { "id": "plan", "label": "Preparing your personalized plan", "durationMs": 1800 }
+    ]
+  },
+  "result": {
+    "title": "Your profile is ready",
+    "subtitle": "Here's what we found based on your answers",
+    "note": "Predictions improve as you log more cycles. You can always adjust these later.",
+    "ctaLabel": "Save my results",
+    "signUpBanner": "Your plan is ready — fertile window {fertileWindowShort}",
+    "cards": [
+      { "id": "ovulation", "label": "Estimated ovulation day", "icon": "calendar-heart", "tone": "primary", "valueKey": "ovulationDate" },
+      { "id": "window", "label": "Fertile window", "icon": "heart", "tone": "info", "valueKey": "fertileWindow" },
+      { "id": "period", "label": "Next period expected", "icon": "clock", "tone": "warning", "valueKey": "nextPeriod" }
+    ]
+  }
 }
