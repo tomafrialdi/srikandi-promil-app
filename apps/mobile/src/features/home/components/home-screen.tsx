@@ -1,3 +1,4 @@
+import { router } from "expo-router";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -29,7 +30,11 @@ export function HomeScreen() {
       >
         {/* TODO: wire the onPress handlers below (log sheets, article / notes screens). */}
         <View style={styles.padded}>
-          <GreetingHeader name={data.user.name} hasUnread={data.hasUnreadNotifications} />
+          <GreetingHeader
+            name={data.user.name}
+            hasUnread={data.hasUnreadNotifications}
+            onBellPress={() => router.push("/notifications")}
+          />
         </View>
         <View style={styles.padded}>
           <CycleHeroCard cycle={data.cycle} />

@@ -45,6 +45,7 @@ export const tones = {
   warning: { bg: colors.warningSoft, fg: colors.warning },
   success: { bg: colors.successSoft, fg: colors.success },
   error: { bg: colors.errorSoft, fg: colors.error },
+  neutral: { bg: colors.surfaceAlt, fg: colors.inkMuted },
 } as const;
 
 export type Tone = keyof typeof tones;
