@@ -1,6 +1,6 @@
 import { Warning } from '@phosphor-icons/react'
 import { useState } from 'react'
-import { Button, Card, CardHeader, Checkbox, Field, Notice, SelectField, Toggle, useToast } from '../../../shared/ui'
+import { Button, Card, CardHeader, Checkbox, Field, Notice, SelectField, Toggle, useToast, TimeField } from '../../../shared/ui'
 import { NOTIFICATION_EVENTS } from '../../../shared/preferences/defaults'
 import { usePreferences } from '../../../shared/preferences/preferences-context'
 import type { NotificationPrefs } from '../../../shared/preferences/types'
@@ -13,7 +13,6 @@ const CHANNELS = [
   { key: 'sms', label: 'SMS', note: 'Critical only' },
 ] as const
 
-const timeInput = 'h-11 w-full rounded-control border border-border bg-card px-3.5 text-13 font-semibold outline-0 focus-visible:border-primary'
 
 export function NotificationsTab() {
   const toast = useToast()
@@ -91,8 +90,8 @@ export function NotificationsTab() {
           action={<Toggle label="Quiet hours" checked={draft.quiet.enabled} onChange={(v) => setDraft({ ...draft, quiet: { ...draft.quiet, enabled: v } })} />}
         />
         <div className="grid gap-4 min-[700px]:grid-cols-3">
-          <Field label="From" htmlFor="quiet-from"><input id="quiet-from" type="time" className={timeInput} disabled={!draft.quiet.enabled} value={draft.quiet.from} onChange={(e) => setDraft({ ...draft, quiet: { ...draft.quiet, from: e.target.value } })} /></Field>
-          <Field label="To" htmlFor="quiet-to"><input id="quiet-to" type="time" className={timeInput} disabled={!draft.quiet.enabled} value={draft.quiet.to} onChange={(e) => setDraft({ ...draft, quiet: { ...draft.quiet, to: e.target.value } })} /></Field>
+          <Field label="From" htmlFor="quiet-from"><TimeField id="quiet-from" disabled={!draft.quiet.enabled} value={draft.quiet.from} onChange={(from) => setDraft({ ...draft, quiet: { ...draft.quiet, from } })} /></Field>
+          <Field label="To" htmlFor="quiet-to"><TimeField id="quiet-to" disabled={!draft.quiet.enabled} value={draft.quiet.to} onChange={(to) => setDraft({ ...draft, quiet: { ...draft.quiet, to } })} /></Field>
           <Field label="Time zone" htmlFor="quiet-tz"><SelectField id="quiet-tz" disabled={!draft.quiet.enabled} value={draft.quiet.tz} options={TIMEZONE_OPTIONS} onChange={(v) => setDraft({ ...draft, quiet: { ...draft.quiet, tz: v } })} /></Field>
         </div>
       </Card>

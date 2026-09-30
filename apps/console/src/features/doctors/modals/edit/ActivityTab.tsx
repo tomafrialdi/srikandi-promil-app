@@ -1,7 +1,7 @@
 import { Bell, CalendarX, ChatsCircle, Checks, DownloadSimple, GitBranch, Pencil, Pill, SignIn, SealCheck, ShieldWarning, Star, UserPlus, Video, Prohibit, Check, Dot, SignOut, type Icon } from '@phosphor-icons/react'
 import { useState } from 'react'
 import { cn } from '../../../../shared/lib/cn'
-import { Button, PageState } from '../../../../shared/ui'
+import { PageState } from '../../../../shared/ui'
 import { downloadCsv } from '../../../../shared/lib/csv'
 import { ACTIVITY_FILTERS } from '../../config/labels'
 import { useDoctorActivity } from '../../hooks/useDoctorsData'
@@ -52,26 +52,32 @@ export function ActivityTab({ doctor }: { doctor: DoctorFull }) {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap gap-1.5" role="group" aria-label="Filter activity">
           {ACTIVITY_FILTERS.map((f) => (
-            <button key={f.key} type="button" aria-pressed={category === f.key} className={cn('rounded-full border px-3 py-1.5 text-12 font-semibold', category === f.key ? 'border-ink bg-ink text-white' : 'border-border bg-card text-ink-muted')} onClick={() => setCategory(f.key)}>{f.label}</button>
+            <button key={f.key} type="button" aria-pressed={category === f.key} className={cn('rounded-full border px-3 py-[5px] text-12 font-semibold', category === f.key ? 'border-ink bg-ink text-white' : 'border-border bg-card text-ink-muted')} onClick={() => setCategory(f.key)}>{f.label}</button>
           ))}
         </div>
-        <Button variant="outline" disabled={items.length === 0} onClick={() => downloadCsv(`doctor-activity-${doctor.full_name.toLowerCase().replace(/\s+/g, '-')}.csv`, ['Time', 'Category', 'Event', 'Detail'], items.map((i) => [i.at, i.category, i.title, i.detail]))} leadingIcon={<DownloadSimple size={15} />}>Export log</Button>
+        <button type="button" className="inline-flex items-center gap-1.5 text-12 font-bold text-primary disabled:opacity-45" disabled={items.length === 0} onClick={() => downloadCsv(`doctor-activity-${doctor.full_name.toLowerCase().replace(/\s+/g, '-')}.csv`, ['Time', 'Category', 'Event', 'Detail'], items.map((i) => [i.at, i.category, i.title, i.detail]))} ><DownloadSimple size={13} weight="bold" />Export log</button>
       </div>
       {activity.error && !activity.data ? <PageState title="Could not load activity" description={activity.error} /> : items.length === 0 && !activity.loading ? <p className="m-0 py-6 text-center text-13 text-ink-muted">No activity yet.</p> : (
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-[22px]">
           {groups.map((g) => (
             <section key={g.label + g.rows[0]!.id} className="flex flex-col gap-3">
-              <h3 className="text-11 font-bold tracking-[0.02em] text-ink-faint uppercase">{g.label}</h3>
-              {g.rows.map((r) => {
-                const Glyph = ICONS[r.icon] ?? Dot
-                return (
-                  <div key={r.id} className="grid grid-cols-[36px_minmax(0,1fr)_auto] items-start gap-3">
-                    <span className={cn('inline-flex size-9 items-center justify-center rounded-full', TONE[r.tone])}><Glyph size={16} /></span>
-                    <span className="flex min-w-0 flex-col"><span className="text-13 font-bold">{r.title}</span>{r.detail && <span className="text-12 text-ink-muted">{r.detail}</span>}</span>
-                    <span className="text-11 text-ink-faint">{time.format(new Date(r.at))}</span>
-                  </div>
-                )
-              })}
+              <h3 className="text-11 font-extrabold tracking-[0.02em] text-ink-faint uppercase">{g.label}</h3>
+              <div className="flex flex-col">
+                {g.rows.map((r, n) => {
+                  const Glyph = ICONS[r.icon] ?? Dot
+                  const last = n === g.rows.length - 1
+                  return (
+                    <div key={r.id} className="grid grid-cols-[32px_minmax(0,1fr)_80px] items-stretch gap-3">
+                      <span className="flex flex-col items-center">
+                        <span className={cn('inline-flex size-8 flex-none items-center justify-center rounded-full', TONE[r.tone])}><Glyph size={15} /></span>
+                        {!last && <span className="my-1 min-h-3 w-0.5 flex-1 rounded-full bg-border" />}
+                      </span>
+                      <span className={cn('flex min-w-0 flex-col gap-0.5 pt-px', !last && 'pb-3.5')}><span className="text-13 font-bold">{r.title}</span>{r.detail && <span className="text-12 font-medium text-ink-muted">{r.detail}</span>}</span>
+                      <span className="pt-1 text-right text-11 font-semibold text-ink-faint">{time.format(new Date(r.at))}</span>
+                    </div>
+                  )
+                })}
+              </div>
             </section>
           ))}
         </div>

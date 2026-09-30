@@ -13,9 +13,11 @@ interface TextFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   hideLabel?: boolean
   /** 40px tall, 13px text (dense modal forms). */
   compact?: boolean
+  /** 34px tall (tables and dense sub-forms). */
+  dense?: boolean
 }
 
-export function TextField({ label, id, icon, labelAction, trailing, hideLabel, compact, className, ...inputProps }: TextFieldProps) {
+export function TextField({ label, id, icon, labelAction, trailing, hideLabel, compact, dense, className, ...inputProps }: TextFieldProps) {
   return (
     <div className="flex flex-col gap-2">
       {!hideLabel && (
@@ -26,11 +28,11 @@ export function TextField({ label, id, icon, labelAction, trailing, hideLabel, c
           {labelAction}
         </div>
       )}
-      <div className={cn('flex items-center border border-border bg-card focus-within:border-primary', compact ? 'h-10 gap-2.5 rounded-[10px] px-3' : 'h-12 gap-3 rounded-control px-3.5')}>
+      <div className={cn('flex items-center border border-border bg-card focus-within:border-primary', dense ? 'h-[34px] gap-2 rounded-lg px-3' : compact ? 'h-10 gap-2.5 rounded-[10px] px-3' : 'h-12 gap-3 rounded-control px-3.5')}>
         {icon && <span className="inline-flex text-ink-faint">{icon}</span>}
         <input
           id={id}
-          className={cn('min-w-0 flex-1 border-0 bg-transparent font-semibold text-ink outline-0 placeholder:font-medium placeholder:text-ink-faint disabled:text-ink-muted', compact ? 'text-13' : 'text-14', className)}
+          className={cn('min-w-0 flex-1 border-0 bg-transparent font-semibold text-ink outline-0 placeholder:font-medium placeholder:text-ink-faint disabled:text-ink-muted', compact || dense ? 'text-13' : 'text-14', className)}
           {...inputProps}
         />
         {trailing}

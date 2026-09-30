@@ -177,11 +177,16 @@ export function Modal({
   )
 }
 
-/** Uppercase label + stacked content, used to group a modal body. */
-export function ModalSection({ label, children }: { label?: string; children: ReactNode }) {
+/** Uppercase label (with an optional action link at the right) + stacked content, used to group a modal body. */
+export function ModalSection({ label, action, children }: { label?: string; action?: ReactNode; children: ReactNode }) {
   return (
     <section className="flex flex-col gap-3">
-      {label && <h3 className="text-11 font-bold tracking-[0.02em] text-ink-faint uppercase">{label}</h3>}
+      {(label || action) && (
+        <div className="flex items-center justify-between gap-3">
+          {label && <h3 className="text-11 font-bold tracking-[0.02em] text-ink-faint uppercase">{label}</h3>}
+          {action}
+        </div>
+      )}
       {children}
     </section>
   )

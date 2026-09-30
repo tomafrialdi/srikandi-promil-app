@@ -1,18 +1,5 @@
 import { cn } from '../../../../shared/lib/cn'
 
-/** Native time input in the console's field style. */
-export function TimeInput({ value, onChange, label, className }: { value: string; onChange: (v: string) => void; label: string; className?: string }) {
-  return (
-    <input
-      type="time"
-      aria-label={label}
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      className={cn('h-10 min-w-0 rounded-control border border-border bg-card px-2.5 text-13 font-semibold outline-0 focus-visible:border-primary', className)}
-    />
-  )
-}
-
 export function Segment<T extends string>({ value, options, onChange, label }: { value: T; options: Array<{ value: T; label: string; tone?: string }>; onChange: (v: T) => void; label: string }) {
   return (
     <div className="inline-flex gap-0.5 rounded-lg bg-surface-alt p-[3px]" role="radiogroup" aria-label={label}>

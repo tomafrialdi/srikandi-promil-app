@@ -60,12 +60,12 @@ export function EditDoctorModal({ open, onClose, doctor, options, onSaved, onSus
     <Modal
       open={open}
       onClose={() => !saving && onClose()}
-      size="lg"
+      size="md"
       icon={<PencilSimple size={20} />}
       title={`Edit profile · ${doctor.name}`}
       subtitle={`Last updated ${lastUpdated.format(new Date(doctor.updated_at))}${doctor.updated_by ? ` by ${doctor.updated_by}` : ''} · changes are logged`}
       tabs={
-        <nav className="flex gap-6 overflow-x-auto border-b border-border px-6" role="tablist" aria-label="Doctor sections">
+        <nav className="flex flex-none gap-6 overflow-x-auto border-b border-border px-6" role="tablist" aria-label="Doctor sections">
           {TABS.map((t) => (
             <button key={t.key} type="button" role="tab" aria-selected={tab === t.key} className={cn('-mb-px border-b-2 border-transparent py-3 text-13 font-semibold whitespace-nowrap text-ink-muted', tab === t.key && 'border-primary font-bold text-primary')} onClick={() => setTab(t.key)}>{t.label}</button>
           ))}

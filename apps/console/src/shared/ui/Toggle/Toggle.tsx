@@ -6,10 +6,16 @@ interface ToggleProps {
   onChange: (checked: boolean) => void
   disabled?: boolean
   label: string
+  /** lg 40×22 (default), md 36×20, sm 32×18. */
+  size?: 'lg' | 'md' | 'sm'
 }
 
+const TRACK = { lg: 'h-[22px] w-10', md: 'h-5 w-9', sm: 'h-[18px] w-8' }
+const KNOB = { lg: 'size-[18px]', md: 'size-4', sm: 'size-3.5' }
+const SLIDE = { lg: 'translate-x-[18px]', md: 'translate-x-4', sm: 'translate-x-3.5' }
+
 /** Accessible on/off switch. */
-export function Toggle({ checked, onChange, disabled, label }: ToggleProps) {
+export function Toggle({ checked, onChange, disabled, label, size = 'lg' }: ToggleProps) {
   return (
     <button
       type="button"
@@ -17,10 +23,10 @@ export function Toggle({ checked, onChange, disabled, label }: ToggleProps) {
       aria-checked={checked}
       aria-label={label}
       disabled={disabled}
-      className={cn('relative h-[22px] w-10 flex-none rounded-full transition-colors disabled:opacity-55', checked ? 'bg-primary' : 'bg-border')}
+      className={cn('relative flex-none rounded-full transition-colors disabled:opacity-55', TRACK[size], checked ? 'bg-primary' : 'bg-border')}
       onClick={() => onChange(!checked)}
     >
-      <span className={cn('absolute top-0.5 left-0.5 size-[18px] rounded-full bg-white transition-transform', checked && 'translate-x-[18px]')} />
+      <span className={cn('absolute top-0.5 left-0.5 rounded-full bg-white transition-transform', KNOB[size], checked && SLIDE[size])} />
     </button>
   )
 }
