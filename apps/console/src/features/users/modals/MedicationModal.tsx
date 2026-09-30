@@ -66,7 +66,7 @@ export function MedicationModal({ data, onClose }: { data: MedicationDetail | nu
 
           {d.purchases.length > 0 && (
             <ModalSection label="Purchases">
-              <ul className="m-0 flex list-none flex-col overflow-hidden rounded-xl border border-border p-0">
+              <ul className="m-0 flex shrink-0 list-none flex-col overflow-hidden rounded-xl border border-border p-0">
                 {d.purchases.map((purchase) => {
                   const Glyph = purchase.status === 'Not purchased' ? ShoppingCart : Package
                   return (
