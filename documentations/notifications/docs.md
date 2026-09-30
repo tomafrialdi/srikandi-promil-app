@@ -15,7 +15,7 @@ Console (campaign editor)  ──save/schedule──▶  notification_campaigns 
                             pg_cron (every 5 min) → Edge Function `notifications-receipts`
                                                         │  reads receipts ~15 min later
                                                         ▼
-                     notification_deliveries · push_tokens (prune) · notification_failures · campaign counters
+                     push_deliveries · push_tokens (prune) · notification_failures · campaign counters
 ```
 
 Why Expo Push: the mobile app is Expo, so one HTTP API covers FCM and APNs. It is free, and tokens look like `ExponentPushToken[...]`.
@@ -64,9 +64,9 @@ Already in place: EAS `projectId` (`app.json → extra.eas.projectId`), iOS bund
 |---|---|
 | `push_tokens` | `id`, `user_id → app_users`, `token` (unique), `platform` (`ios`/`android`), `discreet`, `last_seen_at`, `created_at` |
 | `notification_preferences` | `user_id`, `push_enabled`, `quiet_hours` (bool), `discreet_mode`, `language` |
-| `notification_deliveries` | `id`, `campaign_id`, `user_id`, `token_id`, `status` (`queued`/`sent`/`delivered`/`failed`), `expo_ticket_id`, `error`, `sent_at`, `opened_at` |
+| `push_deliveries` (exists) | Already used by Analytics (`user_id`, `kind`, `title`, `sent_at`, `opened_at`). **Extend it** instead of adding a second table: add `campaign_id`, `token_id`, `status` (`queued`/`sent`/`delivered`/`failed`), `expo_ticket_id`, `error`. Keep the existing columns so Analytics keeps working. |
 
-RLS: users can only write their own token and preferences; deliveries are readable by console admins only.
+RLS: users can only write their own token and preferences; `push_deliveries` stays readable by console admins only.
 Add the `push_enabled = true` / `discreet` flags to the audience query.
 
 ### Edge Function `notifications-send`
@@ -79,7 +79,7 @@ Runs every minute (`pg_cron` + `pg_net`).
 4. Apply guards per user: **quiet hours** (hold until 07:00 local), **max 1 cycle push per day**, **discreet variant** (`discreet_body`, generic title) for users with discreet mode on.
 5. Fill variables (`{first_name}`, `{cycle_day}`, `{partner_name}`, `{days_to_test}`).
 6. `POST https://exp.host/--/api/v2/push/send` in batches of **100** messages with `Authorization: Bearer $EXPO_ACCESS_TOKEN`; message = `{ to, title, body, data: { deepLink, campaignId }, channelId }`.
-7. Store each ticket id in `notification_deliveries`; update `progress_pct` while sending; when done set `status = 'sent'` and `last_run_at`.
+7. Store each ticket id in `push_deliveries`; update `progress_pct` while sending; when done set `status = 'sent'` and `last_run_at`.
 
 ### Edge Function `notifications-receipts`
 

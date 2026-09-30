@@ -11,6 +11,8 @@ supabase status         # URLs and keys
 ```
 
 Changed `config.toml` (auth)? → `supabase stop && supabase start`.
+Edge Functions run as a separate process: `supabase functions serve --env-file supabase/functions/.env`.
+After `supabase db reset` the dev admin's TOTP enrollment is gone; enroll again on the next sign-in.
 Studio: http://127.0.0.1:54323
 
 ## Layout
@@ -20,6 +22,7 @@ supabase/
   config.toml          MFA TOTP on, seeds = ./seeds/*.sql
   migrations/          one file per module, applied in filename order
   seeds/               dev data, applied in filename order
+  functions/           Edge Functions (`imagekit-auth`); `.env` holds their secrets (git-ignored)
 ```
 
 ## Migrations
@@ -53,6 +56,12 @@ supabase/
 | `130100_subscriptions_helpers` | Promo status/offer helpers; plan-change quote now honours promo status, schedule, limits |
 | `130200`–`130500` | Subscriptions RPCs: overview, promo codes, transactions + receipt + refund, plan editor + approval |
 | `139900_lock_down_subscriptions_rpc` | Revoke `anon` on `admin_*` RPCs |
+| `140000_content_library` | `content_items` (article / daily tip / in-app card / video), `content_type` + `content_status` enums; library RPCs and bulk actions |
+| `140100_content_editor` | Editor columns (body, cover, SEO, targeting, checklist, video, `details` jsonb); load / save / options / tip pool / audience RPCs |
+| `149900_lock_down_content_rpc` | Revoke `anon` on `admin_content_*` |
+| `150000_notifications` | `notification_campaigns`, `notification_hourly_opens`, `notification_failures`; list, KPI, hourly and failure RPCs |
+| `150100_notification_editor` | Campaign load / save, reach estimate, pause / resume / schedule / resend |
+| `159900_lock_down_notifications_rpc` | Revoke `anon` on `admin_notification*` |
 
 ## Access control
 
@@ -86,6 +95,13 @@ supabase/
 | `admin_transactions_summary(from, to)` / `admin_transactions_list(...)` | Transactions page |
 | `admin_transaction_receipt(invoice)` / `admin_issue_refund(invoice, reason)` | Receipt modal (logged) / refund |
 | `admin_plan_editor()` / `admin_save_plan(...)` / `admin_review_plan_request(id, approve)` | Edit plans (price change → pending request → Super admin approves) |
+| `admin_content_summary()` / `admin_content_list(tab, search, type, category, reviewer, lang, limit, offset)` / `admin_content_highlights()` | Content library (KPIs + tab counts, table, review queue + top performing) |
+| `admin_content_bulk_action(ids, action, at)` | Send to review · schedule · archive (up to 200 items; audit-logged) |
+| `admin_content_get(id)` / `admin_content_save(id, payload)` | Content editor (slug must look like `/blog/x` and be unique; archived items are read-only) |
+| `admin_content_options()` / `admin_content_tip_pool(category, exclude)` / `admin_content_audience(modes, plan)` | Editor helpers: dropdown options, other tips in the category, user estimate |
+| `admin_notifications_summary()` / `admin_notifications_list(tab, limit, offset)` / `admin_notifications_hourly()` / `admin_notifications_failures()` | Notifications page |
+| `admin_notification_get(id)` / `admin_notification_save(id, payload)` / `admin_notification_reach(rules)` | Campaign editor (sent campaigns are read-only) |
+| `admin_notification_action(id, action)` | `pause` / `resume` / `schedule` / `resend`. Scheduling validates the message and **queues** the campaign; nothing is sent (see `documentations/notifications`) |
 | `log_console_event(action, resource, metadata)` | Auth (audit trail) |
 
 `p_from` / `p_to` are inclusive dates in Jakarta time. Previous period = same length right before `p_from` (used for deltas).
@@ -107,6 +123,8 @@ supabase/
 | `11_care_team_meds` | Doctors, clinics, medications, integrations, promo codes |
 | `12_plans_promos` | Plan catalogue details, promo code fields and extra codes |
 | `13_transactions` | ~2.7k invoices over 13 months, promo redemptions, promo history |
+| `14_content` | 164 content items (10 hand-written + generated) matching the library counts |
+| `15_notifications` | 42 campaigns, 7 days of hourly opens, failure breakdown |
 
 Numbers in Analytics come from this fake data; they are not real metrics.
 
@@ -117,6 +135,16 @@ Numbers in Analytics come from this fake data; they are not real metrics.
 3. Add it to `119900_lock_down_rpc` pattern (name starts with `dashboard_` / `analytics_`, or extend the list).
 4. Add seed data in `seeds/`, then `supabase db reset` to test.
 5. Never edit an applied migration on a shared DB; add a new one (`create or replace function ...`).
+
+## Edge Functions
+
+| Function | What it does |
+|---|---|
+| `imagekit-auth` | Returns `{ token, expire, signature }` for ImageKit uploads. Checks `is_console_admin()` with the caller's JWT (403 otherwise). Needs `IMAGEKIT_PRIVATE_KEY`: local in `supabase/functions/.env`, hosted via `supabase secrets set` + `supabase functions deploy imagekit-auth`. |
+
+## Content tables vs. analytics tables
+
+`content_items` is the console's content library. The older `articles` / `article_reads` tables feed Analytics only and are not linked to it yet. `push_deliveries` (Analytics) will be extended by the push sender.
 
 ## Gotcha
 

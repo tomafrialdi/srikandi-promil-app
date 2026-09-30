@@ -9,7 +9,9 @@ supabase start                # from repo root
 cd apps/console && npm run dev
 ```
 
-`.env.local` (see `.env.example`): `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY` (from `supabase status`).
+`.env.local` (see `.env.example`): `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY` (from `supabase status`), `VITE_IMAGEKIT_URL_ENDPOINT`, `VITE_IMAGEKIT_PUBLIC_KEY` (ImageKit dashboard → Developer Options). The app fails on load if any is missing.
+
+Uploads need the `imagekit-auth` Edge Function running: `supabase functions serve --env-file supabase/functions/.env` (separate process, not part of `supabase start`). See **Images (ImageKit)** below.
 Dev login: `admin@srikandipromil.id` / `Admin#12345`, then enroll 2FA (TOTP) on first sign-in.
 
 ## Structure
@@ -20,8 +22,8 @@ src/
   config/     env.ts, app.ts
   lib/        supabase.ts (client)
   styles/     index.css (Tailwind + @theme), tokens.css (Pencil design tokens)
-  shared/     ui/  charts/  layout/  lib/format.ts
-  features/   auth/  dashboard/  analytics/  users/  subscriptions/
+  shared/     ui/  charts/  layout/  lib/  hooks/  services/imagekit.service.ts
+  features/   auth/  dashboard/  analytics/  users/  subscriptions/  content/  notifications/
 ```
 
 Rule: **a feature owns its pages, components, services, hooks and config.** Shared code goes in `shared/`.
@@ -80,14 +82,27 @@ Rule: **a feature owns its pages, components, services, hooks and config.** Shar
 - `modals/`: `EditPlanModal` (price changes become an approval request), `PromoFormModal` (create / edit / duplicate; identity fields lock after redemptions), `ReceiptModal` (invoice, settlement, refund, print)
 - Transactions reuse the date range from `features/analytics` (`DateRangeMenu`, `useDateRange`). Filters/page live in the URL via `shared/hooks/useUrlFilters`.
 
+**content** — `/articles` (library), `/articles/new`, `/articles/:id` (editor)
+- `pages/ContentLibraryPage`, `pages/ContentEditorPage`
+- `components/library/`: `ContentHeader` `ContentStats` `ContentTable` `ContentFilterBar` `ContentBulkBar` `ReviewQueueCard` `TopPerformingCard`. Tabs, filters and page live in the URL (`shared/hooks/useUrlFilters`). Bulk actions: send to review, schedule (`modals/ScheduleModal`), archive.
+- `components/editor/`: `EditorHeader` `WorkflowSteps` `TypeTabs` `fields.tsx`; `settings/SettingsColumn` (Publish, targeting, medical review, SEO); `forms/ArticleForm` (Markdown body + toolbar, `:::cta Label | deeplink` block), `TipForm`, `CardForm` (A/B variants), `VideoForm` (upload, chapters, thumbnails).
+- One flat `ContentForm` covers all four types; `lib/form-mapping.ts` converts it to and from the RPC payload (type-specific fields go into `details`). The type is locked once an item exists.
+- Submit = save, then `send_to_review` (needs a reviewer) or, for in-app cards, `schedule` (needs "Run from"). Preview and Import / Calendar view are placeholders (disabled with a Tooltip).
+
+**notifications** — `/notifications` (campaigns), `/notifications/new`, `/notifications/:id` (editor)
+- `pages/NotificationsPage`: `components/list/` `NotificationsHeader` `NotificationStats` `CampaignTable` `OpensByHourCard` `FailuresCard`.
+- `pages/NotificationEditorPage`: four numbered sections (`CampaignSection`, `AudienceSection` rule builder + reach estimate, `MessageSection`, `DeliverySection`) and `PreviewColumn` (lock-screen preview, summary). Sent campaigns are read-only.
+- Saving or scheduling only **queues** a campaign. Sending is not built yet: see `documentations/notifications/docs.md`. "Send test to me" and Templates are disabled.
+
 ## Shared
 
-| `shared/ui` | `Avatar` `Badge` `Button` `Card`/`CardHeader` `DataTable` `DonutChart` `IconTile` `Notice` `PageState` `ProgressBar` `TextField` + forms: `Field` `SelectField` `TextAreaField` `ChipInput` `Toggle`/`ToggleRow`/`CheckRow`/`Checkbox` `RadioCard` + `CountTabs` `Pagination` `StepTabs` `Segmented` `StatCard`/`StatGrid` `Toast` |
+| `shared/ui` | `Avatar` `Badge` `Button` `Card`/`CardHeader` `DataTable` `DonutChart` `IconTile` `Notice` `PageState` `ProgressBar` `TextField` + forms: `Field` `SelectField` `TextAreaField` `ChipInput` `Toggle`/`ToggleRow`/`CheckRow`/`Checkbox` `RadioCard` `ChipToggleGroup` `ImageUpload` + `CountTabs` `Pagination` `StepTabs` `Segmented` `StatCard`/`StatGrid` `Toast` |
 |---|---|
 | **`shared/charts`** | `BarRow` `CohortTable` `Columns` `HeatGrid` `Legend` `LineChart` `Sparkline` `StackedColumns` |
 | **`shared/layout`** | `AdminShell` (Sidebar + sticky Topbar + page), `nav.config.ts` (menu + placeholder routes), `PlaceholderPage` |
 | **`shared/lib`** | `cn.ts` (class join + Tailwind conflict merge), `smooth-scroll.ts` (Lenis), `format.ts` (number, %, Rp, duration, time-ago), `labels.ts` (plan/mode labels), `csv.ts` (CSV download) |
 | **`shared/hooks`** | `useAsyncData(key, fetcher)` (load + reload), `useUrlFilters(keys)` (filters + page in the URL) |
+| **`shared/services`** | `imagekit.service.ts`: `uploadFile` / `uploadImage`, `ikUrl(url, {w, h, q})`, `videoThumbnail(url, seconds)` |
 
 ## Add a new page
 
@@ -135,3 +150,13 @@ Printing: put `data-print-area` on the content of a `Modal` and add the class `p
 - **Modal** fades + scales in and out (200 ms, respects `prefers-reduced-motion`); it stays mounted until the exit animation ends.
 - **Tooltip / TooltipBody** (`shared/ui/Tooltip`): hover bubble used by `Columns`, `StackedColumns`, `LineChart`, `HeatGrid` and the journey bar. Give chart items `tooltipTitle` / `tooltipValue` (or `formatValue`) for nicer text.
 - **Lenis** smooth scrolling starts in `app/providers/SmoothScroll`. Modals pause it while open; any inner scroll area needs `data-lenis-prevent` (the modal body and sidebar nav already have it).
+
+## Images (ImageKit)
+
+All images and videos uploaded from the console are hosted on ImageKit; the database only stores the URL.
+
+- Flow: `ImageUpload` (or the article / video forms) → `uploadFile(file, folder)` asks the Edge Function `imagekit-auth` for a signed `token` / `expire` / `signature`, then uploads straight to ImageKit.
+- The function only answers signed-in admins that finished 2FA (it calls `is_console_admin()`). The private key lives in `supabase/functions/.env` (local) or Supabase secrets (hosted), never in the console.
+- Show images with `ikUrl(url, { w: 400 })` to get resized `f-auto` versions. Non-ImageKit URLs pass through unchanged.
+- `<ImageUpload value onChange folder aspectClassName />` gives a click-to-upload box (10 MB, image types). Videos are limited to 200 MB in `VideoForm`; ImageKit's own plan limit also applies.
+- Error "Upload service is unreachable": the function is not running. Start `supabase functions serve --env-file supabase/functions/.env`.
