@@ -1,16 +1,17 @@
-import { BellRinging, DeviceMobile, EnvelopeSimple, type Icon } from '@phosphor-icons/react'
+import { Bell, Clock, DeviceMobile, EnvelopeSimple, Lightning, PaperPlaneTilt, type Icon } from '@phosphor-icons/react'
 import type { BadgeTone } from '../../../shared/ui'
 import type { FailureReason, NotificationChannel, NotificationKind, NotificationStatus } from '../types'
 
 export const PAGE_SIZE = 8
 
 export const CHANNEL_META: Record<NotificationChannel, { label: string; icon: Icon }> = {
-  push: { label: 'Push', icon: BellRinging },
+  push: { label: 'Push', icon: Bell },
   in_app: { label: 'In-app', icon: DeviceMobile },
   email: { label: 'Email', icon: EnvelopeSimple },
 }
 
 export const KIND_LABEL: Record<NotificationKind, string> = { trigger: 'Trigger', scheduled: 'Scheduled', one_off: 'One-off' }
+export const KIND_ICON: Record<NotificationKind, Icon> = { trigger: Lightning, scheduled: Clock, one_off: PaperPlaneTilt }
 
 export const STATUS_BADGE: Record<NotificationStatus, { label: string; tone: BadgeTone; dot: string }> = {
   draft: { label: 'Draft', tone: 'neutral', dot: 'var(--ink-faint)' },
