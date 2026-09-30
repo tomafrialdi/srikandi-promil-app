@@ -11,6 +11,7 @@ import {
   RetentionTab,
   RevenueTab,
 } from '../features/analytics'
+import { CommunityPage } from '../features/community'
 import { ContentEditorPage, ContentLibraryPage } from '../features/content'
 import { DashboardPage } from '../features/dashboard'
 import { NotificationEditorPage, NotificationsPage } from '../features/notifications'
@@ -24,7 +25,7 @@ import { NAV_ITEMS } from '../shared/layout/nav.config'
 import { PlaceholderPage } from '../shared/layout/PlaceholderPage'
 import { AppProviders } from './providers/AppProviders'
 
-const placeholderRoutes = NAV_ITEMS.filter((item) => item.path !== '/' && item.path !== '/analytics' && item.path !== '/users' && item.path !== '/subscriptions' && item.path !== '/articles' && item.path !== '/notifications').map((item) => ({
+const placeholderRoutes = NAV_ITEMS.filter((item) => item.path !== '/' && item.path !== '/analytics' && item.path !== '/users' && item.path !== '/subscriptions' && item.path !== '/articles' && item.path !== '/notifications' && item.path !== '/community').map((item) => ({
   path: item.path,
   element: <PlaceholderPage />,
 }))
@@ -60,6 +61,7 @@ export const router = createBrowserRouter([
               { path: '/articles', element: <ContentLibraryPage /> },
               { path: '/articles/new', element: <ContentEditorPage /> },
               { path: '/articles/:id', element: <ContentEditorPage /> },
+              { path: '/community', element: <CommunityPage /> },
               { path: '/notifications', element: <NotificationsPage /> },
               { path: '/notifications/new', element: <NotificationEditorPage /> },
               { path: '/notifications/:id', element: <NotificationEditorPage /> },

@@ -23,7 +23,7 @@ src/
   lib/        supabase.ts (client)
   styles/     index.css (Tailwind + @theme), tokens.css (Pencil design tokens)
   shared/     ui/  charts/  layout/  lib/  hooks/  services/imagekit.service.ts
-  features/   auth/  dashboard/  analytics/  users/  subscriptions/  content/  notifications/
+  features/   auth/  dashboard/  analytics/  users/  subscriptions/  content/  notifications/  community/
 ```
 
 Rule: **a feature owns its pages, components, services, hooks and config.** Shared code goes in `shared/`.
@@ -93,6 +93,12 @@ Rule: **a feature owns its pages, components, services, hooks and config.** Shar
 - `pages/NotificationsPage`: `components/list/` `NotificationsHeader` `NotificationStats` `CampaignTable` `OpensByHourCard` `FailuresCard`.
 - `pages/NotificationEditorPage`: four numbered sections (`CampaignSection`, `AudienceSection` rule builder + reach estimate, `MessageSection`, `DeliverySection`) and `PreviewColumn` (lock-screen preview, summary). Sent campaigns are read-only.
 - Saving or scheduling only **queues** a campaign. Sending is not built yet: see `documentations/notifications/docs.md`. "Send test to me" and Templates are disabled.
+
+**community** — `/community`
+- `pages/CommunityPage`: `components/` `CommunityHeader` `CommunityStats` `ModerationQueue` (tabs Reported / AI flagged / Appeals, sorted by risk) `PostDetailPanel` (post, author context, wellbeing protocol for self-harm risk, actions, internal notes) `GroupsTable`.
+- `modals/`: `GuidelinesModal` (edit the guidelines text), `KeywordRulesModal` (flag / hide keywords), `NewGroupModal`.
+- Actions: **Hide + send support** (self-harm only), Hide, Remove (confirm), Escalate, Approve. Each writes to the audit log; opening a post's detail is logged too (`community.view_post`).
+- "Open in app" is disabled until posts have deep links. The support message itself is only recorded (`resolution = hide_support`); sending it needs the notification sender.
 
 ## Shared
 

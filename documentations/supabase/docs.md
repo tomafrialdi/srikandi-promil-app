@@ -62,6 +62,9 @@ supabase/
 | `150000_notifications` | `notification_campaigns`, `notification_hourly_opens`, `notification_failures`; list, KPI, hourly and failure RPCs |
 | `150100_notification_editor` | Campaign load / save, reach estimate, pause / resume / schedule / resend |
 | `159900_lock_down_notifications_rpc` | Revoke `anon` on `admin_notification*` |
+| `160000_community` | `community_groups`, `community_posts`, `community_reports`, `community_mod_notes`, `community_keyword_rules`, `community_settings`; `community_reason` + `community_mod_status` enums |
+| `160100_community_rpc` | Summary, queue, post detail, resolve, notes, groups, keyword rules, guidelines |
+| `169900_lock_down_community_rpc` | Revoke `anon` on `admin_community_*` |
 
 ## Access control
 
@@ -102,6 +105,11 @@ supabase/
 | `admin_notifications_summary()` / `admin_notifications_list(tab, limit, offset)` / `admin_notifications_hourly()` / `admin_notifications_failures()` | Notifications page |
 | `admin_notification_get(id)` / `admin_notification_save(id, payload)` / `admin_notification_reach(rules)` | Campaign editor (sent campaigns are read-only) |
 | `admin_notification_action(id, action)` | `pause` / `resume` / `schedule` / `resend`. Scheduling validates the message and **queues** the campaign; nothing is sent (see `documentations/notifications`) |
+| `admin_community_summary()` / `admin_community_queue(tab)` / `admin_community_post(id)` | Community: KPIs, queue (`reported` / `ai_flagged` / `appeals`), post detail (volatile: logs `community.view_post`) |
+| `admin_community_resolve(id, action, note)` / `admin_community_add_note(id, note)` | `approve` · `hide` · `hide_support` (self-harm only) · `escalate` · `remove`; only for open or appealed posts |
+| `admin_community_groups()` / `admin_community_group_create(payload)` | Groups table (status: protected / busy when 20+ reports in 7d / healthy) and New group |
+| `admin_community_keyword_rules()` / `_keyword_rule_save(...)` / `_keyword_rule_delete(id)` | Keyword rules modal |
+| `admin_community_guidelines()` / `admin_community_guidelines_save(text)` | Guidelines modal (Admins only) |
 | `log_console_event(action, resource, metadata)` | Auth (audit trail) |
 
 `p_from` / `p_to` are inclusive dates in Jakarta time. Previous period = same length right before `p_from` (used for deltas).
@@ -125,6 +133,7 @@ supabase/
 | `13_transactions` | ~2.7k invoices over 13 months, promo redemptions, promo history |
 | `14_content` | 164 content items (10 hand-written + generated) matching the library counts |
 | `15_notifications` | 42 campaigns, 7 days of hourly opens, failure breakdown |
+| `16_community` | 8 groups, ~2.5k posts, queue (12 reported · 37 AI flagged · 2 appeals), resolved history, keyword rules, guidelines |
 
 Numbers in Analytics come from this fake data; they are not real metrics.
 
