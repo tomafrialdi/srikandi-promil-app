@@ -1,6 +1,7 @@
-import { Crown, Warning } from '@phosphor-icons/react'
+import { Buildings, CalendarBlank, CheckCircle, Crown, Scroll, SealCheck, Ticket, User, Warning, Check, type Icon } from '@phosphor-icons/react'
 import { useEffect, useState } from 'react'
-import { Badge, Button, Field, Modal, ModalFooter, ModalSection, Notice, RadioCard, SelectField, TextField, ToggleRow } from '../../../../shared/ui'
+import { Badge, Button, Field, Modal, ModalFooter, ModalSection, Notice, RadioCard, Segmented, SelectField, TextField, ToggleRow } from '../../../../shared/ui'
+import { cn } from '../../../../shared/lib/cn'
 import { formatIdr } from '../../../../shared/lib/format'
 import { changePlan, fetchPlanCatalog, fetchPlanQuote } from '../../services/users.service'
 import type { PlanCatalogItem, PlanQuote } from '../../types'
@@ -16,6 +17,9 @@ interface ChangePlanModalProps {
   userRef: string
   onChanged: () => void
 }
+
+const PLAN_ICON: Record<string, Icon> = { free: User, plus_monthly: CalendarBlank, plus_yearly: Crown, clinic_sponsored: Buildings }
+const FIELD = 'h-[34px] rounded-lg'
 
 function priceLabel(plan: PlanCatalogItem): string {
   if (plan.plan === 'clinic_sponsored') return 'Rp 0 · 12 months'
@@ -131,10 +135,10 @@ export function ChangePlanModal({ open, onClose, userId, userName, userRef, onCh
       subtitle={`${userRef} · changes are logged and the user is notified`}
       footer={
         <ModalFooter
-          info={quote?.needs_approval ? 'This refund is above Rp 500.000 and needs an Admin' : 'Refunds > Rp 500.000 need Admin approval'}
+          info={<span className="inline-flex items-center gap-1.5"><Scroll size={14} className="text-ink-faint" />{quote?.needs_approval ? 'This refund is above Rp 500.000 and needs an Admin' : 'Refunds > Rp 500.000 need Admin approval'}</span>}
         >
           <Button variant="outline" onClick={close} disabled={submitting}>Cancel</Button>
-          <Button onClick={submit} disabled={!canSubmit}>{submitting ? 'Saving…' : 'Confirm change'}</Button>
+          <Button onClick={submit} disabled={!canSubmit} leadingIcon={<Check size={16} weight="bold" color="#fff" />}>{submitting ? 'Saving…' : 'Confirm change'}</Button>
         </ModalFooter>
       }
     >
@@ -145,69 +149,80 @@ export function ChangePlanModal({ open, onClose, userId, userName, userRef, onCh
       )}
 
       {current && (
-        <div className="flex flex-col gap-1 rounded-xl bg-surface px-3.5 py-3 text-13">
-          <div className="flex items-center justify-between gap-2.5">
-            <strong>Current: {current.label}</strong>
-            <Badge tone={current.active ? 'success' : 'warning'}>{current.active ? 'Active' : 'Suspended'}</Badge>
+        <div className="flex shrink-0 items-center gap-3 rounded-xl bg-surface px-3.5 py-3">
+          <span className="inline-flex size-9 flex-none items-center justify-center rounded-[10px] bg-primary-soft text-primary"><Crown size={16} /></span>
+          <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+            <span className="flex items-center gap-2 text-13 font-extrabold">
+              Current: {current.label}
+              <Badge tone={current.active ? 'success' : 'warning'}>{current.active ? 'Active' : 'Suspended'}</Badge>
+            </span>
+            <span className="text-12 font-medium text-ink-muted">
+              {current.price_idr > 0
+                ? `Paid ${formatIdr(current.price_idr)}${current.payment ? ` via ${current.payment}` : ''} · renews ${current.renews ?? '—'} · ${current.days_left} days left`
+                : 'No paid subscription'}
+            </span>
           </div>
-          <span className="text-12 text-ink-muted">
-            {current.price_idr > 0
-              ? `Paid ${formatIdr(current.price_idr)}${current.payment ? ` via ${current.payment}` : ''} · renews ${current.renews ?? '—'} · ${current.days_left} days left`
-              : 'No paid subscription'}
-          </span>
         </div>
       )}
 
       <ModalSection label="New plan">
         <div className="grid gap-2.5 min-[701px]:grid-cols-2">
-          {catalog.map((item) => (
-            <RadioCard
-              key={item.plan}
-              name="new-plan"
-              selected={plan === item.plan}
-              disabled={item.plan === currentPlan}
-              onSelect={() => setPlan(item.plan)}
-              title={item.label}
-              description={item.plan === 'clinic_sponsored' ? item.tagline : `${priceLabel(item)} · ${item.tagline}`}
-              badge={item.plan === currentPlan ? <Badge tone="neutral">Current</Badge> : item.plan === 'clinic_sponsored' ? <Badge tone="info">Recommended</Badge> : undefined}
-            />
-          ))}
+          {catalog.map((item) => {
+            const Glyph = PLAN_ICON[item.plan] ?? Crown
+            const selected = plan === item.plan
+            const isCurrent = item.plan === currentPlan
+            return (
+              <label key={item.plan} className={cn('relative flex items-center gap-3 rounded-xl border px-3.5 py-3', selected ? 'border-primary bg-primary-soft' : 'border-border bg-card', isCurrent ? 'cursor-not-allowed opacity-60' : 'cursor-pointer')}>
+                <input type="radio" className="peer absolute inset-0 m-0 cursor-[inherit] opacity-0" name="new-plan" checked={selected} disabled={isCurrent} onChange={() => setPlan(item.plan)} />
+                <span className={cn('inline-flex size-[34px] flex-none items-center justify-center rounded-[9px]', selected ? 'bg-card text-primary' : 'bg-surface-alt text-ink-muted')}><Glyph size={16} /></span>
+                <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+                  <span className="flex items-center gap-2 text-13 font-bold">
+                    {item.label}
+                    {isCurrent ? <Badge tone="neutral">Current</Badge> : item.plan === 'clinic_sponsored' ? <Badge tone="info">Recommended</Badge> : null}
+                  </span>
+                  <span className="text-12 font-bold">{priceLabel(item)}</span>
+                  <span className="text-11 font-medium text-ink-muted">{isCurrent ? 'Current plan' : item.tagline}</span>
+                </span>
+                <span className={cn('size-[18px] flex-none rounded-full bg-card peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-primary', selected ? 'border-[5px] border-primary' : 'border-[1.5px] border-border')} aria-hidden="true" />
+              </label>
+            )
+          })}
         </div>
       </ModalSection>
 
       <ModalSection label="Promo code">
         {promoOk && quote?.promo ? (
-          <div className="flex flex-col gap-1 rounded-xl bg-success-soft px-3.5 py-3 text-12 font-semibold text-success [&_strong]:text-14 [&_strong]:text-ink">
-            <div className="flex items-center justify-between gap-2.5">
-              <strong>{quote.promo.code}</strong>
-              <button type="button" className="text-12 font-bold text-error" onClick={() => { setPromo(''); setPromoInput('') }}>Remove</button>
+          <>
+            <div className="flex items-center gap-2.5">
+              <div className="flex h-[38px] min-w-0 flex-1 items-center gap-2.5 rounded-[10px] border border-success bg-card px-3">
+                <Ticket size={16} className="flex-none text-success" />
+                <span className="min-w-0 flex-1 truncate text-14 font-bold">{quote.promo.code}</span>
+                <CheckCircle size={16} weight="fill" className="flex-none text-success" />
+              </div>
+              <Button variant="outline" className="h-9 !py-0" onClick={() => { setPromo(''); setPromoInput('') }}>Remove</Button>
             </div>
-            <span>Code applied · {quote.promo.description}</span>
-            <span className="text-12 text-ink-muted">
-              {quote.promo.audience} · {quote.promo.used} / {quote.promo.max} used · valid until {quote.promo.valid_until}
-            </span>
-          </div>
+            <div className="flex items-start gap-2.5 rounded-[10px] bg-success-soft px-3.5 py-3 text-success">
+              <SealCheck size={16} weight="fill" className="mt-0.5 flex-none" />
+              <div className="flex min-w-0 flex-col gap-px">
+                <span className="text-12 font-bold">Code applied · {quote.promo.description}</span>
+                <span className="text-11 font-medium">{quote.promo.audience} · {quote.promo.used} / {quote.promo.max} used · valid until {quote.promo.valid_until}</span>
+              </div>
+            </div>
+          </>
         ) : (
           <div className="grid grid-cols-[1fr_auto] items-start gap-2.5">
-            <TextField
-              id="promo-code"
-              label=""
-              hideLabel
-              placeholder="Enter a promo code"
-              value={promoInput}
-              onChange={(e) => setPromoInput(e.target.value.toUpperCase())}
-            />
-            <Button variant="outline" onClick={() => setPromo(promoInput.trim())} disabled={!promoInput.trim() || !plan}>Apply</Button>
+            <TextField compact id="promo-code" label="" hideLabel placeholder="Enter a promo code" value={promoInput} onChange={(e) => setPromoInput(e.target.value.toUpperCase())} />
+            <Button variant="outline" className="h-10 !py-0" onClick={() => setPromo(promoInput.trim())} disabled={!promoInput.trim() || !plan}>Apply</Button>
           </div>
         )}
         {promo && quote?.promo_error && (
           <Notice tone="error" icon={<Warning size={16} />}>{quote.promo_error}</Notice>
         )}
-        {quote && quote.valid_promos.length > 0 && !promoOk && (
+        {quote && quote.valid_promos.filter((code) => code !== promo).length > 0 && (
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-12 text-ink-muted">Valid codes:</span>
-            {quote.valid_promos.map((code) => (
-              <button key={code} type="button" className="rounded-full bg-surface-alt px-2.5 py-1 text-11 font-bold" onClick={() => { setPromoInput(code); setPromo(code) }}>
+            <span className="text-11 font-semibold text-ink-faint">{promoOk ? 'Other valid codes for this user:' : 'Valid codes:'}</span>
+            {quote.valid_promos.filter((code) => code !== promo).map((code) => (
+              <button key={code} type="button" className="rounded-md bg-surface-alt px-2 py-[3px] text-11 font-bold text-ink-muted" onClick={() => { setPromoInput(code); setPromo(code) }}>
                 {code}
               </button>
             ))}
@@ -219,6 +234,7 @@ export function ChangePlanModal({ open, onClose, userId, userName, userRef, onCh
         <div className="grid gap-2.5 min-[701px]:grid-cols-2">
           <RadioCard
             name="apply-when"
+            leading
             selected={when === 'immediately'}
             onSelect={() => setWhen('immediately')}
             title="Immediately"
@@ -226,6 +242,7 @@ export function ChangePlanModal({ open, onClose, userId, userName, userRef, onCh
           />
           <RadioCard
             name="apply-when"
+            leading
             selected={when === 'next_renewal'}
             onSelect={() => setWhen('next_renewal')}
             title="At next renewal"
@@ -238,43 +255,42 @@ export function ChangePlanModal({ open, onClose, userId, userName, userRef, onCh
 
       {quote && plan && !quote.promo_error && (
         <ModalSection label="Price breakdown">
-          <div className="flex flex-col gap-2.5 rounded-xl border border-border p-3.5">
+          <div className="flex shrink-0 flex-col gap-2.5 rounded-xl bg-surface p-4">
             {quote.lines.map((line) => (
-              <div key={line.label} className="flex justify-between text-12 font-semibold">
-                <span>{line.label}</span>
-                <span>{line.amount < 0 ? `− ${formatIdr(-line.amount)}` : formatIdr(line.amount)}</span>
+              <div key={line.label} className="flex justify-between gap-3 text-12">
+                <span className="font-medium text-ink-muted">{line.label}</span>
+                <span className={cn('font-bold', line.amount < 0 && 'text-success')}>{line.amount < 0 ? `− ${formatIdr(-line.amount)}` : formatIdr(line.amount)}</span>
               </div>
             ))}
-            <div className="flex justify-between gap-4 border-t border-border pt-2.5 [&>div]:flex [&>div]:flex-col [&>div]:gap-0.5">
-              <div>
-                <span className="text-12 text-ink-muted">Due now</span>
-                <strong className="text-18 font-extrabold">{formatIdr(quote.due_now)}</strong>
-              </div>
-              <div>
-                <span className="text-12 text-ink-muted">Refund to user</span>
-                <strong className="text-18 font-extrabold">{formatIdr(quote.refund)}</strong>
-              </div>
+            <div className="border-t border-border" />
+            <div className="flex items-center justify-between gap-3">
+              <span className="text-13 font-extrabold">Due now</span>
+              <span className="text-16 font-extrabold">{formatIdr(quote.due_now)}</span>
             </div>
-            {quote.refund > 0 && (
-              <div className="grid gap-2.5 min-[701px]:grid-cols-2">
-                <RadioCard name="refund-as" selected={refundAs === 'original'} onSelect={() => setRefundAs('original')} title={refundLabel} description="Refund as original payment" />
-                <RadioCard name="refund-as" selected={refundAs === 'credit'} onSelect={() => setRefundAs('credit')} title="Account credit" description="Refund as account credit" />
-              </div>
-            )}
+            <div className="flex items-center justify-between gap-3">
+              <span className="text-13 font-extrabold">Refund to user</span>
+              <span className="text-16 font-extrabold text-secondary">{formatIdr(quote.refund)}</span>
+            </div>
           </div>
+          {quote.refund > 0 && (
+            <div className="flex flex-wrap items-center gap-3">
+              <span className="text-12 font-bold">Refund as</span>
+              <Segmented size="lg" label="Refund method" value={refundAs} options={[{ value: 'original', label: refundLabel }, { value: 'credit', label: 'Account credit' }]} onChange={setRefundAs} />
+            </div>
+          )}
         </ModalSection>
       )}
 
       <ModalSection label="Reason & notification">
         <div className="grid gap-2.5 min-[701px]:grid-cols-2">
           <Field label="Reason" htmlFor="plan-reason">
-            <SelectField id="plan-reason" value={reason} options={REASONS} onChange={setReason} />
+            <SelectField id="plan-reason" triggerClassName={FIELD} value={reason} options={REASONS} onChange={setReason} />
           </Field>
           <Field label="Ticket / reference" htmlFor="plan-ticket">
-            <TextField id="plan-ticket" label="" hideLabel placeholder="e.g. TCK-4833" value={ticket} onChange={(e) => setTicket(e.target.value)} />
+            <TextField dense id="plan-ticket" label="" hideLabel placeholder="e.g. TCK-4833" value={ticket} onChange={(e) => setTicket(e.target.value)} />
           </Field>
         </div>
-        <ToggleRow label="Notify user (email + push)" title="Notify user (email + push)" description={message || 'Choose a plan to preview the message'} checked={notify} onChange={setNotify} />
+        <ToggleRow size="md" label="Notify user (email + push)" title={<span className="font-semibold">Notify user (email + push)</span>} description={message || 'Choose a plan to preview the message'} checked={notify} onChange={setNotify} />
       </ModalSection>
     </Modal>
   )
