@@ -23,12 +23,12 @@ export function DauTrendCard({ data }: { data: EngagementData['dau_trend'] }) {
     <Card>
       <CardHeader
         title="Daily active users"
-        subtitle="Last 30 days"
+        subtitle="Last 30 days · spikes follow fertile-window pushes"
         action={
           <Legend
             items={[
               { label: 'DAU', color: 'var(--secondary)' },
-              { label: 'Latest day', color: 'var(--primary)' },
+              { label: 'Today', color: 'var(--primary)' },
             ]}
           />
         }

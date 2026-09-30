@@ -16,11 +16,11 @@ export function HeatmapCard({ data }: { data: EngagementData['heatmap'] }) {
 
   return (
     <Card className="w-full flex-none min-[1101px]:w-115">
-      <CardHeader title="When users open the app" subtitle="Sessions by weekday × hour (Jakarta time)" />
+      <CardHeader title="When users open the app" subtitle="Sessions by weekday × hour (local)" />
       <HeatGrid rowLabels={DAYS} colLabels={HOURS.map(pad)} values={values} />
       {peak && second && (
-        <p className="text-12 text-ink-muted">
-          Peak {pad(peak.hour)}:00–{pad(peak.hour + 1)}:00. Second peak {pad(second.hour)}:00.
+        <p className="text-11 font-medium text-ink-muted">
+          Peak {pad(peak.hour)}:00–{pad(peak.hour + 1)}:00{peak.hour < 10 ? ' = morning BBT logging' : ''}. Second peak {pad(second.hour)}:00{second.hour >= 19 ? ' = evening check-in' : ''}.
         </p>
       )}
     </Card>

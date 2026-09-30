@@ -10,11 +10,11 @@ export function StreaksCard({ data }: { data: EngagementData['streaks'] }) {
     valueLabel: formatCompact(bucket.count),
     tooltipTitle: `${bucket.label} day streak`,
     tooltipValue: `${bucket.count.toLocaleString('en-US')} users`,
-    color: `rgba(193, 61, 104, ${0.25 + (index / Math.max(1, data.length - 1)) * 0.75})`,
+    color: index < 3 ? 'rgba(193, 61, 104, 0.4)' : 'var(--primary)',
   }))
   return (
     <Card className="min-w-0 flex-1">
-      <CardHeader title="Logging streak distribution" subtitle="Active users by current streak length (days)" />
+      <CardHeader title="Logging streak distribution" subtitle="Active users by current streak length" />
       <Columns items={items} height={180} gap={6} radius={4} />
     </Card>
   )
