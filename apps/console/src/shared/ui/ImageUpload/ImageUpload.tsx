@@ -15,10 +15,12 @@ interface ImageUploadProps {
   folder: string
   label?: string
   className?: string
+  /** Tailwind aspect class for the box (default 16:9). */
+  aspectClassName?: string
 }
 
 /** Click-to-upload image box. Uploads to ImageKit immediately and reports the URL via `onChange`. */
-export function ImageUpload({ value, onChange, folder, label = 'Upload image', className }: ImageUploadProps) {
+export function ImageUpload({ value, onChange, folder, label = 'Upload image', className, aspectClassName = 'aspect-video' }: ImageUploadProps) {
   const inputRef = useRef<HTMLInputElement>(null)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -41,7 +43,7 @@ export function ImageUpload({ value, onChange, folder, label = 'Upload image', c
 
   return (
     <div className={cn('flex flex-col gap-1.5', className)}>
-      <div className="relative flex aspect-video items-center justify-center overflow-hidden rounded-control border border-dashed border-border bg-surface-alt">
+      <div className={cn('relative flex items-center justify-center overflow-hidden rounded-control border border-dashed border-border bg-surface-alt', aspectClassName)}>
         {value ? (
           <img src={ikUrl(value, { w: 640 })} alt="" className="size-full object-cover" />
         ) : (

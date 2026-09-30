@@ -17,12 +17,16 @@ interface UploadAuth {
 
 async function getUploadAuth(): Promise<UploadAuth> {
   const { data, error } = await supabase.functions.invoke<UploadAuth>('imagekit-auth')
-  if (error || !data) throw new Error('Could not authorise the upload. Please sign in again.')
+  if (error || !data) {
+    const status = (error as { context?: Response } | null)?.context?.status
+    if (status === 401 || status === 403) throw new Error('Your session is not allowed to upload. Sign in again with 2FA.')
+    throw new Error('Upload service is unreachable. Is the imagekit-auth function running?')
+  }
   return data
 }
 
-/** Uploads one image straight to ImageKit (signed by the `imagekit-auth` Edge Function). */
-export async function uploadImage(file: File, folder: string): Promise<UploadedImage> {
+/** Uploads one file (image or video) straight to ImageKit, signed by the `imagekit-auth` Edge Function. */
+export async function uploadFile(file: File, folder: string): Promise<UploadedImage> {
   const auth = await getUploadAuth()
   const form = new FormData()
   form.append('file', file)
@@ -39,6 +43,11 @@ export async function uploadImage(file: File, folder: string): Promise<UploadedI
   if (!response.ok || !body?.url || !body.fileId) throw new Error(body?.message ?? 'Image upload failed.')
   return { url: body.url, fileId: body.fileId, name: body.name ?? file.name }
 }
+
+export const uploadImage = uploadFile
+
+/** Still frame of an ImageKit video at `seconds`. */
+export const videoThumbnail = (videoUrl: string, seconds: number) => `${videoUrl}/ik-thumbnail.jpg?tr=so-${Math.max(0, Math.floor(seconds))},w-480`
 
 /** Adds ImageKit transformations to a stored URL, e.g. ikUrl(url, { w: 400, h: 300 }). Non-ImageKit URLs pass through. */
 export function ikUrl(url: string | null | undefined, opts: { w?: number; h?: number; q?: number } = {}): string {

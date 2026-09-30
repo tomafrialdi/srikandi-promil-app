@@ -11,6 +11,7 @@ import {
   RetentionTab,
   RevenueTab,
 } from '../features/analytics'
+import { ContentEditorPage, ContentLibraryPage } from '../features/content'
 import { DashboardPage } from '../features/dashboard'
 import { PromoCodesPage } from '../features/subscriptions/pages/PromoCodesPage'
 import { SubscriptionsPage } from '../features/subscriptions/pages/SubscriptionsPage'
@@ -22,7 +23,7 @@ import { NAV_ITEMS } from '../shared/layout/nav.config'
 import { PlaceholderPage } from '../shared/layout/PlaceholderPage'
 import { AppProviders } from './providers/AppProviders'
 
-const placeholderRoutes = NAV_ITEMS.filter((item) => item.path !== '/' && item.path !== '/analytics' && item.path !== '/users' && item.path !== '/subscriptions').map((item) => ({
+const placeholderRoutes = NAV_ITEMS.filter((item) => item.path !== '/' && item.path !== '/analytics' && item.path !== '/users' && item.path !== '/subscriptions' && item.path !== '/articles').map((item) => ({
   path: item.path,
   element: <PlaceholderPage />,
 }))
@@ -55,6 +56,9 @@ export const router = createBrowserRouter([
               { path: '/subscriptions', element: <SubscriptionsPage /> },
               { path: '/subscriptions/promo-codes', element: <PromoCodesPage /> },
               { path: '/subscriptions/transactions', element: <TransactionsPage /> },
+              { path: '/articles', element: <ContentLibraryPage /> },
+              { path: '/articles/new', element: <ContentEditorPage /> },
+              { path: '/articles/:id', element: <ContentEditorPage /> },
               { path: '/users', element: <UsersPage /> },
               { path: '/users/:userId', element: <UserDetailPage /> },
               ...placeholderRoutes,
