@@ -1,0 +1,6 @@
+export { AccountLayout } from './pages/AccountLayout'
+export { ApiTokensTab } from './tabs/ApiTokensTab'
+export { NotificationsTab } from './tabs/NotificationsTab'
+export { PreferencesTab } from './tabs/PreferencesTab'
+export { ProfileTab } from './tabs/ProfileTab'
+export { SecurityTab } from './tabs/SecurityTab'

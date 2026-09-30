@@ -11,7 +11,7 @@ supabase status         # URLs and keys
 ```
 
 Changed `config.toml` (auth)? → `supabase stop && supabase start`.
-Edge Functions run as a separate process: `supabase functions serve --env-file supabase/functions/.env`.
+Edge Functions run as a separate process: `npm run dev` in `apps/console` starts them with Vite, or run `supabase functions serve --env-file supabase/functions/.env` yourself.
 After `supabase db reset` the dev admin's TOTP enrollment is gone; enroll again on the next sign-in.
 Studio: http://127.0.0.1:54323
 
@@ -65,6 +65,8 @@ supabase/
 | `160000_community` | `community_groups`, `community_posts`, `community_reports`, `community_mod_notes`, `community_keyword_rules`, `community_settings`; `community_reason` + `community_mod_status` enums |
 | `160100_community_rpc` | Summary, queue, post detail, resolve, notes, groups, keyword rules, guidelines |
 | `169900_lock_down_community_rpc` | Revoke `anon` on `admin_community_*` |
+| `170000_account_settings` | Profile columns on `admin_profiles`; `admin_account_prefs`, `admin_backup_codes` (sha256), `admin_api_tokens` (sha256), `admin_api_usage`; account RPCs |
+| `179900_lock_down_account_rpc` | Revoke `anon` on `admin_account_*` |
 
 ## Access control
 
@@ -110,6 +112,13 @@ supabase/
 | `admin_community_groups()` / `admin_community_group_create(payload)` | Groups table (status: protected / busy when 20+ reports in 7d / healthy) and New group |
 | `admin_community_keyword_rules()` / `_keyword_rule_save(...)` / `_keyword_rule_delete(id)` | Keyword rules modal |
 | `admin_community_guidelines()` / `admin_community_guidelines_save(text)` | Guidelines modal (Admins only) |
+| `admin_account_get()` / `admin_account_update_profile(payload)` / `admin_account_request_deactivation(reason)` | Account › Profile (own row only) |
+| `admin_account_password_changed()` | Called after Supabase Auth accepted a new password (stamps `password_changed_at`, audit) |
+| `admin_account_sessions()` / `admin_account_revoke_session(id)` | Reads / deletes the caller's rows in `auth.sessions` (current session is marked, and cannot be revoked here) |
+| `admin_account_security_activity()` | Last 5 `auth.*` / `account.*` audit events of the caller |
+| `admin_account_prefs_get()` / `admin_account_prefs_save(prefs)` | Notification + display preferences (jsonb, shallow-merged, < 8 KB) |
+| `admin_account_backup_codes_generate()` | Replaces all codes with 10 new ones; returns the plaintext once |
+| `admin_account_tokens()` / `_token_create(name, scopes, days, ips)` / `_token_revoke(id)` | API tokens (max 5 active, whitelisted scopes, plaintext returned once) |
 | `log_console_event(action, resource, metadata)` | Auth (audit trail) |
 
 `p_from` / `p_to` are inclusive dates in Jakarta time. Previous period = same length right before `p_from` (used for deltas).
@@ -134,6 +143,7 @@ supabase/
 | `14_content` | 164 content items (10 hand-written + generated) matching the library counts |
 | `15_notifications` | 42 campaigns, 7 days of hourly opens, failure breakdown |
 | `16_community` | 8 groups, ~2.5k posts, queue (12 reported · 37 AI flagged · 2 appeals), resolved history, keyword rules, guidelines |
+| `17_account` | Dev admin profile details and a few audit events |
 
 Numbers in Analytics come from this fake data; they are not real metrics.
 

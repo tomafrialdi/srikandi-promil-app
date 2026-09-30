@@ -1,5 +1,6 @@
 import type { CSSProperties, ReactNode } from 'react'
 import { cn } from '../../lib/cn'
+import { usePreferences } from '../../preferences/preferences-context'
 
 export interface Column<T> {
   key: string
@@ -23,6 +24,8 @@ interface DataTableProps<T> {
 
 /** Light grid table: tinted header row, hairline-separated body rows. */
 export function DataTable<T>({ columns, rows, rowKey, rowHeight = 48, onRowClick, isRowSelected, bleed = true }: DataTableProps<T>) {
+  const compact = usePreferences().prefs.display.density === 'compact'
+  const height = compact ? Math.round(rowHeight * 0.8) : rowHeight
   const template = columns.map((c) => (c.width ? `${c.width}px` : 'minmax(0, 1fr)')).join(' ')
   const align = (c: Column<T>): CSSProperties => ({
     textAlign: c.align ?? 'left',
@@ -49,7 +52,7 @@ export function DataTable<T>({ columns, rows, rowKey, rowHeight = 48, onRowClick
               onRowClick && 'cursor-pointer hover:bg-surface',
               isRowSelected?.(row) && 'bg-primary/4 hover:bg-primary/4',
             )}
-            style={{ gridTemplateColumns: template, minHeight: rowHeight }}
+            style={{ gridTemplateColumns: template, minHeight: height }}
             role="row"
             onClick={onRowClick ? () => onRowClick(row) : undefined}
           >

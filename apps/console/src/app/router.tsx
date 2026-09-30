@@ -11,6 +11,7 @@ import {
   RetentionTab,
   RevenueTab,
 } from '../features/analytics'
+import { AccountLayout, ApiTokensTab, NotificationsTab as AccountNotificationsTab, PreferencesTab, ProfileTab, SecurityTab } from '../features/account'
 import { CommunityPage } from '../features/community'
 import { ContentEditorPage, ContentLibraryPage } from '../features/content'
 import { DashboardPage } from '../features/dashboard'
@@ -23,9 +24,10 @@ import { UsersPage } from '../features/users/pages/UsersPage'
 import { AdminShell } from '../shared/layout/AdminShell'
 import { NAV_ITEMS } from '../shared/layout/nav.config'
 import { PlaceholderPage } from '../shared/layout/PlaceholderPage'
+import { LandingGate } from './LandingGate'
 import { AppProviders } from './providers/AppProviders'
 
-const placeholderRoutes = NAV_ITEMS.filter((item) => item.path !== '/' && item.path !== '/analytics' && item.path !== '/users' && item.path !== '/subscriptions' && item.path !== '/articles' && item.path !== '/notifications' && item.path !== '/community').map((item) => ({
+const placeholderRoutes = NAV_ITEMS.filter((item) => item.path !== '/' && item.path !== '/analytics' && item.path !== '/users' && item.path !== '/subscriptions' && item.path !== '/articles' && item.path !== '/notifications' && item.path !== '/community' && item.path !== '/account-settings').map((item) => ({
   path: item.path,
   element: <PlaceholderPage />,
 }))
@@ -42,7 +44,7 @@ export const router = createBrowserRouter([
           {
             element: <AdminShell />,
             children: [
-              { path: '/', element: <DashboardPage /> },
+              { path: '/', element: <LandingGate><DashboardPage /></LandingGate> },
               {
                 path: '/analytics',
                 element: <AnalyticsLayout />,
@@ -62,6 +64,17 @@ export const router = createBrowserRouter([
               { path: '/articles/new', element: <ContentEditorPage /> },
               { path: '/articles/:id', element: <ContentEditorPage /> },
               { path: '/community', element: <CommunityPage /> },
+              {
+                path: '/account-settings',
+                element: <AccountLayout />,
+                children: [
+                  { index: true, element: <ProfileTab /> },
+                  { path: 'security', element: <SecurityTab /> },
+                  { path: 'notifications', element: <AccountNotificationsTab /> },
+                  { path: 'preferences', element: <PreferencesTab /> },
+                  { path: 'api-tokens', element: <ApiTokensTab /> },
+                ],
+              },
               { path: '/notifications', element: <NotificationsPage /> },
               { path: '/notifications/new', element: <NotificationEditorPage /> },
               { path: '/notifications/:id', element: <NotificationEditorPage /> },

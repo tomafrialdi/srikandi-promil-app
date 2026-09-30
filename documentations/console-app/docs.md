@@ -6,12 +6,14 @@ Admin dashboard: React 19 + Vite + TypeScript, **Tailwind CSS v4**, Phosphor ico
 
 ```bash
 supabase start                # from repo root
-cd apps/console && npm run dev
+cd apps/console && npm run dev      # Vite + Edge Functions together
 ```
+
+`npm run dev` starts both the web app and `supabase functions serve` (needed for image uploads). Use `npm run dev:web` for Vite only.
 
 `.env.local` (see `.env.example`): `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY` (from `supabase status`), `VITE_IMAGEKIT_URL_ENDPOINT`, `VITE_IMAGEKIT_PUBLIC_KEY` (ImageKit dashboard → Developer Options). The app fails on load if any is missing.
 
-Uploads need the `imagekit-auth` Edge Function running: `supabase functions serve --env-file supabase/functions/.env` (separate process, not part of `supabase start`). See **Images (ImageKit)** below.
+Uploads need the `imagekit-auth` Edge Function; `npm run dev` runs it for you (it is not part of `supabase start`). See **Images (ImageKit)** below.
 Dev login: `admin@srikandipromil.id` / `Admin#12345`, then enroll 2FA (TOTP) on first sign-in.
 
 ## Structure
@@ -23,7 +25,7 @@ src/
   lib/        supabase.ts (client)
   styles/     index.css (Tailwind + @theme), tokens.css (Pencil design tokens)
   shared/     ui/  charts/  layout/  lib/  hooks/  services/imagekit.service.ts
-  features/   auth/  dashboard/  analytics/  users/  subscriptions/  content/  notifications/  community/
+  features/   auth/  dashboard/  analytics/  users/  subscriptions/  content/  notifications/  community/  account/
 ```
 
 Rule: **a feature owns its pages, components, services, hooks and config.** Shared code goes in `shared/`.
@@ -99,6 +101,14 @@ Rule: **a feature owns its pages, components, services, hooks and config.** Shar
 - `modals/`: `GuidelinesModal` (edit the guidelines text), `KeywordRulesModal` (flag / hide keywords), `NewGroupModal`.
 - Actions: **Hide + send support** (self-harm only), Hide, Remove (confirm), Escalate, Approve. Each writes to the audit log; opening a post's detail is logged too (`community.view_post`).
 - "Open in app" is disabled until posts have deep links. The support message itself is only recorded (`resolution = hide_support`); sending it needs the notification sender.
+
+**account** — `/account-settings` (Profile), `/security`, `/notifications`, `/preferences`, `/api-tokens`
+- `pages/AccountLayout` = title + side nav (`Outlet` for the five `tabs/`). All data is the signed-in admin's own (`admin_account_*` RPCs).
+- **Profile**: name, display name, phone, job title, department, photo (ImageKit `/avatars`), role & permissions card, "Request deactivation" (asks for a reason, logged).
+- **Security**: score banner, change password (`modals/ChangePasswordModal`: checks the current password on a throwaway client so this session keeps its 2FA level, then `updateUser`, then signs out other sessions), TOTP status, backup codes (`modals/BackupCodesModal`: 10 codes shown once, stored hashed), active sessions (revoke one / sign out others), recent security activity. **Passkeys are disabled**: our sign-in service has no passkey support yet.
+- **Notifications** and **Preferences** are saved through `shared/preferences` (`PreferencesProvider` in `app/providers`, `usePreferences()`), one jsonb per admin. Applied today: table density (`DataTable`), landing page after sign-in (`app/LandingGate`, once per session), default analytics date range (`useDateRange`). Saved but not applied yet: dark/system theme (disabled in the UI), language, time zone, date format, currency, masking toggle, keyboard shortcuts, and every notification channel (no delivery integration yet).
+- **API tokens**: create (name, scopes, expiry, allowed IPs; max 5 active; `health:read` is never available), shown once, revoke, usage chart. Tokens are stored hashed. **Nothing accepts them yet**: the API gateway that verifies them is not built.
+- Backup codes are not accepted at sign-in yet either; the 2FA page needs a recovery flow (an Edge Function that verifies a code and removes the TOTP factor so it can be enrolled again).
 
 ## Shared
 
