@@ -14,6 +14,7 @@ import {
 import { AccountLayout, ApiTokensTab, NotificationsTab as AccountNotificationsTab, PreferencesTab, ProfileTab, SecurityTab } from '../features/account'
 import { CommunityPage } from '../features/community'
 import { ContentEditorPage, ContentLibraryPage } from '../features/content'
+import { ClinicsPage } from '../features/clinics'
 import { DashboardPage } from '../features/dashboard'
 import { DoctorsPage } from '../features/doctors'
 import { EnginePage, ModesPage, SimulatorPage } from '../features/fertility-engine'
@@ -31,7 +32,7 @@ import { PlaceholderPage } from '../shared/layout/PlaceholderPage'
 import { LandingGate } from './LandingGate'
 import { AppProviders } from './providers/AppProviders'
 
-const placeholderRoutes = NAV_ITEMS.filter((item) => item.path !== '/' && item.path !== '/analytics' && item.path !== '/users' && item.path !== '/subscriptions' && item.path !== '/articles' && item.path !== '/notifications' && item.path !== '/community' && item.path !== '/roles' && item.path !== '/doctors' && item.path !== '/medications' && item.path !== '/fertility-engine' && item.path !== '/account-settings').map((item) => ({
+const placeholderRoutes = NAV_ITEMS.filter((item) => item.path !== '/' && item.path !== '/analytics' && item.path !== '/users' && item.path !== '/subscriptions' && item.path !== '/articles' && item.path !== '/notifications' && item.path !== '/community' && item.path !== '/roles' && item.path !== '/clinics' && item.path !== '/doctors' && item.path !== '/medications' && item.path !== '/fertility-engine' && item.path !== '/account-settings').map((item) => ({
   path: item.path,
   element: <PlaceholderPage />,
 }))
@@ -74,6 +75,7 @@ export const router = createBrowserRouter([
               { path: '/fertility-engine/modes/:mode', element: <ModesPage /> },
               { path: '/medications', element: <MedicationsPage /> },
               { path: '/doctors', element: <DoctorsPage /> },
+              { path: '/clinics', element: <ClinicsPage /> },
               { path: '/roles', element: <RolesPage /> },
               { path: '/roles/members', element: <MembersPage /> },
               {
