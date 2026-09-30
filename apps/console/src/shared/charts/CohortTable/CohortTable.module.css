@@ -1,0 +1,48 @@
+.table {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow-x: auto;
+}
+
+.row {
+  display: grid;
+  align-items: center;
+  gap: 4px;
+  min-width: 560px;
+}
+
+.head {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink-faint);
+}
+
+.center {
+  text-align: center;
+}
+
+.cohort {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.users {
+  font-size: 13px;
+  color: var(--ink-muted);
+}
+
+.cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.empty {
+  font-weight: 500;
+  color: var(--ink-faint);
+}

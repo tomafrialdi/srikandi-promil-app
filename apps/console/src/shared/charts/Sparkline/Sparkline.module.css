@@ -1,0 +1,11 @@
+.spark {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+  flex: none;
+}
+
+.bar {
+  width: 4px;
+  border-radius: 1px;
+}

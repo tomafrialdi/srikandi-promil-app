@@ -21,7 +21,7 @@ export function formatDelta(value: number | null | undefined): string {
 export function formatIdrCompact(value: number): string {
   if (value >= 1_000_000_000) return `Rp ${(value / 1_000_000_000).toFixed(1)}M`
   if (value >= 1_000_000) return `Rp ${(value / 1_000_000).toFixed(1)}jt`
-  if (value >= 1_000) return `Rp ${(value / 1_000).toFixed(1)}rb`
+  if (value >= 1_000) return `Rp ${Math.round(value / 1_000)}rb`
   return `Rp ${value}`
 }
 
@@ -51,4 +51,27 @@ export function initials(name: string): string {
 
 export function toPercentOf(part: number, total: number): number {
   return total > 0 ? (part / total) * 100 : 0
+}
+
+const idrFormat = new Intl.NumberFormat('id-ID')
+
+/** 18400 -> "Rp 18.400" */
+export function formatIdr(value: number): string {
+  return `${value < 0 ? '− ' : ''}Rp ${idrFormat.format(Math.abs(value))}`
+}
+
+/** Signed compact: +78_400_000 -> "+ Rp 78.4jt", -4_100_000 -> "− Rp 4.1jt" */
+export function formatIdrSigned(value: number): string {
+  const sign = value < 0 ? '− ' : '+ '
+  return `${sign}${formatIdrCompact(Math.abs(value))}`
+}
+
+export function formatDuration(seconds: number): string {
+  const m = Math.floor(seconds / 60)
+  const s = Math.round(seconds % 60)
+  return m > 0 ? `${m}m ${String(s).padStart(2, '0')}s` : `${s}s`
+}
+
+export function formatMinutes(seconds: number): string {
+  return `${Math.floor(seconds / 60)}:${String(Math.round(seconds % 60)).padStart(2, '0')}`
 }

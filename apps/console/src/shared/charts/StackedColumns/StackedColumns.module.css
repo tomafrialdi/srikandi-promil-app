@@ -1,0 +1,65 @@
+.chart {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+
+.axis {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 32px;
+  flex: none;
+  padding-bottom: 20px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--ink-faint);
+}
+
+.columns {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: stretch;
+}
+
+.column {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.plot {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  width: 100%;
+}
+
+.segment {
+  flex-basis: 0;
+  min-height: 1px;
+}
+
+.label {
+  height: 14px;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 14px;
+  text-align: center;
+  white-space: nowrap;
+  color: var(--ink-faint);
+}
+
+.active {
+  color: var(--ink);
+  font-weight: 700;
+}

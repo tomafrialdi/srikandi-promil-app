@@ -66,11 +66,11 @@ select
   case when s.r_funnel < 0.86 then s.created_at + interval '5 minutes' end,
   case when s.r_funnel < 0.71 then s.created_at + interval '1 day' end,
   case when s.r_funnel < 0.48 then s.created_at + interval '35 days' end,
-  case when s.plan = 'trial' or s.plan in ('plus_monthly', 'plus_yearly') or (s.plan = 'free' and s.r_funnel < 0.10)
+  case when s.plan = 'trial' or s.plan in ('plus_monthly', 'plus_yearly') or (s.plan = 'free' and s.r_funnel < 0.30)
     then s.created_at + interval '2 days' end,
   case when s.plan in ('plus_monthly', 'plus_yearly') then s.created_at + interval '9 days' end,
-  case when s.stage = 'pregnant' or s.r_outcome < 0.12
-    then s.created_at + (now() - s.created_at) * s.r_time end,
+  case when (s.stage = 'pregnant' or s.r_outcome < case when s.birth_year > extract(year from now())::int - 25 then 0.16 when s.birth_year > extract(year from now())::int - 30 then 0.15 when s.birth_year > extract(year from now())::int - 35 then 0.13 when s.birth_year > extract(year from now())::int - 40 then 0.08 else 0.04 end) and s.created_at < now() - interval '14 days'
+    then least(now(), greatest(s.created_at + interval '14 days', now() - power(s.r_time, 1.3) * 365 * interval '1 day')) end,
   case when s.r_outcome > 0.985 then s.created_at + (now() - s.created_at) * 0.6 end,
   greatest(s.created_at, case when s.r_active < 0.29
     then now() - (31 + random() * 200) * interval '1 day'

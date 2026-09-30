@@ -12,4 +12,5 @@
 .warning { background: var(--warning-soft); color: var(--warning-ink); }
 .error { background: var(--error-soft); color: var(--error); }
 .primary { background: var(--primary-soft); color: var(--primary); }
+.info { background: var(--secondary-soft); color: var(--secondary); }
 .neutral { background: var(--surface-alt); color: var(--ink-muted); }

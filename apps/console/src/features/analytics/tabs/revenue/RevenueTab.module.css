@@ -1,0 +1,106 @@
+.grow {
+  flex: 1;
+  min-width: 0;
+}
+
+.side {
+  width: 420px;
+  flex: none;
+}
+
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.empty,
+.note {
+  font-size: 12px;
+  color: var(--ink-muted);
+}
+
+.movement {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.moveRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 10px;
+  border-radius: 8px;
+}
+
+.moveTotal {
+  background: var(--surface);
+}
+
+.moveLabel {
+  width: 190px;
+  flex: none;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.moveTrack {
+  position: relative;
+  flex: 1;
+  height: 12px;
+  min-width: 0;
+}
+
+.moveBar {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-radius: 3px;
+}
+
+.moveValue {
+  width: 96px;
+  flex: none;
+  text-align: right;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.tile {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 12px;
+  border-radius: 12px;
+}
+
+.tilePct {
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.tileCount {
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.tileLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-muted);
+}
+
+@media (max-width: 1100px) {
+  .side { width: auto; }
+}
+
+@media (max-width: 700px) {
+  .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}

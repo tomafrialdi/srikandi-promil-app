@@ -1,0 +1,44 @@
+.scroll {
+  overflow-x: auto;
+  margin: 0 -20px;
+}
+
+.table {
+  display: flex;
+  flex-direction: column;
+  min-width: 640px;
+}
+
+.row {
+  display: grid;
+  align-items: center;
+  gap: 12px;
+  padding: 0 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.row:last-child {
+  border-bottom: 0;
+}
+
+.head {
+  min-height: 38px;
+  background: var(--surface);
+  border-bottom: 0;
+}
+
+.headCell {
+  display: flex;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink-faint);
+}
+
+.cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  font-size: 12px;
+  font-weight: 600;
+}
