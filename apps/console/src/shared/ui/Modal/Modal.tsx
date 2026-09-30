@@ -18,6 +18,8 @@ export interface ModalProps {
   headerActions?: ReactNode
   /** Optional strip under the header (e.g. wizard steps). */
   tabs?: ReactNode
+  /** Vertical nav shown at the left of the body (e.g. settings sections). */
+  sidebar?: ReactNode
   /** Sticky footer (use <ModalFooter>). */
   footer?: ReactNode
   /** Clicking the dimmed backdrop closes the modal (default true). */
@@ -47,6 +49,7 @@ export function Modal({
   icon,
   size = 'md',
   tabs,
+  sidebar,
   footer,
   headerActions,
   closeOnOverlay = true,
@@ -152,9 +155,18 @@ export function Modal({
           </button>
         </header>
         {tabs}
-        <div className="flex min-h-0 flex-1 flex-col gap-5 overflow-y-auto px-6 py-5" data-lenis-prevent>
-          {children}
-        </div>
+        {sidebar ? (
+          <div className="flex min-h-0 flex-1 flex-col min-[701px]:h-[560px] min-[701px]:flex-none min-[701px]:flex-row">
+            {sidebar}
+            <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-5 overflow-y-auto px-6 py-5" data-lenis-prevent>
+              {children}
+            </div>
+          </div>
+        ) : (
+          <div className="flex min-h-0 flex-1 flex-col gap-5 overflow-y-auto px-6 py-5" data-lenis-prevent>
+            {children}
+          </div>
+        )}
         {footer}
       </div>
     </div>,
