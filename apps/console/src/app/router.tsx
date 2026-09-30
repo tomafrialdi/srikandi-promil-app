@@ -12,12 +12,14 @@ import {
   RevenueTab,
 } from '../features/analytics'
 import { DashboardPage } from '../features/dashboard'
+import { UserDetailPage } from '../features/users/pages/UserDetailPage'
+import { UsersPage } from '../features/users/pages/UsersPage'
 import { AdminShell } from '../shared/layout/AdminShell'
 import { NAV_ITEMS } from '../shared/layout/nav.config'
 import { PlaceholderPage } from '../shared/layout/PlaceholderPage'
 import { AppProviders } from './providers/AppProviders'
 
-const placeholderRoutes = NAV_ITEMS.filter((item) => item.path !== '/' && item.path !== '/analytics').map((item) => ({
+const placeholderRoutes = NAV_ITEMS.filter((item) => item.path !== '/' && item.path !== '/analytics' && item.path !== '/users').map((item) => ({
   path: item.path,
   element: <PlaceholderPage />,
 }))
@@ -47,6 +49,8 @@ export const router = createBrowserRouter([
                   { path: 'revenue', element: <RevenueTab /> },
                 ],
               },
+              { path: '/users', element: <UsersPage /> },
+              { path: '/users/:userId', element: <UserDetailPage /> },
               ...placeholderRoutes,
             ],
           },

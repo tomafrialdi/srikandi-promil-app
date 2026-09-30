@@ -1,36 +1,17 @@
 import { Flag, FileText, Lifebuoy, Pulse, type Icon } from '@phosphor-icons/react'
-import type { BadgeTone } from '../../../shared/ui'
-import type { AttentionSeverity, PlanType, TrackingMode } from '../types'
+import type { AttentionSeverity, PlanType } from '../types'
 
-export const PLAN_LABEL: Record<PlanType, string> = {
-  free: 'Free',
-  trial: 'Trial',
-  plus_monthly: 'Plus monthly',
-  plus_yearly: 'Plus yearly',
-}
-
-export const PLAN_BADGE: Record<PlanType, { label: string; tone: BadgeTone }> = {
-  free: { label: 'Free', tone: 'neutral' },
-  trial: { label: 'Trial', tone: 'warning' },
-  plus_monthly: { label: 'Plus', tone: 'primary' },
-  plus_yearly: { label: 'Plus', tone: 'primary' },
-}
+export { PLAN_BADGE, PLAN_LABEL } from '../../../shared/lib/labels'
 
 export const PLAN_COLOR: Record<PlanType, string> = {
   free: 'var(--secondary)',
   plus_yearly: 'var(--primary)',
   plus_monthly: 'var(--pink)',
   trial: 'var(--warning)',
+  clinic_sponsored: 'var(--secondary)',
 }
 
-export const MODE_LABEL: Record<TrackingMode, string> = {
-  ttc: 'TTC',
-  pcos: 'PCOS',
-  iui: 'IUI',
-  ivf: 'IVF',
-  after_loss: 'After loss',
-  pregnant: 'Pregnant',
-}
+export { MODE_LABEL } from '../../../shared/lib/labels'
 
 /** Icon names are stored in `attention_items.icon`. */
 export const ATTENTION_ICON: Record<string, Icon> = {

@@ -21,7 +21,7 @@ src/
   lib/        supabase.ts (client)
   styles/     tokens.css (colors/fonts from Pencil), base.css
   shared/     ui/  charts/  layout/  lib/format.ts
-  features/   auth/  dashboard/  analytics/
+  features/   auth/  dashboard/  analytics/  users/
 ```
 
 Rule: **a feature owns its pages, components, services, hooks and config.** Shared code goes in `shared/`.
@@ -65,13 +65,22 @@ Rule: **a feature owns its pages, components, services, hooks and config.** Shar
 | Health outcomes | `/analytics/health-outcomes` | `analytics_health` |
 | Revenue | `/analytics/revenue` | `analytics_revenue` |
 
+**users** — `/users`, `/users/:userId`
+- `pages/UsersPage` (list), `pages/UserDetailPage`
+- `components/list/`: `UsersHeader` `MiniStats` `UsersTable` `UsersFilterBar` `BulkBar` (filters + page live in the URL: `hooks/useUsersFilters`)
+- `components/detail/`: `DetailHeader` `ProfileCard` `TrackingSummaryCard` `EngineStatusCard` `MedicationsCard` `DoctorsCard` `ActivityCard` `SubscriptionCard` `ClinicsCard` `DevicesCard` `PrivacyCard`
+- `modals/`: `EngineLogModal` `MedicationModal` `DoctorCareModal` `ClinicJourneyModal`, `change-plan/ChangePlanModal`, `invite-admin/` (4-step wizard: `DetailsStep` `RoleStep` `AccessStep` `ReviewStep`)
+- Health data modals (engine log, medication) first ask for a reason via `hooks/useUnmaskGate`; the backend logs it. Other modals load on demand with `hooks/useModalData`.
+- `services/users.service` = one function per RPC; `types.ts` mirrors the JSON.
+
 ## Shared
 
-| `shared/ui` | `Avatar` `Badge` `Button` `Card`/`CardHeader` `DataTable` `DonutChart` `IconTile` `Notice` `PageState` `ProgressBar` `TextField` |
+| `shared/ui` | `Avatar` `Badge` `Button` `Card`/`CardHeader` `DataTable` `DonutChart` `IconTile` `Notice` `PageState` `ProgressBar` `TextField` + forms: `Field` `SelectField` `TextAreaField` `ChipInput` `Toggle`/`ToggleRow`/`CheckRow`/`Checkbox` `RadioCard` + `CountTabs` `Pagination` `StepTabs` `Toast` |
 |---|---|
 | **`shared/charts`** | `BarRow` `CohortTable` `Columns` `HeatGrid` `Legend` `LineChart` `Sparkline` `StackedColumns` |
 | **`shared/layout`** | `AdminShell` (Sidebar + sticky Topbar + page), `nav.config.ts` (menu + placeholder routes), `PlaceholderPage` |
-| **`shared/lib`** | `format.ts`: number, percent, Rp, duration, time-ago helpers |
+| **`shared/lib`** | `format.ts` (number, %, Rp, duration, time-ago), `labels.ts` (plan/mode labels), `csv.ts` (CSV download) |
+| **`shared/hooks`** | `useAsyncData(key, fetcher)` — load + reload with loading/error state |
 
 ## Add a new page
 
@@ -80,3 +89,27 @@ Rule: **a feature owns its pages, components, services, hooks and config.** Shar
 3. `services/` (call RPC) → `hooks/` → `components/` → `pages/`.
 4. Add a route in `app/router.tsx` (menu item lives in `shared/layout/nav.config.ts`).
 5. Reuse `shared/ui` and `shared/charts`; add colors to `styles/tokens.css`, never hardcode.
+
+## Modal (reusable)
+
+`shared/ui/Modal` — use it for any dialog.
+
+```tsx
+const dialog = useDisclosure()
+
+<Modal open={dialog.open} onClose={dialog.onClose}
+       title="Title" subtitle="Optional" icon={<Icon />}
+       size="sm|md|lg|xl" tabs={<StepTabs …/>}          // tabs optional
+       footer={<ModalFooter info="left text"><Button/>…</ModalFooter>}>
+  <ModalSection label="Section">…</ModalSection>
+</Modal>
+```
+
+| Piece | Use |
+|---|---|
+| `Modal` | Portal, backdrop, Esc, focus trap, scroll lock, restores focus |
+| `ModalSection` / `ModalFooter` | Group body content / sticky footer with info + actions |
+| `ConfirmDialog` | Small yes/no; shows pending + error, throw in `onConfirm` to keep it open |
+| `ReasonDialog` | `ConfirmDialog` + required reason/ticket text |
+| `useDisclosure` | `{ open, onOpen, onClose }` |
+| `useToast()` | `toast({ title, description, tone })` after an action |

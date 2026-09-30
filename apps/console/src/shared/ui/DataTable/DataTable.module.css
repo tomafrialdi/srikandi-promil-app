@@ -42,3 +42,26 @@
   font-size: 12px;
   font-weight: 600;
 }
+
+.clickable {
+  cursor: pointer;
+}
+
+.clickable:hover {
+  background: var(--surface);
+}
+
+.selected,
+.selected:hover {
+  background: rgba(193, 61, 104, 0.04);
+}
+
+.flush {
+  margin: 0;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.flush .row {
+  padding: 0 14px;
+}

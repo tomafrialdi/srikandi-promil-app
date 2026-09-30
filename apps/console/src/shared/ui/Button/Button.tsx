@@ -2,7 +2,7 @@ import type { ButtonHTMLAttributes, ReactNode } from 'react'
 import styles from './Button.module.css'
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'outline'
+  variant?: 'primary' | 'outline' | 'danger'
   /** Full-width, 50px tall (auth forms). */
   block?: boolean
   leadingIcon?: ReactNode

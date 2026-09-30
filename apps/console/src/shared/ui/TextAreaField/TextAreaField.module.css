@@ -1,0 +1,22 @@
+.area {
+  width: 100%;
+  min-height: 84px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-control);
+  background: var(--card);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.5;
+  resize: vertical;
+  outline: 0;
+}
+
+.area:focus-visible {
+  border-color: var(--primary);
+}
+
+.area::placeholder {
+  color: var(--ink-faint);
+}

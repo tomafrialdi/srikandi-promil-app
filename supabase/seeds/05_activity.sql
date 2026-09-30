@@ -40,25 +40,30 @@ stamped as (
     s.start0 + s.k * interval '7 days' + s.r_off * interval '7 days' as ts
   from slots s cross join cfg
 )
-select
-  id,
-  greatest(
-    created_at + interval '5 minutes',
-    (date_trunc('day', ts at time zone 'Asia/Jakarta')
-      + hours[1 + floor(r_hour * array_length(hours, 1))::int] * interval '1 hour'
-      + r_min * interval '59 minutes') at time zone 'Asia/Jakarta'
-  ),
-  (40 + 400 * power(r_dur, 2))::int,
-  case when r_src < 0.80 then 'organic' when r_src < 0.86 then 'push_period'
-       when r_src < 0.94 then 'push_fertile' when r_src < 0.97 then 'push_recap' else 'push_other' end
-from stamped
-where ts < end_at and ts < now();
+select user_id, started_at, duration_seconds, source
+from (
+  select
+    id as user_id,
+    greatest(
+      created_at + interval '5 minutes',
+      (date_trunc('day', ts at time zone 'Asia/Jakarta')
+        + hours[1 + floor(r_hour * array_length(hours, 1))::int] * interval '1 hour'
+        + r_min * interval '59 minutes') at time zone 'Asia/Jakarta'
+    ) as started_at,
+    (40 + 400 * power(r_dur, 2))::int as duration_seconds,
+    case when r_src < 0.80 then 'organic' when r_src < 0.86 then 'push_period'
+         when r_src < 0.94 then 'push_fertile' when r_src < 0.97 then 'push_recap' else 'push_other' end as source,
+    end_at
+  from stamped
+  where ts < end_at and ts < now()
+) t
+where started_at < now() and started_at < end_at + interval '1 day';
 
 -- Every user who signed up inside the window has a first session right at sign-up.
 insert into public.app_sessions (user_id, started_at, duration_seconds, source)
 select id, created_at + interval '3 minutes', 300, 'organic'
 from public.app_users
-where created_at >= now() - interval '210 days';
+where created_at >= now() - interval '210 days' and created_at + interval '3 minutes' < now();
 
 update public.app_users u
 set last_active_at = s.m

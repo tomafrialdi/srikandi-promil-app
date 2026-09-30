@@ -40,6 +40,15 @@ supabase/
 | `110500_dashboard_kpis_v2` | Dashboard KPIs read sessions + MRR events |
 | `110600`–`111100` | Analytics RPCs: overview, retention, engagement, acquisition, health, revenue |
 | `119900_lock_down_rpc` | Revoke `anon` on all console RPCs |
+| `120000`–`120100` | Users module: `user_status`, new plan/roles enum values, account columns, `plan_catalog` |
+| `120200_user_care_domain` | `user_cycles`, `engine_runs`, `user_medications`, `doctors`, `clinics`, `user_care_team`, `user_clinics`, `user_integrations` |
+| `120300`–`120400` | `admin_role_catalog`, `admin_role_permissions`, `allowed_admin_domains`, `admin_invitations` + role data |
+| `120500_promos_plan_changes` | `promo_codes`, `plan_changes` |
+| `120600_users_list` | Helpers (`console_role`, `write_audit`, `phase_label`) + `admin_users_summary`, `admin_users_list` |
+| `120700_user_detail` | `admin_user_detail` + engine log / medication / doctor / clinic modal RPCs |
+| `120800_user_actions` | Suspend, grant Plus, plan-change quote + apply (proration, promo, refunds) |
+| `120900_admin_invites` | `admin_role_catalog()`, `admin_invite_admins()` |
+| `129900_lock_down_users_rpc` | Revoke `anon` on `admin_*` RPCs |
 
 ## Access control
 
@@ -60,6 +69,13 @@ supabase/
 | `analytics_acquisition(p_from, p_to)` | Analytics › Acquisition |
 | `analytics_health(p_from, p_to)` | Analytics › Health outcomes |
 | `analytics_revenue(p_from, p_to)` | Analytics › Revenue |
+| `admin_users_summary()` / `admin_users_list(tab, search, plan, mode, city, status, limit, offset)` | Users list |
+| `admin_user_detail(user)` | User detail (logs `user.view`) |
+| `admin_user_engine_log(user, reason)` / `admin_user_medication(id, reason)` | Health-data modals — reason required, logged as `user.unmask.*` |
+| `admin_user_doctor_care(link)` / `admin_user_clinic_journey(user)` | Doctor / clinic modals |
+| `admin_set_users_status(ids, status, reason)` / `admin_grant_plus(ids, reason)` | Suspend / reactivate / grant Plus (bulk) |
+| `admin_plan_change_preview(...)` / `admin_change_plan(...)` | Change plan (refund > Rp 500.000 needs Admin role) |
+| `admin_role_catalog()` / `admin_invite_admins(payload)` | Invite admin wizard (records invitations; email sending is not built) |
 | `log_console_event(action, resource, metadata)` | Auth (audit trail) |
 
 `p_from` / `p_to` are inclusive dates in Jakarta time. Previous period = same length right before `p_from` (used for deltas).
@@ -76,6 +92,9 @@ supabase/
 | `06_acquisition` | Installs per channel/campaign, spend |
 | `07_revenue` | Subscription events, B2B/teleconsult revenue |
 | `08_care_events` | Care events |
+| `09_user_admin_attributes` | Phone, status, payment, consents, deletion requests |
+| `10_user_cycles_engine` | Cycles + latest engine run per user |
+| `11_care_team_meds` | Doctors, clinics, medications, integrations, promo codes |
 
 Numbers in Analytics come from this fake data; they are not real metrics.
 

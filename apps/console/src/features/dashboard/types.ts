@@ -1,6 +1,6 @@
 /** Shapes returned by the `dashboard_overview` RPC (see supabase/migrations/*dashboard*.sql). */
 
-export type PlanType = 'free' | 'trial' | 'plus_monthly' | 'plus_yearly'
+export type PlanType = 'free' | 'trial' | 'plus_monthly' | 'plus_yearly' | 'clinic_sponsored'
 export type TrackingMode = 'ttc' | 'pcos' | 'iui' | 'ivf' | 'after_loss' | 'pregnant'
 export type JourneyStageKey =
   | 'getting_started'

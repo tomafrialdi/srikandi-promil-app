@@ -5,9 +5,9 @@ select setseed(0.66);
 -- Monthly price of the plan a (current or former) subscriber was on.
 create temporary table sub_price as
 select id, case
-    when plan = 'plus_monthly' then 79000
-    when plan = 'plus_yearly' then 49000
-    else (array[79000, 49000])[1 + abs(hashtext(id::text)) % 2]
+    when plan = 'plus_monthly' then 49000
+    when plan = 'plus_yearly' then 33250
+    else (array[49000, 33250])[1 + abs(hashtext(id::text)) % 2]
   end as price
 from public.app_users
 where paid_at is not null;
@@ -36,7 +36,7 @@ where u.churned_at < now() - interval '30 days' and abs(hashtext(u.id::text || '
 
 update public.app_users u set
   churned_at = null,
-  plan = case when p.price = 79000 then 'plus_monthly' else 'plus_yearly' end::public.plan_type
+  plan = case when p.price = 49000 then 'plus_monthly' else 'plus_yearly' end::public.plan_type
 from sub_price p
 where p.id = u.id
   and u.churned_at < now() - interval '30 days'

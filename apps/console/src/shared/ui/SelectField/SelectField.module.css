@@ -1,0 +1,45 @@
+.wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.select {
+  width: 100%;
+  appearance: none;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--ink);
+  font-weight: 600;
+  outline: 0;
+  cursor: pointer;
+}
+
+.select:focus-visible {
+  border-color: var(--primary);
+}
+
+.caret {
+  position: absolute;
+  right: 12px;
+  pointer-events: none;
+  color: var(--ink-muted);
+}
+
+.field { display: flex; }
+.field .select {
+  height: 44px;
+  padding: 0 34px 0 14px;
+  border-radius: var(--radius-control);
+  font-size: 13px;
+}
+
+.pill .select {
+  height: 36px;
+  padding: 0 32px 0 12px;
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+.pill .caret { right: 10px; }
