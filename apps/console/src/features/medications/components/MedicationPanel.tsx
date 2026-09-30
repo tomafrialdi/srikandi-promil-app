@@ -1,6 +1,6 @@
 import { CheckCircle, PaperPlaneTilt, PencilSimple, Trash, Warning } from '@phosphor-icons/react'
 import { useState } from 'react'
-import { Badge, Button, Card, ChipInput, ConfirmDialog, Field, Notice, SelectField, TextAreaField, TextField, ToggleRow, useToast } from '../../../shared/ui'
+import { Badge, Button, Card, ChipInput, ConfirmDialog, Field, Notice, TextAreaField, TextField, ToggleRow, useToast, UnitField } from '../../../shared/ui'
 import { fmtDateShort } from '../lib/dates'
 import { UNITS } from '../config/labels'
 import { blankForm, presetLabel, submitIssue, toForm, toPayload } from '../lib/med-form'
@@ -65,11 +65,8 @@ export function MedicationPanel({ med, me, canEdit, onSaved, onEditAll }: Medica
           <Field label="Generic name">
             <TextField id="mp-generic" label="" hideLabel value={form.generic_name} onChange={(e) => set({ generic_name: e.target.value })} />
           </Field>
-          <Field label="Strength">
-            <div className="flex gap-1.5">
-              <TextField id="mp-strength" label="" hideLabel inputMode="decimal" value={form.strength_value} onChange={(e) => set({ strength_value: e.target.value })} />
-              <SelectField aria-label="Unit" className="w-24 flex-none" value={form.strength_unit} options={UNITS} onChange={(strength_unit) => set({ strength_unit })} />
-            </div>
+          <Field label="Strength" htmlFor="mp-strength">
+            <UnitField id="mp-strength" value={form.strength_value} onChange={(strength_value) => set({ strength_value })} unit={form.strength_unit} units={UNITS} onUnitChange={(strength_unit) => set({ strength_unit })} unitLabel="Strength unit" />
           </Field>
         </div>
         <Field label="Brand names (ID market)">

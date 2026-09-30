@@ -1,7 +1,7 @@
 import { Clock, FloppyDisk, PaperPlaneTilt, Pill, Plus, ScanSmiley, Trash, Warning } from '@phosphor-icons/react'
 import { useState } from 'react'
 import { cn } from '../../../shared/lib/cn'
-import { Button, ChipInput, Field, Modal, ModalFooter, ModalSection, Notice, SelectField, TextAreaField, TextField, ToggleRow, useToast } from '../../../shared/ui'
+import { Button, ChipInput, Field, Modal, ModalFooter, ModalSection, Notice, SelectField, TextAreaField, TextField, ToggleRow, useToast, UnitField } from '../../../shared/ui'
 import { FORMS, FREQUENCIES, TIMINGS, TYPE, UNITS } from '../config/labels'
 import { blankForm, blankPreset, draftIssue, pushPreview, submitIssue, toForm, toPayload } from '../lib/med-form'
 import { saveMed } from '../services/medications.service'
@@ -96,11 +96,8 @@ export function AddMedicationModal({ open, onClose, med, options, onSaved }: Add
           <Field label="Category" required>
             <SelectField aria-label="Category" value={form.category} options={[{ value: '', label: 'Select a category' }, ...(options?.categories ?? []).map((c) => ({ value: c, label: c }))]} onChange={(category) => set({ category })} />
           </Field>
-          <Field label="Strength" required>
-            <div className="flex gap-1.5">
-              <TextField id="am-strength" label="" hideLabel inputMode="decimal" value={form.strength_value} onChange={(e) => set({ strength_value: e.target.value })} />
-              <SelectField aria-label="Unit" className="w-24 flex-none" value={form.strength_unit} options={UNITS} onChange={(strength_unit) => set({ strength_unit })} />
-            </div>
+          <Field label="Strength" htmlFor="am-strength" required>
+            <UnitField id="am-strength" value={form.strength_value} onChange={(strength_value) => set({ strength_value })} unit={form.strength_unit} units={UNITS} onUnitChange={(strength_unit) => set({ strength_unit })} unitLabel="Strength unit" />
           </Field>
           <Field label="Form">
             <SelectField aria-label="Form" value={form.form} options={FORMS} onChange={(v) => set({ form: v as MedFormState['form'] })} />
