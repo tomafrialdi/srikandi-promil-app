@@ -1,7 +1,7 @@
-import type { TextareaHTMLAttributes } from 'react'
+import type { ComponentProps } from 'react'
 import { cn } from '../../lib/cn'
 
-export function TextAreaField({ className, ...rest }: TextareaHTMLAttributes<HTMLTextAreaElement>) {
+export function TextAreaField({ className, ...rest }: ComponentProps<'textarea'>) {
   return (
     <textarea
       className={cn(
