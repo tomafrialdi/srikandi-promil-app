@@ -9,14 +9,16 @@ interface ChipInputProps {
   /** Return an error message to mark a chip invalid. */
   validate?: (value: string) => string | null
   placeholder?: string
+  /** Keep spaces inside a chip ("Letrozol Hexpharm"); only comma / semicolon / Enter split. Default: spaces split too. */
+  allowSpaces?: boolean
 }
 
 /** Type a value and press Enter / comma / Tab to turn it into a chip. Paste splits on commas & spaces. */
-export function ChipInput({ id, values, onChange, validate, placeholder }: ChipInputProps) {
+export function ChipInput({ id, values, onChange, validate, placeholder, allowSpaces }: ChipInputProps) {
   const [draft, setDraft] = useState('')
 
   const commit = (raw: string) => {
-    const parts = raw.split(/[\s,;]+/).map((p) => p.trim()).filter(Boolean)
+    const parts = raw.split(allowSpaces ? /[,;\n]+/ : /[\s,;]+/).map((p) => p.trim()).filter(Boolean)
     if (parts.length === 0) return
     const next = [...values]
     for (const part of parts) if (!next.includes(part)) next.push(part)
