@@ -1,5 +1,5 @@
 import { CaretDown, Check } from '@phosphor-icons/react'
-import { useEffect, useId, useRef, useState, type ButtonHTMLAttributes, type KeyboardEvent } from 'react'
+import { useEffect, useId, useRef, useState, type ButtonHTMLAttributes, type KeyboardEvent, type ReactNode } from 'react'
 import { cn } from '../../lib/cn'
 import { Popover } from '../Popover'
 
@@ -18,13 +18,15 @@ interface SelectFieldProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>,
   placeholder?: string
   /** Classes for the button itself (`className` styles the wrapper). */
   triggerClassName?: string
+  /** Replaces the chevron (e.g. a magnifier for a "search…" field). */
+  indicator?: ReactNode
 }
 
 /**
  * Dropdown that replaces the native <select>: styled list in a popover, keyboard friendly
  * (arrows, Home/End, Enter/Space, Escape, type-to-jump) and announced as a combobox + listbox.
  */
-export function SelectField({ value, options, onChange, variant = 'field', className, triggerClassName, placeholder, disabled, id, ...rest }: SelectFieldProps) {
+export function SelectField({ value, options, onChange, variant = 'field', className, triggerClassName, indicator, placeholder, disabled, id, ...rest }: SelectFieldProps) {
   const uid = useId()
   const button = useRef<HTMLButtonElement>(null)
   const list = useRef<HTMLUListElement>(null)
@@ -102,7 +104,7 @@ export function SelectField({ value, options, onChange, variant = 'field', class
         {...rest}
       >
         <span className={cn('min-w-0 flex-1 truncate', !current && 'text-ink-faint')}>{current?.label ?? placeholder ?? ''}</span>
-        <CaretDown size={13} className={cn('flex-none text-ink-muted transition-transform', open && 'rotate-180')} />
+        {indicator ?? <CaretDown size={13} className={cn('flex-none text-ink-muted transition-transform', open && 'rotate-180')} />}
       </button>
       <Popover open={open} anchor={button} onClose={() => setOpen(false)} matchWidth maxHeight={280} className="max-w-90 p-1.5">
         <ul ref={list} id={`${uid}-list`} role="listbox" className="m-0 flex list-none flex-col gap-px p-0" onMouseDown={(event) => event.preventDefault()}>

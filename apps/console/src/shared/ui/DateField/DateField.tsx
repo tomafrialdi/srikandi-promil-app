@@ -18,6 +18,8 @@ interface DateFieldProps {
   clearable?: boolean
   disabled?: boolean
   placeholder?: string
+  /** Calendar icon at the right instead of the left. */
+  iconEnd?: boolean
   className?: string
   'aria-label'?: string
 }
@@ -47,7 +49,7 @@ function TimeRow({ time, onChange }: { time: string; onChange: (time: string) =>
 }
 
 /** Date (and optional time) picker that replaces <input type="date|datetime-local"> with a styled calendar popover. */
-export function DateField({ id, value, onChange, min, max, withTime, clearable = true, disabled, placeholder, className, 'aria-label': ariaLabel }: DateFieldProps) {
+export function DateField({ id, value, onChange, min, max, withTime, clearable = true, disabled, placeholder, iconEnd, className, 'aria-label': ariaLabel }: DateFieldProps) {
   const button = useRef<HTMLButtonElement>(null)
   const [open, setOpen] = useState(false)
   const [time, setTime] = useState(DEFAULT_TIME)
@@ -89,8 +91,9 @@ export function DateField({ id, value, onChange, min, max, withTime, clearable =
           }
         }}
       >
-        <CalendarBlank size={16} className="flex-none text-ink-muted" />
-        <span className={cn('min-w-0 flex-1 truncate', !text && 'text-ink-faint')}>{text || placeholder || (withTime ? 'Pick date & time' : 'Pick a date')}</span>
+        {!iconEnd && <CalendarBlank size={16} className="flex-none text-ink-muted" />}
+        <span className={cn('min-w-0 flex-1 truncate', !text && 'font-medium text-ink-faint')}>{text || placeholder || (withTime ? 'Pick date & time' : 'Pick a date')}</span>
+        {iconEnd && <CalendarBlank size={15} className="flex-none text-ink-muted" />}
       </button>
       <Popover open={open} anchor={button} onClose={() => setOpen(false)} role="dialog" maxHeight={520}>
         <Calendar

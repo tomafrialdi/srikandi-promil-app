@@ -1,4 +1,4 @@
-import { ImageSquare, Spinner, Trash } from '@phosphor-icons/react'
+import { Camera, ImageSquare, Spinner, Trash } from '@phosphor-icons/react'
 import { useRef, useState } from 'react'
 import { cn } from '../../lib/cn'
 import { ikUrl, uploadImage, type UploadedImage } from '../../services/imagekit.service'
@@ -17,10 +17,12 @@ interface ImageUploadProps {
   className?: string
   /** Tailwind aspect class for the box (default 16:9). */
   aspectClassName?: string
+  /** Circular avatar-style box with a camera icon. */
+  round?: boolean
 }
 
 /** Click-to-upload image box. Uploads to ImageKit immediately and reports the URL via `onChange`. */
-export function ImageUpload({ value, onChange, folder, label = 'Upload image', className, aspectClassName = 'aspect-video' }: ImageUploadProps) {
+export function ImageUpload({ value, onChange, folder, label = 'Upload image', className, aspectClassName = 'aspect-video', round }: ImageUploadProps) {
   const inputRef = useRef<HTMLInputElement>(null)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -43,17 +45,17 @@ export function ImageUpload({ value, onChange, folder, label = 'Upload image', c
 
   return (
     <div className={cn('flex flex-col gap-1.5', className)}>
-      <div className={cn('relative flex items-center justify-center overflow-hidden rounded-control border border-dashed border-border bg-surface-alt', aspectClassName)}>
+      <div className={cn('relative flex items-center justify-center overflow-hidden border border-border', round ? 'rounded-full bg-surface' : 'rounded-control border-dashed bg-surface-alt', aspectClassName)}>
         {value ? (
           <img src={ikUrl(value, { w: 640 })} alt="" className="size-full object-cover" />
         ) : (
           <button
             type="button"
-            className="flex size-full flex-col items-center justify-center gap-1.5 text-12 font-semibold text-ink-muted disabled:opacity-55"
+            className={cn('flex size-full flex-col items-center justify-center gap-1.5 text-12 font-semibold text-ink-muted disabled:opacity-55', round && 'gap-1 text-11 font-bold')}
             onClick={() => inputRef.current?.click()}
             disabled={busy}
           >
-            <ImageSquare size={24} />
+            {round ? <Camera size={20} /> : <ImageSquare size={24} />}
             {label}
           </button>
         )}
