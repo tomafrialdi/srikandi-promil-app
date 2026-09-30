@@ -1,4 +1,5 @@
-import { Warning } from '@phosphor-icons/react'
+import { AppleLogo, ClockCounterClockwise, Crown, DeviceMobile, Lock, PaperPlaneTilt, FloppyDisk, SealPercent, Wallet, Warning } from '@phosphor-icons/react'
+import type { ReactNode } from 'react'
 import { useEffect, useMemo, useState } from 'react'
 import { Button, CheckRow, Field, Modal, ModalFooter, ModalSection, Notice, RadioCard, SelectField, Segmented, TextField, useToast } from '../../../shared/ui'
 import { formatIdr, formatIdrSigned, formatNumber } from '../../../shared/lib/format'
@@ -165,12 +166,26 @@ export function EditPlanModal({ open, initialPlan, onClose, onSaved }: EditPlanM
       open={open}
       onClose={close}
       size="md"
+      icon={<Crown size={20} weight="fill" />}
       title="Edit plans"
       subtitle="Changes to pricing need Finance approval before going live."
+      tabs={
+        editor && (
+          <div className="border-b border-border bg-surface px-6 py-3.5">
+            <Segmented block label="Plan" value={active} onChange={setActive} options={editor.plans.map((p) => ({ value: p.plan, label: p.label }))} />
+          </div>
+        )
+      }
       footer={
-        <ModalFooter info={plan ? `Last changed ${plan.updated_at}` : undefined}>
+        <ModalFooter
+          info={plan ? <span className="inline-flex items-center gap-1.5"><ClockCounterClockwise size={14} className="text-ink-faint" />Last changed {plan.updated_at}</span> : undefined}
+        >
           <Button variant="outline" onClick={close} disabled={saving}>Cancel</Button>
-          <Button onClick={submit} disabled={saving || !plan || !form?.label.trim()}>
+          <Button
+            onClick={submit}
+            disabled={saving || !plan || !form?.label.trim()}
+            leadingIcon={change?.changed ? <PaperPlaneTilt size={16} weight="fill" /> : <FloppyDisk size={16} weight="fill" />}
+          >
             {saving ? 'Saving…' : change?.changed ? 'Request approval' : 'Save changes'}
           </Button>
         </ModalFooter>
@@ -181,13 +196,6 @@ export function EditPlanModal({ open, initialPlan, onClose, onSaved }: EditPlanM
 
       {plan && form && editor && (
         <>
-          <Segmented
-            label="Plan"
-            value={active}
-            onChange={setActive}
-            options={editor.plans.map((p) => ({ value: p.plan, label: p.label }))}
-          />
-
           {plan.pending_request && (
             <Notice tone="warning" icon={<Warning size={16} />}>
               A price change for this plan is waiting for approval.
@@ -201,13 +209,15 @@ export function EditPlanModal({ open, initialPlan, onClose, onSaved }: EditPlanM
           )}
 
           <ModalSection label="Plan details">
-            <div className="grid gap-3.5 min-[701px]:grid-cols-2">
+            <div className="grid gap-3.5 min-[701px]:grid-cols-[minmax(0,1fr)_220px]">
               <Field label="Display name" htmlFor="plan-name" required>
                 <TextField id="plan-name" label="" hideLabel value={form.label} onChange={(e) => patch({ label: e.target.value })} />
               </Field>
               <Field label="Plan ID" htmlFor="plan-id">
-                <TextField id="plan-id" label="" hideLabel value={plan.plan_id ?? ''} readOnly disabled />
+                <TextField id="plan-id" label="" hideLabel value={plan.plan_id ?? ''} readOnly disabled icon={null} trailing={<Lock size={15} className="text-ink-muted" />} />
               </Field>
+            </div>
+            <div className="grid gap-3.5 min-[701px]:grid-cols-3">
               <Field label="Billing period" htmlFor="plan-billing">
                 <SelectField id="plan-billing" value={form.billing} options={BILLING} onChange={(billing) => patch({ billing })} />
               </Field>
@@ -221,37 +231,35 @@ export function EditPlanModal({ open, initialPlan, onClose, onSaved }: EditPlanM
           </ModalSection>
 
           <ModalSection label="Pricing by channel">
-            <div className="grid gap-3.5 min-[701px]:grid-cols-3">
-              <Field label="Midtrans (GoPay, QRIS, OVO, card)" htmlFor="price-midtrans">
-                <div className="flex h-11 items-center gap-2 rounded-control border border-border bg-card px-3.5 focus-within:border-primary [&_span]:text-12 [&_span]:font-bold [&_span]:text-ink-muted [&_input]:min-w-0 [&_input]:flex-1 [&_input]:border-0 [&_input]:bg-transparent [&_input]:text-13 [&_input]:font-bold [&_input]:outline-0"><span>Rp</span>
-                  <input id="price-midtrans" inputMode="numeric" value={money(form.price)} onChange={(e) => patch({ price: digits(e.target.value) })} />
-                </div>
-              </Field>
-              <Field label="Google Play" htmlFor="price-google">
-                <div className="flex h-11 items-center gap-2 rounded-control border border-border bg-card px-3.5 focus-within:border-primary [&_span]:text-12 [&_span]:font-bold [&_span]:text-ink-muted [&_input]:min-w-0 [&_input]:flex-1 [&_input]:border-0 [&_input]:bg-transparent [&_input]:text-13 [&_input]:font-bold [&_input]:outline-0"><span>Rp</span>
-                  <input id="price-google" inputMode="numeric" value={money(form.google)} onChange={(e) => patch({ google: digits(e.target.value) })} />
-                </div>
-                {plan.google_tier && <small className="text-11 text-ink-faint">tier: {plan.google_tier}</small>}
-              </Field>
-              <Field label="Apple App Store" htmlFor="price-apple">
-                <div className="flex h-11 items-center gap-2 rounded-control border border-border bg-card px-3.5 focus-within:border-primary [&_span]:text-12 [&_span]:font-bold [&_span]:text-ink-muted [&_input]:min-w-0 [&_input]:flex-1 [&_input]:border-0 [&_input]:bg-transparent [&_input]:text-13 [&_input]:font-bold [&_input]:outline-0"><span>Rp</span>
-                  <input id="price-apple" inputMode="numeric" value={money(form.apple)} onChange={(e) => patch({ apple: digits(e.target.value) })} />
-                </div>
-                {plan.apple_tier && <small className="text-11 text-ink-faint">{plan.apple_tier}</small>}
-              </Field>
+            <div className="grid items-start gap-3.5 min-[701px]:grid-cols-3">
+              <ChannelPrice id="price-midtrans" icon={<Wallet size={15} />} title="Midtrans (GoPay, QRIS, OVO, card)" value={form.price} onChange={(price) => patch({ price })} />
+              <ChannelPrice id="price-google" icon={<DeviceMobile size={15} />} title="Google Play" value={form.google} onChange={(google) => patch({ google })} note={plan.google_tier ? `tier: ${plan.google_tier}` : undefined} />
+              <ChannelPrice id="price-apple" icon={<AppleLogo size={15} weight="fill" />} title="Apple App Store" value={form.apple} onChange={(apple) => patch({ apple })} note={plan.apple_tier ?? undefined} />
             </div>
-            {yearlyNote && <div className="rounded-[10px] bg-success-soft px-3 py-2.5 text-12 font-semibold text-success">{yearlyNote}</div>}
+            {yearlyNote && (
+              <div className="flex items-center gap-2 rounded-[10px] bg-success-soft px-3.5 py-2.5 text-12 font-semibold text-success">
+                <SealPercent size={15} weight="fill" className="flex-none" />
+                {yearlyNote}
+              </div>
+            )}
           </ModalSection>
 
           <ModalSection label="Included features">
             <div className="grid gap-x-5 gap-y-3 min-[701px]:grid-cols-2">
-              {form.features.map((feature, index) => (
-                <CheckRow
-                  key={feature.label}
-                  title={feature.label}
-                  checked={feature.included}
-                  onChange={(included) => patch({ features: form.features.map((f, i) => (i === index ? { ...f, included } : f)) })}
-                />
+              {[form.features.slice(0, Math.ceil(form.features.length / 2)), form.features.slice(Math.ceil(form.features.length / 2))].map((column, c) => (
+                <div key={c} className="flex flex-col gap-3">
+                  {column.map((feature) => {
+                    const index = form.features.indexOf(feature)
+                    return (
+                      <CheckRow
+                        key={feature.label}
+                        title={<span className={feature.included ? 'font-semibold' : 'font-semibold text-ink-muted'}>{feature.label}</span>}
+                        checked={feature.included}
+                        onChange={(included) => patch({ features: form.features.map((f, i) => (i === index ? { ...f, included } : f)) })}
+                      />
+                    )
+                  })}
+                </div>
               ))}
             </div>
           </ModalSection>
@@ -271,6 +279,7 @@ export function EditPlanModal({ open, initialPlan, onClose, onSaved }: EditPlanM
             <div className="flex flex-col gap-2.5">
               <RadioCard
                 name="price-scope"
+                leading
                 selected={!form.migrate}
                 onSelect={() => patch({ migrate: false })}
                 title="New subscribers only"
@@ -278,13 +287,14 @@ export function EditPlanModal({ open, initialPlan, onClose, onSaved }: EditPlanM
               />
               <RadioCard
                 name="price-scope"
+                leading
                 selected={form.migrate}
                 onSelect={() => patch({ migrate: true })}
                 title="Migrate existing subscribers at next renewal"
                 description="Users are notified 30 days before (required by app stores). Expect higher churn."
               />
             </div>
-            <div className="grid gap-2.5 min-[701px]:grid-cols-4">
+            <div className="grid grid-cols-2 gap-x-4 gap-y-3 rounded-xl bg-surface px-4 py-3.5 min-[701px]:grid-cols-4">
               <Impact label="Active subscribers" value={formatNumber(plan.subscribers)} />
               <Impact label="Price change" value={change?.changed && change.pct !== 0 ? `${change.pct > 0 ? '+' : ''}${change.pct.toFixed(1)}%` : 'none'} />
               <Impact label="Projected MRR impact" value={migrateImpact === 0 ? 'Rp 0' : formatIdrSigned(Math.round(migrateImpact))} />
@@ -299,9 +309,26 @@ export function EditPlanModal({ open, initialPlan, onClose, onSaved }: EditPlanM
 
 function Impact({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex flex-col gap-0.5 rounded-[10px] bg-surface px-3 py-2.5 [&_span]:text-11 [&_span]:text-ink-muted [&_strong]:text-13">
-      <span>{label}</span>
-      <strong>{value}</strong>
+    <div className="flex min-w-0 flex-col gap-0.5">
+      <span className="text-11 font-semibold text-ink-muted">{label}</span>
+      <strong className="text-14 font-extrabold">{value}</strong>
+    </div>
+  )
+}
+
+/** One sales channel: tinted card with the channel icon, a Rp-prefixed price input and an optional store tier note. */
+function ChannelPrice({ id, icon, title, value, onChange, note }: { id: string; icon: ReactNode; title: string; value: string; onChange: (value: string) => void; note?: string }) {
+  return (
+    <div className="flex flex-col gap-2.5 rounded-xl bg-surface p-3.5">
+      <label htmlFor={id} className="flex items-start gap-2 text-12 leading-snug font-bold">
+        <span className="mt-px flex-none text-ink-muted">{icon}</span>
+        {title}
+      </label>
+      <div className="flex h-10 items-center gap-2 rounded-[10px] border border-border bg-card px-3 focus-within:border-primary">
+        <span className="text-13 font-semibold text-ink-faint">Rp</span>
+        <input id={id} className="min-w-0 flex-1 border-0 bg-transparent text-13 font-semibold outline-0" inputMode="numeric" value={money(value)} onChange={(e) => onChange(digits(e.target.value))} />
+      </div>
+      {note && <small className="text-11 font-medium text-ink-faint">{note}</small>}
     </div>
   )
 }
