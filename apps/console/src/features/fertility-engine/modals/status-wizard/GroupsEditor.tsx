@@ -1,5 +1,6 @@
 import { Plus, X } from '@phosphor-icons/react'
 import { cn } from '../../../../shared/lib/cn'
+import { SelectField } from '../../../../shared/ui'
 import { FIELDS, FIELD_BY_KEY, operatorsFor } from '../../engine/fields'
 import type { Cond, Groups } from '../../types'
 import { condIssue } from './status-form'
@@ -22,21 +23,10 @@ function CondRow({ cond, first, onChange, onRemove }: { cond: Cond; first: boole
     <div className="flex flex-col gap-1">
       <div className="grid grid-cols-[46px_minmax(0,1.2fr)_84px_minmax(0,1fr)_24px] items-center gap-2 max-[700px]:grid-cols-[46px_minmax(0,1fr)_24px]">
         <span className={cn('inline-flex h-7 items-center justify-center rounded-md text-10 font-extrabold', first ? 'bg-ink text-white' : 'bg-surface-alt text-ink-muted')}>{first ? 'IF' : 'AND'}</span>
-        <select className={cn(SELECT, 'font-mono')} aria-label="Signal" value={cond.field} onChange={(e) => onChange({ field: e.target.value, op: operatorsFor(FIELD_BY_KEY[e.target.value])[0] ?? '=', value: FIELD_BY_KEY[e.target.value]?.type === 'bool' ? 'true' : '' })}>
-          {FIELDS.map((f) => (
-            <option key={f.key} value={f.key}>{f.key}</option>
-          ))}
-        </select>
-        <select className={cn(SELECT, 'max-[700px]:hidden')} aria-label="Operator" value={ops.includes(cond.op) ? cond.op : ops[0]} onChange={(e) => onChange({ ...cond, op: e.target.value })}>
-          {ops.map((o) => (
-            <option key={o} value={o}>{o}</option>
-          ))}
-        </select>
+        <SelectField triggerClassName="font-mono" aria-label="Signal" value={cond.field} options={FIELDS.map((f) => ({ value: f.key, label: f.key }))} onChange={(field) => onChange({ field, op: operatorsFor(FIELD_BY_KEY[field])[0] ?? '=', value: FIELD_BY_KEY[field]?.type === 'bool' ? 'true' : '' })} />
+        <SelectField className="max-[700px]:hidden" aria-label="Operator" value={ops.includes(cond.op) ? cond.op : ops[0]!} options={ops.map((o) => ({ value: o, label: o }))} onChange={(op) => onChange({ ...cond, op })} />
         {def?.type === 'bool' ? (
-          <select className={cn(SELECT, 'max-[700px]:hidden')} aria-label="Value" value={cond.value} onChange={(e) => onChange({ ...cond, value: e.target.value })}>
-            <option value="true">true</option>
-            <option value="false">false</option>
-          </select>
+          <SelectField className="max-[700px]:hidden" aria-label="Value" value={cond.value} options={[{ value: 'true', label: 'true' }, { value: 'false', label: 'false' }]} onChange={(value) => onChange({ ...cond, value })} />
         ) : (
           <>
             <input className={cn(SELECT, 'font-mono max-[700px]:hidden', issue && cond.value !== '' && 'border-error')} aria-label="Value" list={def?.type === 'enum' ? listId : undefined} placeholder={def?.type === 'enum' ? def.options?.join(' / ') : cond.op === 'between' ? '1 - 2' : 'value'} value={cond.value} onChange={(e) => onChange({ ...cond, value: e.target.value })} />

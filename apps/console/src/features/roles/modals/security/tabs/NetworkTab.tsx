@@ -1,6 +1,6 @@
 import { Plus, Trash } from '@phosphor-icons/react'
 import { useState } from 'react'
-import { Button, Field, ModalSection, ToggleRow } from '../../../../../shared/ui'
+import { Button, Field, ModalSection, ToggleRow, DateField } from '../../../../../shared/ui'
 import { timeAgo } from '../../../../../shared/lib/format'
 import { AUTOBLOCK, FAILED_LOGINS, LOCK_MINUTES } from '../../../config/security-options'
 import type { AllowedRange } from '../../../types'
@@ -46,7 +46,7 @@ export function NetworkTab({ value, onChange, ranges, lastUsed, onRanges }: Netw
           <div className="grid gap-2.5 rounded-xl bg-surface p-3 min-[701px]:grid-cols-[150px_minmax(0,1fr)_140px_auto] min-[701px]:items-end">
             <Field label="CIDR range"><input className={INPUT} aria-label="CIDR range" placeholder="203.0.113.0/24" value={cidr} onChange={(e) => setCidr(e.target.value)} /></Field>
             <Field label="Label"><input className={INPUT} aria-label="Label" placeholder="e.g. Surabaya office" value={label} onChange={(e) => setLabel(e.target.value)} /></Field>
-            <Field label="Expires (optional)"><input className={INPUT} type="date" aria-label="Expires" value={expires} onChange={(e) => setExpires(e.target.value)} /></Field>
+            <Field label="Expires (optional)"><DateField aria-label="Expires" value={expires} onChange={setExpires} /></Field>
             <Button onClick={add} disabled={!cidr.trim() || !label.trim()} className="h-11">Add</Button>
           </div>
         )}

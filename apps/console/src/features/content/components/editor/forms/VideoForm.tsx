@@ -1,6 +1,6 @@
 import { Plus, Trash, UploadSimple } from '@phosphor-icons/react'
 import { useRef, useState } from 'react'
-import { Field, TextAreaField, TextField, ToggleRow, useToast } from '../../../../../shared/ui'
+import { Field, TextAreaField, TextField, ToggleRow, useToast, SelectField } from '../../../../../shared/ui'
 import { cn } from '../../../../../shared/lib/cn'
 import { formatMinutes } from '../../../../../shared/lib/format'
 import { uploadFile, videoThumbnail } from '../../../../../shared/services/imagekit.service'
@@ -88,9 +88,7 @@ export function VideoForm({ form, set }: VideoFormProps) {
         <div className="grid gap-4 min-[600px]:grid-cols-2">
           <TextField id="presenter" label="Presenter" placeholder="dr. Sarah Lestari, SpOG-KFER" value={form.presenter} onChange={(e) => set('presenter', e.target.value)} />
           <Field label="Category" htmlFor="video-category">
-            <select id="video-category" className={INPUT} value={form.category} onChange={(e) => set('category', e.target.value)}>
-              {Array.from(new Set([...DEFAULT_CATEGORIES, form.category])).map((c) => <option key={c} value={c}>{c}</option>)}
-            </select>
+            <SelectField id="video-category" value={form.category} options={Array.from(new Set([...DEFAULT_CATEGORIES, form.category])).map((c) => ({ value: c, label: c }))} onChange={(v) => set('category', v)} />
           </Field>
         </div>
       </EditorCard>

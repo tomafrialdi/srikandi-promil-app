@@ -1,7 +1,7 @@
 import { Link as LinkIcon } from '@phosphor-icons/react'
 import { useCallback } from 'react'
 import { useAsyncData } from '../../../../../shared/hooks/useAsyncData'
-import { ChipInput, Field, SelectField, TextAreaField, Badge, CheckRow } from '../../../../../shared/ui'
+import { ChipInput, Field, SelectField, TextAreaField, Badge, CheckRow, DateField } from '../../../../../shared/ui'
 import { formatCompact } from '../../../../../shared/lib/format'
 import { CHECKLIST_ITEMS, DEFAULT_CATEGORIES, MODES, PHASES, PLANS, VISIBILITY_OPTIONS } from '../../../config/editor'
 import { fetchAudience } from '../../../services/content.service'
@@ -29,7 +29,7 @@ export function SettingsColumn({ form, options, set }: SettingsColumnProps) {
         </Field>
         {form.type !== 'in_app_card' && (
           <Field label="Publish date" htmlFor="publish-date" hint="WIB">
-            <input id="publish-date" type="datetime-local" className={INPUT} value={form.scheduled_at} onChange={(e) => set('scheduled_at', e.target.value)} />
+            <DateField id="publish-date" withTime value={form.scheduled_at} onChange={(v) => set('scheduled_at', v)} />
           </Field>
         )}
         <Field label="Category" htmlFor="category">

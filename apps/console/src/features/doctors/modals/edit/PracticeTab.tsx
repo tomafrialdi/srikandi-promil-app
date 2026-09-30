@@ -1,6 +1,6 @@
 import { Buildings, CalendarX, Plus, Trash, VideoCamera } from '@phosphor-icons/react'
 import { useState } from 'react'
-import { Badge, Button, Field, ModalSection, SelectField, TextField, ToggleRow } from '../../../../shared/ui'
+import { Badge, Button, Field, ModalSection, SelectField, TextField, ToggleRow, DateField } from '../../../../shared/ui'
 import { BOOKING_WINDOW, BUFFER_MINUTES, MIN_NOTICE, SLOT_MINUTES, TIMELINE_COLORS, WEEKDAYS } from '../../config/labels'
 import { ensureVirtual, newId } from '../../lib/doctor-form'
 import type { DoctorForm, DoctorsOptions, Location } from '../../types'
@@ -126,8 +126,8 @@ export function PracticeTab({ form, setForm, options }: PracticeTabProps) {
           ))}
         </div>
         <div className="grid items-end gap-2.5 min-[701px]:grid-cols-[150px_150px_minmax(0,1fr)_auto]">
-          <Field label="From"><input type="date" className="h-11 rounded-control border border-border bg-card px-3 text-13 font-semibold outline-0 focus-visible:border-primary" value={off.from} onChange={(e) => setOff({ ...off, from: e.target.value, to: off.to || e.target.value })} /></Field>
-          <Field label="To"><input type="date" className="h-11 rounded-control border border-border bg-card px-3 text-13 font-semibold outline-0 focus-visible:border-primary" value={off.to} min={off.from} onChange={(e) => setOff({ ...off, to: e.target.value })} /></Field>
+          <Field label="From"><DateField clearable={false} aria-label="From" value={off.from} onChange={(from) => setOff({ ...off, from, to: off.to || from })} /></Field>
+          <Field label="To"><DateField clearable={false} aria-label="To" min={off.from} value={off.to} onChange={(to) => setOff({ ...off, to })} /></Field>
           <Field label="Reason" htmlFor="pr-reason"><TextField id="pr-reason" label="" hideLabel maxLength={100} placeholder="e.g. Conference" value={off.reason} onChange={(e) => setOff({ ...off, reason: e.target.value })} /></Field>
           <Button variant="outline" className="h-11" disabled={!off.from || !off.to || off.reason.trim().length < 2} onClick={() => { setForm((f) => ({ ...f, time_off: [...f.time_off, { from: off.from, to: off.to, reason: off.reason.trim(), note: null, is_auto: false }].sort((a, b) => a.from.localeCompare(b.from)) })); setOff({ from: '', to: '', reason: '' }) }}>Add leave</Button>
         </div>

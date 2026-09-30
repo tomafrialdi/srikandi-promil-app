@@ -1,6 +1,6 @@
 import { Warning } from '@phosphor-icons/react'
 import { useState } from 'react'
-import { Field, Modal, ModalFooter, Button, Notice } from '../../../shared/ui'
+import { Field, Modal, ModalFooter, Button, Notice, DateField } from '../../../shared/ui'
 
 interface ScheduleModalProps {
   open: boolean
@@ -53,13 +53,7 @@ export function ScheduleModal({ open, count, onClose, onConfirm }: ScheduleModal
       }
     >
       <Field label="Publish at" htmlFor="schedule-at">
-        <input
-          id="schedule-at"
-          type="datetime-local"
-          className="h-11 rounded-control border border-border bg-card px-3.5 text-13 font-semibold outline-0 focus-visible:border-primary"
-          value={value}
-          onChange={(event) => setValue(event.target.value)}
-        />
+        <DateField id="schedule-at" withTime clearable={false} value={value} onChange={setValue} />
       </Field>
       {error && <Notice tone="error" icon={<Warning size={16} />}>{error}</Notice>}
     </Modal>

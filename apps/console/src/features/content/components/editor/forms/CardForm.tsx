@@ -1,6 +1,6 @@
 import { Plus, Trash } from '@phosphor-icons/react'
 import { useState } from 'react'
-import { Field, ImageUpload, SelectField, TextAreaField, TextField, ToggleRow } from '../../../../../shared/ui'
+import { Field, ImageUpload, SelectField, TextAreaField, TextField, ToggleRow, DateField } from '../../../../../shared/ui'
 import { cn } from '../../../../../shared/lib/cn'
 import { CARD_LAYOUTS, CARD_SCREENS, EMPTY_VARIANT, PRIORITY_OPTIONS } from '../../../config/editor'
 import type { CardVariant, ContentForm } from '../../../types'
@@ -117,8 +117,8 @@ export function CardForm({ form, set }: CardFormProps) {
             <SelectField id="card-priority" value={form.priority} options={PRIORITY_OPTIONS.map((v) => ({ value: v, label: v }))} onChange={(v) => set('priority', v)} />
           </Field>
           <div className="grid grid-cols-2 gap-2">
-            <Field label="Run from" htmlFor="run-from"><input id="run-from" type="date" className={INPUT} value={form.run_from} onChange={(e) => set('run_from', e.target.value)} /></Field>
-            <Field label="Run to" htmlFor="run-to"><input id="run-to" type="date" min={form.run_from} className={INPUT} value={form.run_to} onChange={(e) => set('run_to', e.target.value)} /></Field>
+            <Field label="Run from" htmlFor="run-from"><DateField id="run-from" value={form.run_from} onChange={(v) => set('run_from', v)} /></Field>
+            <Field label="Run to" htmlFor="run-to"><DateField id="run-to" min={form.run_from} value={form.run_to} onChange={(v) => set('run_to', v)} /></Field>
           </div>
         </div>
         <ToggleRow label="Dismissible" title="Dismissible" description="User can close; hidden for 30 days after dismiss" checked={form.dismissible} onChange={(v) => set('dismissible', v)} />

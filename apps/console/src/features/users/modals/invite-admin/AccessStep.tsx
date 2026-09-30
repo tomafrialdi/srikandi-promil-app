@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Field, RadioCard, SelectField, TextField, ToggleRow, CheckRow } from '../../../../shared/ui'
+import { Field, RadioCard, SelectField, TextField, ToggleRow, CheckRow, DateField } from '../../../../shared/ui'
 import type { InviteForm } from './invite-form'
 
 interface StepProps {
@@ -66,14 +66,7 @@ export function AccessStep({ form, update }: StepProps) {
           />
           {access.type === 'temporary' && (
             <Field label="Access expires" htmlFor="invite-expires-on" required>
-              <input
-                id="invite-expires-on"
-                type="date"
-                min={today}
-                className="h-11 rounded-control border border-border px-3.5 font-[inherit] text-13 font-semibold"
-                value={access.expiresOn}
-                onChange={(e) => set({ expiresOn: e.target.value })}
-              />
+              <DateField id="invite-expires-on" clearable={false} min={today} value={access.expiresOn} onChange={(expiresOn) => set({ expiresOn })} />
             </Field>
           )}
           <Field label="Session timeout" htmlFor="invite-timeout">

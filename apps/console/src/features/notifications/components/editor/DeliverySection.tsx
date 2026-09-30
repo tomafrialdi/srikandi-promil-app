@@ -1,4 +1,4 @@
-import { Field, Segmented, SelectField, ToggleRow } from '../../../../shared/ui'
+import { Field, Segmented, SelectField, ToggleRow, DateField } from '../../../../shared/ui'
 import { DELIVERY_OPTIONS, SEND_TIMES, TRIGGER_EVENTS } from '../../config/editor'
 import type { CampaignForm, Delivery } from '../../types'
 import { StepCard } from './StepCard'
@@ -27,14 +27,7 @@ export function DeliverySection({ form, set, disabled }: DeliverySectionProps) {
       )}
       {form.delivery === 'scheduled' && (
         <Field label="Send at" htmlFor="send-at" hint="your local time">
-          <input
-            id="send-at"
-            type="datetime-local"
-            disabled={disabled}
-            className="h-11 w-full max-w-80 rounded-control border border-border bg-card px-3.5 text-13 font-semibold outline-0 focus-visible:border-primary"
-            value={form.send_at}
-            onChange={(e) => set('send_at', e.target.value)}
-          />
+          <DateField id="send-at" withTime disabled={disabled} className="max-w-80" value={form.send_at} onChange={(v) => set('send_at', v)} />
         </Field>
       )}
       {form.delivery === 'now' && <p className="text-13 text-ink-muted">The campaign is queued as soon as you send it.</p>}

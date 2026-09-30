@@ -1,6 +1,6 @@
 import { Buildings, FloppyDisk, MagnifyingGlass, ShieldCheck, UploadSimple, UserPlus, VideoCamera, Warning } from '@phosphor-icons/react'
 import { useState } from 'react'
-import { Button, ChipToggleGroup, Field, ImageUpload, Modal, ModalFooter, ModalSection, Notice, SelectField, TextField, Toggle, useToast } from '../../../shared/ui'
+import { Button, ChipToggleGroup, Field, ImageUpload, Modal, ModalFooter, ModalSection, Notice, SelectField, TextField, Toggle, useToast, DateField } from '../../../shared/ui'
 import { TITLES } from '../config/labels'
 import { createDoctor } from '../services/doctors.service'
 import type { DoctorsOptions } from '../types'
@@ -104,7 +104,7 @@ export function AddDoctorModal({ open, onClose, options, onCreated }: AddDoctorM
         </Field>
         <div className="grid gap-3.5 min-[701px]:grid-cols-2">
           <Field label="SIP number" htmlFor="ad-sip" required><TextField id="ad-sip" label="" hideLabel placeholder="Practice license number" maxLength={60} value={f.sip_number} onChange={(e) => set({ sip_number: e.target.value })} /></Field>
-          <Field label="SIP valid until"><input type="date" aria-label="SIP valid until" className="h-12 w-full rounded-control border border-border bg-card px-3.5 text-14 font-semibold outline-0 focus-visible:border-primary" value={f.sip_valid_until} onChange={(e) => set({ sip_valid_until: e.target.value })} /></Field>
+          <Field label="SIP valid until"><DateField aria-label="SIP valid until" className="h-12 text-14" value={f.sip_valid_until} onChange={(sip_valid_until) => set({ sip_valid_until })} /></Field>
         </div>
         <div className="flex items-center gap-3 rounded-xl bg-surface px-3.5 py-3 text-12">
           <UploadSimple size={20} className="flex-none text-ink-muted" />

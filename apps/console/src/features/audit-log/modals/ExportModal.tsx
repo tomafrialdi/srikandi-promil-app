@@ -1,6 +1,6 @@
 import { DownloadSimple, Warning } from '@phosphor-icons/react'
 import { useEffect, useState } from 'react'
-import { Button, ChipToggleGroup, Field, Modal, ModalFooter, ModalSection, Notice, RadioCard, TextField, ToggleRow, useToast } from '../../../shared/ui'
+import { Button, ChipToggleGroup, Field, Modal, ModalFooter, ModalSection, Notice, RadioCard, TextField, ToggleRow, useToast, DateField } from '../../../shared/ui'
 import { downloadCsv } from '../../../shared/lib/csv'
 import { formatNumber } from '../../../shared/lib/format'
 import { CATEGORIES, RANGES } from '../config/labels'
@@ -95,8 +95,8 @@ export function ExportModal({ open, onClose, category, range, onDone }: ExportMo
       {error && <Notice tone="error" icon={<Warning size={16} />}>{error}</Notice>}
       <ModalSection label="Scope">
         <div className="grid gap-3 min-[701px]:grid-cols-2">
-          <Field label="From" htmlFor="ex-from"><TextField id="ex-from" label="" hideLabel type="date" max={scope.to} value={scope.from} onChange={(e) => setScope((s) => ({ ...s, from: e.target.value }))} /></Field>
-          <Field label="To" htmlFor="ex-to"><TextField id="ex-to" label="" hideLabel type="date" min={scope.from} max={today} value={scope.to} onChange={(e) => setScope((s) => ({ ...s, to: e.target.value }))} /></Field>
+          <Field label="From" htmlFor="ex-from"><DateField id="ex-from" clearable={false} max={scope.to} value={scope.from} onChange={(from) => setScope((s) => ({ ...s, from }))} /></Field>
+          <Field label="To" htmlFor="ex-to"><DateField id="ex-to" clearable={false} min={scope.from} max={today} value={scope.to} onChange={(to) => setScope((s) => ({ ...s, to }))} /></Field>
         </div>
         <Field label="Category">
           <ChipToggleGroup label="Category" single options={[{ value: '', label: 'All' }, ...CATEGORIES.map((c) => ({ value: c.key, label: c.label }))]} selected={[scope.category]} onChange={([category]) => setScope((s) => ({ ...s, category: category ?? '' }))} />

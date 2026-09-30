@@ -1,8 +1,6 @@
 import { Warning } from '@phosphor-icons/react'
 import { useEffect, useMemo, useState } from 'react'
-import {
-  Button, Field, Modal, ModalFooter, ModalSection, Notice, RadioCard, SelectField, Segmented, TextAreaField, TextField, ToggleRow, useToast,
-} from '../../../shared/ui'
+import { Button, Field, Modal, ModalFooter, ModalSection, Notice, RadioCard, SelectField, Segmented, TextAreaField, TextField, ToggleRow, useToast, DateField } from '../../../shared/ui'
 import { formatIdr, formatIdrCompact, formatNumber } from '../../../shared/lib/format'
 import { fetchPlanEditor, fetchPromoDetail, savePromo, setPromoStatus } from '../services/subscriptions.service'
 import type { DiscountType, PromoDetail } from '../types'
@@ -303,10 +301,10 @@ export function PromoFormModal({ open, code, onClose, onSaved, onDuplicate, pref
             <TextField id="promo-per-user" label="" hideLabel inputMode="numeric" value={form.perUser} onChange={(e) => patch({ perUser: digits(e.target.value) })} />
           </Field>
           <Field label="Starts (WIB)" htmlFor="promo-starts" required>
-            <input id="promo-starts" type="datetime-local" className="h-11 rounded-control border border-border px-3.5 font-[inherit] text-13 font-semibold" value={form.starts} onChange={(e) => patch({ starts: e.target.value })} />
+            <DateField id="promo-starts" withTime clearable={false} value={form.starts} onChange={(starts) => patch({ starts })} />
           </Field>
           <Field label="Ends (WIB)" htmlFor="promo-ends" hint="blank = always on">
-            <input id="promo-ends" type="datetime-local" className="h-11 rounded-control border border-border px-3.5 font-[inherit] text-13 font-semibold" value={form.ends} onChange={(e) => patch({ ends: e.target.value })} />
+            <DateField id="promo-ends" withTime min={form.starts} value={form.ends} onChange={(ends) => patch({ ends })} />
           </Field>
         </div>
         <ToggleRow label="Combinable with other codes" title="Combinable with other codes" description="Off by default to protect margin" checked={form.combinable} onChange={(combinable) => patch({ combinable })} />
