@@ -1,0 +1,158 @@
+import { useEffect, useRef, useState, type FormEvent } from 'react'
+import { ArrowLeft, CaretRight, DeviceMobile, FingerprintSimple, Key, Timer, Warning } from '@phosphor-icons/react'
+import { Button, Notice } from '../../../shared/ui'
+import { AuthLayout } from '../components/AuthLayout'
+import { CodeInput } from '../components/CodeInput'
+import { useAuth } from '../hooks/useAuth'
+import { logEvent, signOut } from '../services/auth.service'
+import { enrollTotp, getVerifiedTotpFactorId, verifyTotp, type TotpEnrollment } from '../services/mfa.service'
+import styles from './AuthPages.module.css'
+
+const CODE_LENGTH = 6
+const TOTP_PERIOD_SECONDS = 30
+
+function useSecondsUntilRefresh() {
+  const compute = () => TOTP_PERIOD_SECONDS - (Math.floor(Date.now() / 1000) % TOTP_PERIOD_SECONDS)
+  const [seconds, setSeconds] = useState(compute)
+  useEffect(() => {
+    const id = window.setInterval(() => setSeconds(compute()), 1000)
+    return () => window.clearInterval(id)
+  }, [])
+  return seconds
+}
+
+export function TwoFactorPage() {
+  const { session, refresh } = useAuth()
+  const [factorId, setFactorId] = useState<string | null>(null)
+  const [enrollment, setEnrollment] = useState<TotpEnrollment | null>(null)
+  const [code, setCode] = useState('')
+  const [loading, setLoading] = useState(true)
+  const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const secondsLeft = useSecondsUntilRefresh()
+  const started = useRef(false)
+
+  // Existing verified factor -> just ask for the code. Otherwise start enrollment.
+  useEffect(() => {
+    if (started.current) return
+    started.current = true
+    ;(async () => {
+      try {
+        const existing = await getVerifiedTotpFactorId()
+        if (existing) {
+          setFactorId(existing)
+        } else {
+          const next = await enrollTotp()
+          setEnrollment(next)
+          setFactorId(next.factorId)
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Could not start two-factor verification.')
+      } finally {
+        setLoading(false)
+      }
+    })()
+  }, [])
+
+  const submit = async (value: string) => {
+    if (!factorId || value.length !== CODE_LENGTH || submitting) return
+    setSubmitting(true)
+    setError(null)
+    try {
+      await verifyTotp(factorId, value)
+      await logEvent('auth.sign_in', 'console', { method: 'password+totp' }).catch(() => undefined)
+      await refresh()
+    } catch {
+      setError('That code is incorrect or expired. Try the latest code from your authenticator app.')
+      setCode('')
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  const handleSubmit = (event: FormEvent) => {
+    event.preventDefault()
+    void submit(code)
+  }
+
+  return (
+    <AuthLayout>
+      <button type="button" className={styles.back} onClick={() => void signOut()}>
+        <ArrowLeft size={15} />
+        {session?.user.email}
+      </button>
+
+      <span className={styles.heroIcon}>
+        <DeviceMobile size={26} color="var(--primary)" />
+      </span>
+
+      <div className={styles.heading}>
+        <h1 className={styles.title}>Two-factor verification</h1>
+        <p className={styles.subtitle}>
+          {enrollment
+            ? 'Scan the QR code with your authenticator app (Google Authenticator, 1Password…), then enter the 6-digit code.'
+            : 'Enter the 6-digit code from your authenticator app (Google Authenticator, 1Password…).'}
+        </p>
+      </div>
+
+      {enrollment && (
+        <div className={styles.enroll}>
+          <img className={styles.qr} src={enrollment.qrCode} alt="Authenticator QR code" width={132} height={132} />
+          <div className={styles.secret}>
+            <span className={styles.secretLabel}>Or enter this key manually</span>
+            <code className={styles.secretValue}>{enrollment.secret}</code>
+          </div>
+        </div>
+      )}
+
+      <form className={styles.form} onSubmit={handleSubmit}>
+        <CodeInput
+          length={CODE_LENGTH}
+          value={code}
+          onChange={setCode}
+          onComplete={(value) => void submit(value)}
+          disabled={loading || submitting}
+          hasError={Boolean(error)}
+        />
+
+        <div className={styles.timer}>
+          <span className={styles.timerLabel}>
+            <Timer size={14} />
+            Code refreshes in {secondsLeft} s
+          </span>
+          <span className={`${styles.link} ${styles.disabledLink}`} title="Backup codes are not available yet">
+            Use a backup code
+          </span>
+        </div>
+
+        {error && (
+          <Notice tone="error" icon={<Warning size={16} />}>
+            {error}
+          </Notice>
+        )}
+
+        <Button type="submit" block disabled={loading || submitting || code.length !== CODE_LENGTH}>
+          {submitting ? 'Verifying…' : 'Verify & continue'}
+        </Button>
+      </form>
+
+      <div className={styles.alternatives}>
+        <span className={styles.altHeading}>Other ways to verify</span>
+        <button type="button" className={styles.altRow} disabled title="Passkeys are not available yet">
+          <FingerprintSimple size={17} />
+          <span className={styles.altText}>Use passkey on this Mac</span>
+          <CaretRight size={15} color="var(--ink-faint)" />
+        </button>
+        <button type="button" className={styles.altRow} disabled title="Security keys are not available yet">
+          <Key size={17} />
+          <span className={styles.altText}>Security key (YubiKey)</span>
+          <CaretRight size={15} color="var(--ink-faint)" />
+        </button>
+      </div>
+
+      <Notice tone="warning" icon={<Warning size={16} />}>
+        5 wrong codes will lock the account for 15 minutes and alert Super admins.
+      </Notice>
+    </AuthLayout>
+  )
+}

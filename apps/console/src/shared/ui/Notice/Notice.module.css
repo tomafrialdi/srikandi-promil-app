@@ -1,0 +1,24 @@
+.notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 12px;
+}
+
+.icon {
+  display: inline-flex;
+  padding-top: 1px;
+}
+
+.text {
+  flex: 1;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.neutral { background: var(--surface-alt); color: var(--ink-muted); }
+.warning { background: var(--warning-soft); color: var(--warning-ink); }
+.warning .text { font-weight: 600; }
+.error { background: var(--error-soft); color: var(--error); }
+.error .text { font-weight: 600; }

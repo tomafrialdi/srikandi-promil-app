@@ -1,0 +1,123 @@
+.panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 620px;
+  flex: none;
+  padding: 56px;
+  overflow: hidden;
+  color: #fff;
+  background: linear-gradient(155deg, #c93f6c 0%, #b23461 55%, #9c2b53 100%);
+}
+
+.glow {
+  position: absolute;
+  border-radius: 100%;
+  background: #fff;
+  pointer-events: none;
+}
+
+.glowOne { width: 420px; height: 420px; top: -120px; right: -140px; opacity: 0.08; }
+.glowTwo { width: 480px; height: 480px; bottom: -200px; left: -160px; opacity: 0.06; }
+
+.top,
+.middle,
+.bottom {
+  position: relative;
+}
+
+.top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 11px;
+  background: #fff;
+}
+
+.name { font-size: 19px; font-weight: 800; }
+
+.tag {
+  padding: 3px 7px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.15);
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.middle {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.heading {
+  font-size: 38px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.sub {
+  font-size: 15px;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.points {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
+  padding: 8px 0 0;
+  list-style: none;
+}
+
+.point {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.pointIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.env {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 100px;
+  background: rgba(255, 255, 255, 0.12);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.dot { width: 7px; height: 7px; border-radius: 100%; background: #8fd19b; }
+.version { font-size: 12px; font-weight: 600; color: rgba(255, 255, 255, 0.7); }
+
+@media (max-width: 1000px) {
+  .panel { display: none; }
+}

@@ -1,0 +1,125 @@
+.sidebar {
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: var(--sidebar-width);
+  height: 100vh;
+  flex: none;
+  padding: 24px 16px;
+  background: var(--card);
+  border-right: 1px solid var(--border);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 8px;
+}
+
+.logo {
+  font-size: 19px;
+  font-weight: 800;
+  color: var(--primary);
+}
+
+.tag {
+  padding: 3px 7px;
+  border-radius: 6px;
+  background: var(--ink);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.nav {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sectionLabel {
+  padding: 0 12px 6px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink-faint);
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 12px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink-muted);
+}
+
+.item:hover {
+  background: var(--surface);
+}
+
+.active {
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+
+.itemLabel {
+  flex: 1;
+}
+
+.adminCard {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.adminText {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.adminName {
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.adminRole {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink-muted);
+}
+
+.signOut {
+  display: inline-flex;
+  color: var(--ink-faint);
+}
+
+.signOut:hover {
+  color: var(--primary);
+}
+
+@media (max-width: 900px) {
+  .sidebar { display: none; }
+}

@@ -1,0 +1,49 @@
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 340px;
+  flex: none;
+  padding: 20px;
+  border-radius: var(--radius-card);
+  background: var(--primary);
+  color: #fff;
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.title {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.metric {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-top: 12px;
+}
+
+.label {
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.value {
+  font-size: 26px;
+  font-weight: 800;
+}
+
+.hint {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+@media (max-width: 1100px) {
+  .panel { width: auto; }
+}

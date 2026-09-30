@@ -1,0 +1,34 @@
+/* Design tokens — mirrors the variables in the Pencil design file. */
+:root {
+  --primary: #c13d68;
+  --primary-soft: #f6dee6;
+  --secondary: #2574c4;
+  --secondary-soft: #dceaf9;
+  --surface: #faf9f6;
+  --surface-alt: #f1efe9;
+  --card: #ffffff;
+  --ink: #1a1a18;
+  --ink-muted: #6f6d66;
+  --ink-faint: #a6a49b;
+  --border: #e7e4dc;
+
+  --success: #3f9950;
+  --success-soft: #e1f1e3;
+  --warning: #e0a030;
+  --warning-soft: #fbefd9;
+  --warning-ink: #9a6a12;
+  --error: #d64545;
+  --error-soft: #fae1e1;
+
+  --pink: #e07a9b;
+  --purple: #8e6fbf;
+
+  --font: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --radius-card: 16px;
+  --radius-control: 10px;
+  --radius-pill: 100px;
+
+  --sidebar-width: 264px;
+  --topbar-height: 72px;
+}

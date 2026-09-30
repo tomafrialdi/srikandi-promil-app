@@ -1,0 +1,10 @@
+.track {
+  flex: 1;
+  min-width: 0;
+  background: var(--surface-alt);
+  overflow: hidden;
+}
+
+.fill {
+  height: 100%;
+}

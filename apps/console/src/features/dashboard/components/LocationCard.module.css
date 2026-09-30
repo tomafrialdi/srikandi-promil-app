@@ -1,0 +1,90 @@
+.card {
+  flex: 1;
+}
+
+.body {
+  display: flex;
+  gap: 24px;
+}
+
+.bars {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.name {
+  width: 120px;
+  flex: none;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pct {
+  width: 44px;
+  flex: none;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.count {
+  width: 52px;
+  flex: none;
+  font-size: 11px;
+  color: var(--ink-faint);
+}
+
+.side {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 220px;
+  flex: none;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 12px;
+  border-radius: 12px;
+}
+
+.statLabel {
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.statValue {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--ink);
+}
+
+.statHint {
+  font-size: 11px;
+  color: var(--ink-muted);
+}
+
+.primary { background: var(--primary-soft); }
+.primary .statLabel { color: var(--primary); }
+.secondary { background: var(--secondary-soft); }
+.secondary .statLabel { color: var(--secondary); }
+.success { background: var(--success-soft); }
+.success .statLabel { color: var(--success); }
+
+@media (max-width: 800px) {
+  .body { flex-direction: column; }
+  .side { width: auto; }
+}
