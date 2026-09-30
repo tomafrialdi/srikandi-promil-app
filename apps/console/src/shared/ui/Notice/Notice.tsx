@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import { cn } from '../../lib/cn'
 
 interface NoticeProps {
-  tone?: 'neutral' | 'warning' | 'error'
+  tone?: 'neutral' | 'warning' | 'error' | 'success'
   icon: ReactNode
   children: ReactNode
 }
@@ -11,6 +11,7 @@ const TONE = {
   neutral: 'bg-surface-alt text-ink-muted [&_p]:font-medium',
   warning: 'bg-warning-soft text-warning-ink [&_p]:font-semibold',
   error: 'bg-error-soft text-error [&_p]:font-semibold',
+  success: 'bg-success-soft text-success [&_p]:font-semibold',
 }
 
 export function Notice({ tone = 'neutral', icon, children }: NoticeProps) {

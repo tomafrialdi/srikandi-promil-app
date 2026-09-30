@@ -1,3 +1,4 @@
+import { Warning } from '@phosphor-icons/react'
 import type { ReactNode } from 'react'
 
 interface FieldProps {
@@ -23,7 +24,7 @@ export function Field({ label, htmlFor, required, hint, error, children }: Field
         {hint && <span className="text-11 text-ink-faint">{hint}</span>}
       </div>
       {children}
-      {error && <p className="text-11 font-semibold text-error">{error}</p>}
+      {error && <p className="flex items-start gap-1.5 text-11 font-semibold text-error"><Warning size={13} className="mt-px flex-none" />{error}</p>}
     </div>
   )
 }

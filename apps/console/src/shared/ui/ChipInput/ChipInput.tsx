@@ -1,4 +1,4 @@
-import { X } from '@phosphor-icons/react'
+import { WarningCircle, X } from '@phosphor-icons/react'
 import { useState, type KeyboardEvent } from 'react'
 import { cn } from '../../lib/cn'
 
@@ -36,15 +36,16 @@ export function ChipInput({ id, values, onChange, validate, placeholder, allowSp
   }
 
   return (
-    <div className="flex min-h-11 flex-wrap items-center gap-1.5 rounded-control border border-border bg-card px-2.5 py-1.5 focus-within:border-primary">
+    <div className="flex min-h-10 flex-wrap items-center gap-1.5 rounded-[10px] border border-border bg-card px-2.5 py-1.5 focus-within:border-primary">
       {values.map((value) => {
         const error = validate?.(value)
         return (
           <span
             key={value}
-            className={cn('inline-flex items-center gap-1.5 rounded-lg px-2 py-1 text-12 font-semibold', error ? 'bg-error-soft text-error' : 'bg-surface-alt')}
+            className={cn('inline-flex items-center gap-1.5 rounded-md px-2 py-[3px] text-12 font-bold', error ? 'bg-error-soft text-error' : 'bg-surface-alt')}
             title={error ?? undefined}
           >
+            {error && <WarningCircle size={12} weight="fill" />}
             {value}
             <button type="button" className="inline-flex opacity-70" aria-label={`Remove ${value}`} onClick={() => onChange(values.filter((v) => v !== value))}>
               <X size={11} weight="bold" />

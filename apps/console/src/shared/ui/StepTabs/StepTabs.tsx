@@ -17,7 +17,7 @@ interface StepTabsProps {
 /** Numbered wizard header: completed steps get a check and are clickable. */
 export function StepTabs({ steps, current, onSelect }: StepTabsProps) {
   return (
-    <nav className="flex gap-2 overflow-x-auto border-b border-border px-6 py-3" aria-label="Steps">
+    <nav className="flex flex-none gap-6 overflow-x-auto border-b border-border px-6" aria-label="Steps">
       {steps.map((step, index) => {
         const done = index < current
         const active = index === current
@@ -26,8 +26,8 @@ export function StepTabs({ steps, current, onSelect }: StepTabsProps) {
             key={step.key}
             type="button"
             className={cn(
-              'inline-flex items-center gap-2 rounded-full px-3 py-[7px] text-13 font-semibold whitespace-nowrap disabled:cursor-default',
-              active ? 'bg-primary-soft font-bold text-primary' : done ? 'text-ink' : 'text-ink-faint',
+              '-mb-px inline-flex items-center gap-2 border-b-2 border-transparent py-3 text-13 font-semibold whitespace-nowrap disabled:cursor-default',
+              active ? 'border-primary font-bold text-primary' : done ? 'text-ink' : 'text-ink-muted',
             )}
             aria-current={active ? 'step' : undefined}
             disabled={!done}
