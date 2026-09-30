@@ -49,6 +49,10 @@ supabase/
 | `120800_user_actions` | Suspend, grant Plus, plan-change quote + apply (proration, promo, refunds) |
 | `120900_admin_invites` | `admin_role_catalog()`, `admin_invite_admins()` |
 | `129900_lock_down_users_rpc` | Revoke `anon` on `admin_*` RPCs |
+| `130000_subscriptions_schema` | `transactions`, `promo_redemptions`, `promo_history`, `plan_change_requests`; richer `promo_codes` / `plan_catalog`; `plan` on MRR events |
+| `130100_subscriptions_helpers` | Promo status/offer helpers; plan-change quote now honours promo status, schedule, limits |
+| `130200`–`130500` | Subscriptions RPCs: overview, promo codes, transactions + receipt + refund, plan editor + approval |
+| `139900_lock_down_subscriptions_rpc` | Revoke `anon` on `admin_*` RPCs |
 
 ## Access control
 
@@ -76,6 +80,12 @@ supabase/
 | `admin_set_users_status(ids, status, reason)` / `admin_grant_plus(ids, reason)` | Suspend / reactivate / grant Plus (bulk) |
 | `admin_plan_change_preview(...)` / `admin_change_plan(...)` | Change plan (refund > Rp 500.000 needs Admin role) |
 | `admin_role_catalog()` / `admin_invite_admins(payload)` | Invite admin wizard (records invitations; email sending is not built) |
+| `admin_subscriptions_overview()` | Subscriptions overview |
+| `admin_promos_summary()` / `admin_promos_list(tab)` / `admin_promo_detail(code)` | Promo codes page |
+| `admin_save_promo(payload)` / `admin_set_promo_status(code, status)` | Create / edit / pause promo codes |
+| `admin_transactions_summary(from, to)` / `admin_transactions_list(...)` | Transactions page |
+| `admin_transaction_receipt(invoice)` / `admin_issue_refund(invoice, reason)` | Receipt modal (logged) / refund |
+| `admin_plan_editor()` / `admin_save_plan(...)` / `admin_review_plan_request(id, approve)` | Edit plans (price change → pending request → Super admin approves) |
 | `log_console_event(action, resource, metadata)` | Auth (audit trail) |
 
 `p_from` / `p_to` are inclusive dates in Jakarta time. Previous period = same length right before `p_from` (used for deltas).
@@ -95,6 +105,8 @@ supabase/
 | `09_user_admin_attributes` | Phone, status, payment, consents, deletion requests |
 | `10_user_cycles_engine` | Cycles + latest engine run per user |
 | `11_care_team_meds` | Doctors, clinics, medications, integrations, promo codes |
+| `12_plans_promos` | Plan catalogue details, promo code fields and extra codes |
+| `13_transactions` | ~2.7k invoices over 13 months, promo redemptions, promo history |
 
 Numbers in Analytics come from this fake data; they are not real metrics.
 
@@ -105,3 +117,7 @@ Numbers in Analytics come from this fake data; they are not real metrics.
 3. Add it to `119900_lock_down_rpc` pattern (name starts with `dashboard_` / `analytics_`, or extend the list).
 4. Add seed data in `seeds/`, then `supabase db reset` to test.
 5. Never edit an applied migration on a shared DB; add a new one (`create or replace function ...`).
+
+## Gotcha
+
+An RPC that writes anything (even an audit row) must be `volatile`. PostgREST runs `stable` functions in a read-only transaction and the insert fails.

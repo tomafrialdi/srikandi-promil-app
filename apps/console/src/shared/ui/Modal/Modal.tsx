@@ -13,6 +13,8 @@ export interface ModalProps {
   /** Icon shown in the tinted tile at the left of the title. */
   icon?: ReactNode
   size?: ModalSize
+  /** Buttons shown in the header, left of the close button. */
+  headerActions?: ReactNode
   /** Optional strip under the header (e.g. wizard steps). */
   tabs?: ReactNode
   /** Sticky footer (use <ModalFooter>). */
@@ -21,6 +23,8 @@ export interface ModalProps {
   closeOnOverlay?: boolean
   children: ReactNode
 }
+
+let stack: symbol[] = []
 
 const FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
 
@@ -37,6 +41,7 @@ export function Modal({
   size = 'md',
   tabs,
   footer,
+  headerActions,
   closeOnOverlay = true,
   children,
 }: ModalProps) {
@@ -50,12 +55,15 @@ export function Modal({
 
   useEffect(() => {
     if (!open) return
+    const id = Symbol('modal')
+    stack = [...stack, id]
     const previouslyFocused = document.activeElement as HTMLElement | null
     const previousOverflow = document.body.style.overflow
     document.body.style.overflow = 'hidden'
     dialogRef.current?.focus()
 
     const onKeyDown = (event: KeyboardEvent) => {
+      if (stack[stack.length - 1] !== id) return
       if (event.key === 'Escape') {
         event.stopPropagation()
         onCloseRef.current()
@@ -77,6 +85,7 @@ export function Modal({
     document.addEventListener('keydown', onKeyDown)
     return () => {
       document.removeEventListener('keydown', onKeyDown)
+      stack = stack.filter((item) => item !== id)
       document.body.style.overflow = previousOverflow
       previouslyFocused?.focus?.()
     }
@@ -87,6 +96,7 @@ export function Modal({
   return createPortal(
     <div
       className={styles.overlay}
+      data-modal-overlay
       onMouseDown={(event) => {
         if (closeOnOverlay && event.target === event.currentTarget) onClose()
       }}
@@ -94,12 +104,13 @@ export function Modal({
       <div
         ref={dialogRef}
         className={`${styles.dialog} ${styles[size]}`}
+        data-modal-dialog
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
         tabIndex={-1}
       >
-        <header className={styles.header}>
+        <header className={styles.header} data-no-print>
           {icon && <span className={styles.icon}>{icon}</span>}
           <div className={styles.titles}>
             <h2 id={titleId} className={styles.title}>
@@ -107,6 +118,7 @@ export function Modal({
             </h2>
             {subtitle && <p className={styles.subtitle}>{subtitle}</p>}
           </div>
+          {headerActions}
           <button type="button" className={styles.close} onClick={onClose} aria-label="Close">
             <X size={16} weight="bold" />
           </button>
@@ -139,7 +151,7 @@ interface ModalFooterProps {
 
 export function ModalFooter({ info, children }: ModalFooterProps) {
   return (
-    <footer className={styles.footer}>
+    <footer className={styles.footer} data-no-print>
       <div className={styles.info}>{info}</div>
       <div className={styles.actions}>{children}</div>
     </footer>

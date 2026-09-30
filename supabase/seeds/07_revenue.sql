@@ -12,12 +12,12 @@ select id, case
 from public.app_users
 where paid_at is not null;
 
-insert into public.subscription_events (user_id, event_type, mrr_delta_idr, occurred_at)
-select u.id, 'new', p.price, u.paid_at
+insert into public.subscription_events (user_id, event_type, mrr_delta_idr, plan, occurred_at)
+select u.id, 'new', p.price, case when p.price = 49000 then 'plus_monthly' else 'plus_yearly' end::public.plan_type, u.paid_at
 from public.app_users u join sub_price p using (id);
 
-insert into public.subscription_events (user_id, event_type, mrr_delta_idr, cancel_reason, occurred_at)
-select u.id, 'churn', -p.price,
+insert into public.subscription_events (user_id, event_type, mrr_delta_idr, plan, cancel_reason, occurred_at)
+select u.id, 'churn', -p.price, case when p.price = 49000 then 'plus_monthly' else 'plus_yearly' end::public.plan_type,
   case
     when abs(hashtext(u.id::text || 'r')) % 100 < 41 then 'got_pregnant'
     when abs(hashtext(u.id::text || 'r')) % 100 < 63 then 'price'
@@ -29,8 +29,8 @@ from public.app_users u join sub_price p using (id)
 where u.churned_at is not null;
 
 -- A few churned subscribers come back.
-insert into public.subscription_events (user_id, event_type, mrr_delta_idr, occurred_at)
-select u.id, 'reactivation', p.price, u.churned_at + interval '20 days'
+insert into public.subscription_events (user_id, event_type, mrr_delta_idr, plan, occurred_at)
+select u.id, 'reactivation', p.price, case when p.price = 49000 then 'plus_monthly' else 'plus_yearly' end::public.plan_type, u.churned_at + interval '20 days'
 from public.app_users u join sub_price p using (id)
 where u.churned_at < now() - interval '30 days' and abs(hashtext(u.id::text || 'back')) % 100 < 4;
 

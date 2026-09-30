@@ -21,7 +21,7 @@ src/
   lib/        supabase.ts (client)
   styles/     tokens.css (colors/fonts from Pencil), base.css
   shared/     ui/  charts/  layout/  lib/format.ts
-  features/   auth/  dashboard/  analytics/  users/
+  features/   auth/  dashboard/  analytics/  users/  subscriptions/
 ```
 
 Rule: **a feature owns its pages, components, services, hooks and config.** Shared code goes in `shared/`.
@@ -73,14 +73,21 @@ Rule: **a feature owns its pages, components, services, hooks and config.** Shar
 - Health data modals (engine log, medication) first ask for a reason via `hooks/useUnmaskGate`; the backend logs it. Other modals load on demand with `hooks/useModalData`.
 - `services/users.service` = one function per RPC; `types.ts` mirrors the JSON.
 
+**subscriptions** — `/subscriptions`, `/subscriptions/promo-codes`, `/subscriptions/transactions`
+- `pages/SubscriptionsPage` (overview), `PromoCodesPage`, `TransactionsPage`
+- `components/overview/`: `OverviewKpis` `MrrChartCard` `PaymentMixCard` `PlansRow` `PromoCodesCard` `CodeUsageCard` `RecentTransactionsCard`
+- `components/promos/`: `PromoStats` `PromoTable` `PromoDetailPanel` · `components/transactions/`: `TransactionStats` `TransactionsTable`
+- `modals/`: `EditPlanModal` (price changes become an approval request), `PromoFormModal` (create / edit / duplicate; identity fields lock after redemptions), `ReceiptModal` (invoice, settlement, refund, print)
+- Transactions reuse the date range from `features/analytics` (`DateRangeMenu`, `useDateRange`). Filters/page live in the URL via `shared/hooks/useUrlFilters`.
+
 ## Shared
 
-| `shared/ui` | `Avatar` `Badge` `Button` `Card`/`CardHeader` `DataTable` `DonutChart` `IconTile` `Notice` `PageState` `ProgressBar` `TextField` + forms: `Field` `SelectField` `TextAreaField` `ChipInput` `Toggle`/`ToggleRow`/`CheckRow`/`Checkbox` `RadioCard` + `CountTabs` `Pagination` `StepTabs` `Toast` |
+| `shared/ui` | `Avatar` `Badge` `Button` `Card`/`CardHeader` `DataTable` `DonutChart` `IconTile` `Notice` `PageState` `ProgressBar` `TextField` + forms: `Field` `SelectField` `TextAreaField` `ChipInput` `Toggle`/`ToggleRow`/`CheckRow`/`Checkbox` `RadioCard` + `CountTabs` `Pagination` `StepTabs` `Segmented` `StatCard`/`StatGrid` `Toast` |
 |---|---|
 | **`shared/charts`** | `BarRow` `CohortTable` `Columns` `HeatGrid` `Legend` `LineChart` `Sparkline` `StackedColumns` |
 | **`shared/layout`** | `AdminShell` (Sidebar + sticky Topbar + page), `nav.config.ts` (menu + placeholder routes), `PlaceholderPage` |
 | **`shared/lib`** | `format.ts` (number, %, Rp, duration, time-ago), `labels.ts` (plan/mode labels), `csv.ts` (CSV download) |
-| **`shared/hooks`** | `useAsyncData(key, fetcher)` — load + reload with loading/error state |
+| **`shared/hooks`** | `useAsyncData(key, fetcher)` (load + reload), `useUrlFilters(keys)` (filters + page in the URL) |
 
 ## Add a new page
 
@@ -113,3 +120,5 @@ const dialog = useDisclosure()
 | `ReasonDialog` | `ConfirmDialog` + required reason/ticket text |
 | `useDisclosure` | `{ open, onOpen, onClose }` |
 | `useToast()` | `toast({ title, description, tone })` after an action |
+
+Printing: put `data-print-area` on the content of a `Modal` and add the class `print-modal` to `<body>` before `window.print()` (see `ReceiptModal`). `Modal` also supports stacked dialogs (only the top one handles Esc/Tab) and a `headerActions` slot.

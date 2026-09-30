@@ -1,0 +1,45 @@
+.card {
+  gap: 6px;
+  padding: 16px;
+}
+
+.label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-muted);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+}
+
+.value {
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.hint {
+  font-size: 12px;
+  color: var(--ink-faint);
+}
+
+.grid {
+  display: grid;
+  gap: 16px;
+}
+
+.five { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.four { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+@media (max-width: 1280px) {
+  .five { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .four { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 800px) {
+  .five, .four { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
