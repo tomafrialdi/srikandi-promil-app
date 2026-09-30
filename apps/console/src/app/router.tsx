@@ -22,6 +22,7 @@ import { MedicationsPage } from '../features/medications'
 import { NotificationEditorPage, NotificationsPage } from '../features/notifications'
 import { MembersPage, RolesPage } from '../features/roles'
 import { SupportPage } from '../features/support'
+import { AuditLogPage } from '../features/audit-log'
 import { PromoCodesPage } from '../features/subscriptions/pages/PromoCodesPage'
 import { SubscriptionsPage } from '../features/subscriptions/pages/SubscriptionsPage'
 import { TransactionsPage } from '../features/subscriptions/pages/TransactionsPage'
@@ -33,7 +34,7 @@ import { PlaceholderPage } from '../shared/layout/PlaceholderPage'
 import { LandingGate } from './LandingGate'
 import { AppProviders } from './providers/AppProviders'
 
-const placeholderRoutes = NAV_ITEMS.filter((item) => item.path !== '/' && item.path !== '/analytics' && item.path !== '/users' && item.path !== '/subscriptions' && item.path !== '/articles' && item.path !== '/notifications' && item.path !== '/community' && item.path !== '/roles' && item.path !== '/support-tickets' && item.path !== '/clinics' && item.path !== '/doctors' && item.path !== '/medications' && item.path !== '/fertility-engine' && item.path !== '/account-settings').map((item) => ({
+const placeholderRoutes = NAV_ITEMS.filter((item) => item.path !== '/' && item.path !== '/analytics' && item.path !== '/users' && item.path !== '/subscriptions' && item.path !== '/articles' && item.path !== '/notifications' && item.path !== '/community' && item.path !== '/roles' && item.path !== '/support-tickets' && item.path !== '/audit-log' && item.path !== '/clinics' && item.path !== '/doctors' && item.path !== '/medications' && item.path !== '/fertility-engine' && item.path !== '/account-settings').map((item) => ({
   path: item.path,
   element: <PlaceholderPage />,
 }))
@@ -78,6 +79,7 @@ export const router = createBrowserRouter([
               { path: '/doctors', element: <DoctorsPage /> },
               { path: '/clinics', element: <ClinicsPage /> },
               { path: '/support-tickets', element: <SupportPage /> },
+              { path: '/audit-log', element: <AuditLogPage /> },
               { path: '/roles', element: <RolesPage /> },
               { path: '/roles/members', element: <MembersPage /> },
               {
