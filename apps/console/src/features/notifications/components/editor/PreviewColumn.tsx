@@ -1,6 +1,7 @@
-import { BellRinging } from '@phosphor-icons/react'
+import { Calendar, Flower } from '@phosphor-icons/react'
 import { useState } from 'react'
 import { Segmented } from '../../../../shared/ui'
+import { cn } from '../../../../shared/lib/cn'
 import { formatNumber } from '../../../../shared/lib/format'
 import { SAMPLE } from '../../config/editor'
 import { CHANNEL_META } from '../../config/labels'
@@ -28,34 +29,43 @@ export function PreviewColumn({ form, reach }: PreviewColumnProps) {
 
   return (
     <aside className="flex w-full flex-none flex-col gap-4 min-[1201px]:w-90">
-      <section className="flex flex-col gap-3.5 rounded-card bg-ink p-5 text-white">
+      <section className="flex flex-col gap-3 rounded-card bg-[#2b1d22] p-5 text-white">
         <header className="flex items-center justify-between gap-3">
-          <h2 className="text-15 font-bold">Lock screen preview</h2>
-          <Segmented label="Preview mode" value={view} options={[{ value: 'normal', label: 'Normal' }, { value: 'discreet', label: 'Discreet' }]} onChange={setView} />
+          <h2 className="text-13 font-bold">Lock screen preview</h2>
+          <Segmented size="lg" label="Preview mode" value={view} options={[{ value: 'normal', label: 'Normal' }, { value: 'discreet', label: 'Discreet' }]} onChange={setView} />
         </header>
         <div className="flex flex-col items-center gap-0.5 py-3">
-          <span className="text-12 font-medium text-white/70">{today}</span>
-          <span className="text-[56px] leading-none font-light">07:00</span>
+          <span className="text-13 font-semibold text-white/70">{today}</span>
+          <span className="text-[52px] leading-tight font-bold">07:00</span>
         </div>
-        <div className="flex gap-2.5 rounded-2xl bg-white/15 p-3">
-          <span className="inline-flex size-9 flex-none items-center justify-center rounded-lg bg-primary text-white"><BellRinging size={18} weight="fill" /></span>
+        <div className={cn('flex gap-3 rounded-[18px] bg-white/90 p-3 text-ink transition-opacity', discreet && 'opacity-60')}>
+          <span className="inline-flex size-9 flex-none items-center justify-center rounded-[9px] bg-primary text-white"><Flower size={18} weight="fill" /></span>
           <div className="flex min-w-0 flex-1 flex-col gap-0.5">
-            <div className="flex items-center justify-between text-10 font-bold tracking-wide text-white/70">
-              <span>{discreet ? 'KALENDER · discreet' : 'SRIKANDI PROMIL'}</span>
-              <span className="font-medium">now</span>
+            <div className="flex items-center justify-between text-10 font-bold text-ink-muted">
+              <span>SRIKANDI PROMIL</span>
+              <span className="font-semibold">now</span>
             </div>
-            <span className="text-13 font-bold">{discreet ? form.discreet_body || 'Daily reminder' : fill(form.title) || 'Your title'}</span>
-            {!discreet && <span className="text-12 leading-snug text-white/85">{fill(form.body) || 'Your message body appears here.'}</span>}
+            <span className="text-13 font-bold">{fill(form.title) || 'Your title'}</span>
+            <span className="text-12 leading-snug font-medium">{fill(form.body) || 'Your message body appears here.'}</span>
           </div>
         </div>
+        {form.channel === 'push' && (
+          <div className={cn('flex gap-3 rounded-[18px] bg-white/60 p-3 text-ink transition-opacity', !discreet && 'opacity-60')}>
+            <span className="inline-flex size-9 flex-none items-center justify-center rounded-[9px] bg-secondary text-white"><Calendar size={18} weight="fill" /></span>
+            <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+              <span className="text-10 font-bold text-ink-muted">KALENDER · discreet</span>
+              <span className="text-12 font-bold">{form.discreet_body || 'Daily reminder'}</span>
+            </div>
+          </div>
+        )}
         {form.channel !== 'push' && <p className="text-11 text-white/60">Shown as a push for reference. {CHANNEL_META[form.channel].label} uses the same title and body.</p>}
       </section>
 
       <section className="flex flex-col gap-2.5 rounded-card border border-border bg-card p-5">
         <h2 className="text-15 font-bold">Summary</h2>
         {summary.map(([key, value]) => (
-          <div key={key} className="flex items-baseline justify-between gap-4 text-13">
-            <span className="text-ink-muted">{key}</span>
+          <div key={key} className="flex items-baseline justify-between gap-4 text-12">
+            <span className="font-medium text-ink-muted">{key}</span>
             <span className="text-right font-bold">{value}</span>
           </div>
         ))}

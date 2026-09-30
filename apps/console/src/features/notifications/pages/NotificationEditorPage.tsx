@@ -1,4 +1,4 @@
-import { Eye, FloppyDisk, PaperPlaneTilt, Pause, Play, PaperPlane } from '@phosphor-icons/react'
+import { CalendarCheck, Eye, FloppyDisk, PaperPlaneTilt, Pause, Play, PaperPlane } from '@phosphor-icons/react'
 import { useCallback, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useAsyncData } from '../../../shared/hooks/useAsyncData'
@@ -109,7 +109,7 @@ function EditorScreen({ id, record }: { id: string | null; record: CampaignRecor
             <Button variant="outline" disabled leadingIcon={<PaperPlane size={16} />}>Send test to me</Button>
           </Tooltip>
           <Button variant="outline" onClick={save} disabled={busy || locked} leadingIcon={<FloppyDisk size={16} />}>Save draft</Button>
-          <Button onClick={submit} disabled={busy || locked || status === 'active' || status === 'paused'} leadingIcon={<PaperPlaneTilt size={16} color="#fff" />}>
+          <Button onClick={submit} disabled={busy || locked || status === 'active' || status === 'paused'} leadingIcon={form.delivery === 'now' || status === 'failed' ? <PaperPlaneTilt size={16} color="#fff" /> : <CalendarCheck size={16} color="#fff" />}>
             {status === 'failed' ? 'Fix & resend' : SUBMIT_LABEL[form.delivery]}
           </Button>
         </div>

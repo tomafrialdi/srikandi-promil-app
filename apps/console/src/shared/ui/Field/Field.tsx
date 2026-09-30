@@ -1,5 +1,6 @@
 import { Warning } from '@phosphor-icons/react'
 import type { ReactNode } from 'react'
+import { cn } from '../../lib/cn'
 
 interface FieldProps {
   label: string
@@ -9,15 +10,17 @@ interface FieldProps {
   hint?: ReactNode
   /** Error text under the control. */
   error?: string | null
+  /** Muted (grey) label, used by the notification editor. */
+  muted?: boolean
   children: ReactNode
 }
 
 /** Label row + control + error message. */
-export function Field({ label, htmlFor, required, hint, error, children }: FieldProps) {
+export function Field({ label, htmlFor, required, hint, error, muted, children }: FieldProps) {
   return (
     <div className="flex min-w-0 flex-col gap-1.5">
       <div className="flex items-baseline justify-between gap-2">
-        <label className="text-12 font-bold" htmlFor={htmlFor}>
+        <label className={cn('text-12 font-bold', muted && 'text-ink-muted')} htmlFor={htmlFor}>
           {label}
           {required && <span className="text-primary"> *</span>}
         </label>
