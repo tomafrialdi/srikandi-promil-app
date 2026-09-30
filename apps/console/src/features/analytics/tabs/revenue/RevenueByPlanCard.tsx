@@ -2,7 +2,6 @@ import { Card, CardHeader } from '../../../../shared/ui'
 import { BarRow } from '../../../../shared/charts'
 import { formatIdrSigned } from '../../../../shared/lib/format'
 import type { RevenueData } from '../../types'
-import styles from './RevenueTab.module.css'
 
 const COLOR: Record<string, string> = {
   plus_yearly: 'var(--primary)',
@@ -17,9 +16,9 @@ const monthLong = new Intl.DateTimeFormat('en-US', { month: 'long', timeZone: 'U
 export function RevenueByPlanCard({ data }: { data: RevenueData['revenue_by_plan'] }) {
   const max = Math.max(1, ...data.rows.map((r) => Math.abs(r.amount)))
   return (
-    <Card className={styles.side}>
+    <Card className="w-full flex-none min-[1101px]:w-105">
       <CardHeader title="Revenue by plan" subtitle={`${monthLong.format(new Date(data.month))} · gross`} />
-      <div className={styles.rows}>
+      <div className="flex flex-col gap-3">
         {data.rows.map((row) => (
           <BarRow
             key={row.key}

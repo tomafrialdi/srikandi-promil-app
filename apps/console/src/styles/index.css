@@ -1,0 +1,130 @@
+@import 'tailwindcss';
+@import 'lenis/dist/lenis.css';
+@import './tokens.css';
+
+/*
+ * Design tokens live in tokens.css (mirror of the Pencil variables) as plain CSS variables.
+ * @theme maps them to Tailwind so classes like bg-primary, text-ink-muted, rounded-card work.
+ */
+@theme inline {
+  --font-sans: var(--font);
+
+  --color-primary: var(--primary);
+  --color-primary-soft: var(--primary-soft);
+  --color-secondary: var(--secondary);
+  --color-secondary-soft: var(--secondary-soft);
+  --color-surface: var(--surface);
+  --color-surface-alt: var(--surface-alt);
+  --color-card: var(--card);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-ink-faint: var(--ink-faint);
+  --color-border: var(--border);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-warning-ink: var(--warning-ink);
+  --color-error: var(--error);
+  --color-error-soft: var(--error-soft);
+  --color-pink: var(--pink);
+  --color-purple: var(--purple);
+
+  --radius-card: var(--radius-card);
+  --radius-control: var(--radius-control);
+
+  --text-9: 9px;
+  --text-10: 10px;
+  --text-11: 11px;
+  --text-12: 12px;
+  --text-13: 13px;
+  --text-14: 14px;
+  --text-15: 15px;
+  --text-16: 16px;
+  --text-17: 17px;
+  --text-18: 18px;
+  --text-19: 19px;
+  --text-20: 20px;
+  --text-22: 22px;
+  --text-24: 24px;
+  --text-26: 26px;
+  --text-28: 28px;
+  --text-38: 38px;
+
+  --shadow-menu: 0 8px 24px rgba(26, 26, 24, 0.08);
+  --shadow-toast: 0 8px 24px rgba(26, 26, 24, 0.12);
+  --shadow-modal: 0 24px 64px rgba(26, 26, 24, 0.24);
+  --shadow-tooltip: 0 6px 20px rgba(26, 26, 24, 0.18);
+
+  --animate-toast-in: toast-in 0.25s ease-out;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@layer base {
+  html,
+  body,
+  #root {
+    min-height: 100%;
+  }
+
+  body {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-weight: 500;
+    color: var(--ink);
+    background: var(--surface);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  button {
+    cursor: pointer;
+  }
+
+  button:disabled {
+    cursor: not-allowed;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+  }
+}
+
+/* Printing a modal's [data-print-area] (invoices): hide the app, keep only the dialog content. */
+@media print {
+  body.print-modal #root {
+    display: none !important;
+  }
+
+  body.print-modal [data-modal-overlay] {
+    position: static !important;
+    display: block !important;
+    padding: 0 !important;
+    background: none !important;
+    opacity: 1 !important;
+  }
+
+  body.print-modal [data-modal-dialog] {
+    max-width: none !important;
+    max-height: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+
+  body.print-modal [data-no-print] {
+    display: none !important;
+  }
+}

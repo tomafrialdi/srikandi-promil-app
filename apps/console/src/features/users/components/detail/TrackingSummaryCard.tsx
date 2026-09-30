@@ -1,7 +1,6 @@
 import { Card, CardHeader } from '../../../../shared/ui'
 import { Legend } from '../../../../shared/charts'
 import type { UserDetail } from '../../types'
-import styles from './UserDetail.module.css'
 
 const COLORS = { period: '#c13d68', follicular: '#e7e4dc', fertile: '#8fd19b', peak: '#3f9950', luteal: '#dceaf9' }
 
@@ -35,36 +34,36 @@ export function TrackingSummaryCard({ data }: { data: UserDetail['tracking'] }) 
       <CardHeader
         title="Tracking summary"
         subtitle={data.cycle_day ? `Current cycle · CD ${data.cycle_day} of ~${length}` : 'No open cycle'}
-        action={<span className={styles.itemLine}>Symptoms & notes masked</span>}
+        action={<span className="text-11 text-ink-muted">Symptoms & notes masked</span>}
       />
 
       {data.engine_headline && (
-        <div className={styles.engineBox}>
+        <div className="flex flex-col gap-1 rounded-xl bg-primary-soft px-3.5 py-3 [&_strong]:text-13 [&_span]:text-12 [&_span]:text-ink-muted">
           <strong>Engine status: {data.engine_headline}</strong>
           <span>{data.engine_detail}</span>
         </div>
       )}
 
       {data.cycle_day && (
-        <div className={styles.strip}>
-          <div className={styles.stripBar}>
+        <div className="flex flex-col gap-2">
+          <div className="relative flex h-3.5 gap-0.5 overflow-hidden rounded-full">
             {parts.map((part) => (
-              <span key={part.key} className={styles.stripSegment} style={{ width: `${(part.days / total) * 100}%`, background: part.color }} />
+              <span key={part.key} className="h-full" style={{ width: `${(part.days / total) * 100}%`, background: part.color }} />
             ))}
-            <span className={styles.stripMarker} style={{ left: `${Math.min(100, (data.cycle_day / total) * 100)}%` }} title={`Today · CD ${data.cycle_day}`} />
+            <span className="absolute inset-y-0 -ml-px w-[3px] rounded-sm bg-ink" style={{ left: `${Math.min(100, (data.cycle_day / total) * 100)}%` }} title={`Today · CD ${data.cycle_day}`} />
           </div>
-          <div className={styles.stripLegend}>
+          <div className="flex flex-wrap gap-3.5">
             <Legend items={LEGEND} />
           </div>
         </div>
       )}
 
-      <div className={styles.signals}>
+      <div className="grid grid-cols-2 gap-2.5 min-[801px]:grid-cols-4">
         {data.signals.map((signal) => (
-          <div key={signal.key} className={styles.signal}>
-            <span className={styles.signalLabel}>{signal.label}</span>
-            <span className={styles.signalValue}>{signal.value}</span>
-            <span className={styles.signalHint}>{signal.hint}</span>
+          <div key={signal.key} className="flex flex-col gap-0.5 rounded-xl bg-surface p-3">
+            <span className="text-12 text-ink-muted">{signal.label}</span>
+            <span className="text-20 font-extrabold">{signal.value}</span>
+            <span className="text-11 text-ink-faint">{signal.hint}</span>
           </div>
         ))}
       </div>

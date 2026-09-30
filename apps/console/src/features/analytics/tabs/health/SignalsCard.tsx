@@ -2,14 +2,13 @@ import { Card, CardHeader } from '../../../../shared/ui'
 import { BarRow } from '../../../../shared/charts'
 import { DEPTH_LABEL } from '../../config/labels'
 import type { HealthData } from '../../types'
-import styles from './HealthTab.module.css'
 
 export function SignalsCard({ data }: { data: HealthData['signals'] }) {
   const max = Math.max(1, ...data.rows.map((r) => r.median_cycles))
   return (
-    <Card className={styles.grow}>
+    <Card className="min-w-0 flex-1">
       <CardHeader title="Signals vs. time to pregnancy" subtitle="Median tracked cycles" />
-      <div className={styles.rows}>
+      <div className="flex flex-col gap-3">
         {data.rows.map((row, index) => (
           <BarRow
             key={row.depth}

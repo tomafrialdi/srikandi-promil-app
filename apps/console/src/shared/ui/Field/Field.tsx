@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react'
-import styles from './Field.module.css'
 
 interface FieldProps {
   label: string
@@ -15,16 +14,16 @@ interface FieldProps {
 /** Label row + control + error message. */
 export function Field({ label, htmlFor, required, hint, error, children }: FieldProps) {
   return (
-    <div className={styles.field}>
-      <div className={styles.labelRow}>
-        <label className={styles.label} htmlFor={htmlFor}>
+    <div className="flex min-w-0 flex-col gap-1.5">
+      <div className="flex items-baseline justify-between gap-2">
+        <label className="text-12 font-bold" htmlFor={htmlFor}>
           {label}
-          {required && <span className={styles.required}> *</span>}
+          {required && <span className="text-primary"> *</span>}
         </label>
-        {hint && <span className={styles.hint}>{hint}</span>}
+        {hint && <span className="text-11 text-ink-faint">{hint}</span>}
       </div>
       {children}
-      {error && <p className={styles.error}>{error}</p>}
+      {error && <p className="text-11 font-semibold text-error">{error}</p>}
     </div>
   )
 }

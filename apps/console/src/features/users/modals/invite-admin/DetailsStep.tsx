@@ -1,7 +1,6 @@
 import { Field, SelectField, TextAreaField, TextField, ChipInput, Button } from '../../../../shared/ui'
 import type { RoleCatalog } from '../../types'
 import { validateEmail, type InviteForm } from './invite-form'
-import styles from './InviteAdmin.module.css'
 
 interface StepProps {
   form: InviteForm
@@ -22,8 +21,8 @@ export function DetailsStep({ form, update, catalog }: StepProps) {
 
   return (
     <>
-      <section className={styles.group}>
-        <h3 className={styles.groupLabel}>Who are you inviting?</h3>
+      <section className="flex flex-col gap-3.5">
+        <h3 className="text-11 font-bold tracking-[0.02em] text-ink-faint uppercase">Who are you inviting?</h3>
         <Field label="Work email(s)" htmlFor="invite-emails" required hint="Separate with comma or Enter" error={firstError}>
           <ChipInput
             id="invite-emails"
@@ -33,7 +32,7 @@ export function DetailsStep({ form, update, catalog }: StepProps) {
             placeholder="name@srikandipromil.id"
           />
         </Field>
-        <div className={styles.grid2}>
+        <div className="grid gap-3.5 min-[701px]:grid-cols-2">
           <Field label="Full name (optional)" htmlFor="invite-name">
             <TextField
               id="invite-name"
@@ -81,8 +80,8 @@ export function DetailsStep({ form, update, catalog }: StepProps) {
         </div>
       </section>
 
-      <section className={styles.group}>
-        <h3 className={styles.groupLabel}>Invitation</h3>
+      <section className="flex flex-col gap-3.5">
+        <h3 className="text-11 font-bold tracking-[0.02em] text-ink-faint uppercase">Invitation</h3>
         <Field label="Personal message" htmlFor="invite-message" hint="Included in the email">
           <TextAreaField
             id="invite-message"
@@ -91,17 +90,17 @@ export function DetailsStep({ form, update, catalog }: StepProps) {
             onChange={(e) => update({ message: e.target.value })}
           />
         </Field>
-        <div className={styles.grid2}>
+        <div className="grid gap-3.5 min-[701px]:grid-cols-2">
           <Field label="Invite link expires" htmlFor="invite-expiry">
             <SelectField id="invite-expiry" value={form.expiresDays} options={EXPIRY} onChange={(expiresDays) => update({ expiresDays })} />
           </Field>
           <Field label="Onboarding checklist">
-            <span className={styles.readonly}>{role ? `${role.label} · 5 steps` : '—'}</span>
+            <span className="flex h-11 items-center rounded-control border border-border bg-surface px-3.5 text-13 font-semibold">{role ? `${role.label} · 5 steps` : '—'}</span>
           </Field>
         </div>
       </section>
 
-      <div className={styles.bulk}>
+      <div className="flex items-center justify-between gap-3 rounded-xl bg-secondary-soft px-3.5 py-3 text-12 font-semibold text-secondary">
         <span>Inviting a whole team? Upload a CSV with email, name, role and department.</span>
         <Button variant="outline" disabled title="CSV upload is not available yet">
           Upload CSV

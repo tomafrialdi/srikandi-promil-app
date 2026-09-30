@@ -3,6 +3,8 @@ import { Legend, StackedColumns, type StackedColumn } from '../../../../shared/c
 import { CHANNEL_COLOR, CHANNEL_ORDER, CHANNEL_SHORT_LABEL } from '../../config/labels'
 import type { AcquisitionData } from '../../types'
 
+const weekFormat = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' })
+
 /** ISO-8601 week number of a YYYY-MM-DD date. */
 function isoWeek(isoDay: string): number {
   const d = new Date(`${isoDay}T00:00:00Z`)
@@ -16,6 +18,7 @@ export function WeeklyInstallsCard({ data }: { data: AcquisitionData['weekly_ins
   const columns: StackedColumn[] = data.map((week, index) => ({
     label: `W${isoWeek(week.week_start)}`,
     active: index === data.length - 1,
+    tooltipTitle: `Week of ${weekFormat.format(new Date(week.week_start))}`,
     segments: CHANNEL_ORDER.map((channel) => ({
       value: week.counts[channel] ?? 0,
       color: CHANNEL_COLOR[channel],

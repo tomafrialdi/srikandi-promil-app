@@ -2,14 +2,13 @@ import { Card, CardHeader } from '../../../../shared/ui'
 import { BarRow } from '../../../../shared/charts'
 import { CHANNEL_COLOR, CHANNEL_SHORT_LABEL } from '../../config/labels'
 import type { AcquisitionData } from '../../types'
-import styles from './AcquisitionTab.module.css'
 
 export function CampaignsCard({ data }: { data: AcquisitionData['campaigns'] }) {
   const max = Math.max(1, ...data.map((c) => c.conversions))
   return (
-    <Card className={styles.grow}>
+    <Card className="min-w-0 flex-1">
       <CardHeader title="Top campaigns" subtitle="By paid conversions" />
-      <div className={styles.rows}>
+      <div className="flex flex-col gap-3">
         {data.map((row) => (
           <BarRow
             key={`${row.channel}-${row.campaign}`}
@@ -22,7 +21,7 @@ export function CampaignsCard({ data }: { data: AcquisitionData['campaigns'] }) 
             valueWidth={30}
           />
         ))}
-        {data.length === 0 && <p className={styles.empty}>No paid conversions in this range.</p>}
+        {data.length === 0 && <p className="text-13 text-ink-muted">No paid conversions in this range.</p>}
       </div>
     </Card>
   )

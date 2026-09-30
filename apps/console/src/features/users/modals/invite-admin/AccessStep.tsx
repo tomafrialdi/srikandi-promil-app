@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { Field, RadioCard, SelectField, TextField, ToggleRow, CheckRow } from '../../../../shared/ui'
 import type { InviteForm } from './invite-form'
-import styles from './InviteAdmin.module.css'
 
 interface StepProps {
   form: InviteForm
@@ -22,8 +21,8 @@ export function AccessStep({ form, update }: StepProps) {
 
   return (
     <>
-      <section className={styles.group}>
-        <h3 className={styles.groupLabel}>Sign-in</h3>
+      <section className="flex flex-col gap-3.5">
+        <h3 className="text-11 font-bold tracking-[0.02em] text-ink-faint uppercase">Sign-in</h3>
         <ToggleRow
           label="Two-factor authentication"
           title="Two-factor authentication"
@@ -48,9 +47,9 @@ export function AccessStep({ form, update }: StepProps) {
         />
       </section>
 
-      <section className={styles.group}>
-        <h3 className={styles.groupLabel}>Access window</h3>
-        <div className={styles.grid2}>
+      <section className="flex flex-col gap-3.5">
+        <h3 className="text-11 font-bold tracking-[0.02em] text-ink-faint uppercase">Access window</h3>
+        <div className="grid gap-3.5 min-[701px]:grid-cols-2">
           <RadioCard
             name="invite-window"
             selected={access.type === 'permanent'}
@@ -71,7 +70,7 @@ export function AccessStep({ form, update }: StepProps) {
                 id="invite-expires-on"
                 type="date"
                 min={today}
-                className={styles.dateInput}
+                className="h-11 rounded-control border border-border px-3.5 font-[inherit] text-13 font-semibold"
                 value={access.expiresOn}
                 onChange={(e) => set({ expiresOn: e.target.value })}
               />
@@ -83,8 +82,8 @@ export function AccessStep({ form, update }: StepProps) {
         </div>
       </section>
 
-      <section className={styles.group}>
-        <h3 className={styles.groupLabel}>Network & devices</h3>
+      <section className="flex flex-col gap-3.5">
+        <h3 className="text-11 font-bold tracking-[0.02em] text-ink-faint uppercase">Network & devices</h3>
         <ToggleRow
           label="Restrict to office & VPN IPs"
           title="Restrict to office & VPN IPs"
@@ -113,9 +112,9 @@ export function AccessStep({ form, update }: StepProps) {
         />
       </section>
 
-      <section className={styles.group}>
-        <h3 className={styles.groupLabel}>Sensitive data (UU PDP)</h3>
-        <div className={styles.notice}>
+      <section className="flex flex-col gap-3.5">
+        <h3 className="text-11 font-bold tracking-[0.02em] text-ink-faint uppercase">Sensitive data (UU PDP)</h3>
+        <div className="flex flex-col gap-1 rounded-xl bg-surface-alt px-3.5 py-3 text-12 text-ink-muted [&_strong]:text-13 [&_strong]:text-ink">
           <strong>Health data stays masked by default</strong>
           <span>Unmasking requires a ticket reference and is logged. Weekly review by the Data Protection Officer.</span>
         </div>

@@ -2,7 +2,6 @@ import { Pulse } from '@phosphor-icons/react'
 import { Badge, Button, DataTable, Modal, ModalFooter, ModalSection, type Column } from '../../../shared/ui'
 import { MODE_LABEL } from '../../../shared/lib/labels'
 import type { EngineLog } from '../types'
-import parts from './modal-parts.module.css'
 
 type Day = EngineLog['day_by_day'][number]
 
@@ -52,7 +51,7 @@ export function EngineLogModal({ data, onClose }: { data: EngineLog | null; onCl
     >
       {data && (
         <>
-          <div className={parts.tiles}>
+          <div className="grid grid-cols-2 gap-2.5 min-[701px]:grid-cols-4">
             <Tile label="Status now" value={data.status} />
             <Tile label="Confidence" value={`${data.confidence}%`} />
             <Tile label="Predicted ovulation" value={data.predicted_ovulation} />
@@ -64,18 +63,18 @@ export function EngineLogModal({ data, onClose }: { data: EngineLog | null; onCl
           </ModalSection>
 
           <ModalSection label="Decision trace · today 06:21">
-            <ol className={parts.trace}>
+            <ol className="m-0 flex list-none flex-col gap-2.5 p-0">
               {data.decision_trace.map((step) => (
-                <li key={step.step} className={parts.traceItem}>
-                  <span className={parts.traceStep}>{step.step}</span>
-                  <span className={parts.traceBody}>{step.body}</span>
+                <li key={step.step} className="flex flex-col gap-0.5">
+                  <span className="text-13 font-extrabold">{step.step}</span>
+                  <span className="text-12 leading-normal text-ink-muted">{step.body}</span>
                 </li>
               ))}
             </ol>
           </ModalSection>
 
           {data.overrides.map((override) => (
-            <div key={override.at} className={parts.callout}>
+            <div key={override.at} className="flex flex-col gap-1 rounded-xl bg-warning-soft px-3.5 py-3 text-12 text-warning-ink [&_strong]:text-13">
               <strong>Support override · {override.at}</strong>
               <span>
                 {override.by} changed LH result “{override.from}” → “{override.to}” (ticket {override.ticket}).
@@ -90,9 +89,9 @@ export function EngineLogModal({ data, onClose }: { data: EngineLog | null; onCl
 
 function Tile({ label, value }: { label: string; value: string }) {
   return (
-    <div className={parts.tile}>
-      <span className={parts.tileLabel}>{label}</span>
-      <span className={parts.tileValue}>{value}</span>
+    <div className="flex flex-col gap-0.5 rounded-xl bg-surface px-3.5 py-3">
+      <span className="text-11 text-ink-muted">{label}</span>
+      <span className="text-16 font-extrabold">{value}</span>
     </div>
   )
 }

@@ -1,5 +1,5 @@
 import type { CSSProperties, ReactNode } from 'react'
-import styles from './DataTable.module.css'
+import { cn } from '../../lib/cn'
 
 export interface Column<T> {
   key: string
@@ -24,14 +24,18 @@ interface DataTableProps<T> {
 /** Light grid table: tinted header row, hairline-separated body rows. */
 export function DataTable<T>({ columns, rows, rowKey, rowHeight = 48, onRowClick, isRowSelected, bleed = true }: DataTableProps<T>) {
   const template = columns.map((c) => (c.width ? `${c.width}px` : 'minmax(0, 1fr)')).join(' ')
-  const align = (c: Column<T>): CSSProperties => ({ textAlign: c.align ?? 'left', justifyContent: c.align === 'right' ? 'flex-end' : c.align === 'center' ? 'center' : 'flex-start' })
+  const align = (c: Column<T>): CSSProperties => ({
+    textAlign: c.align ?? 'left',
+    justifyContent: c.align === 'right' ? 'flex-end' : c.align === 'center' ? 'center' : 'flex-start',
+  })
+  const rowPadding = bleed ? 'px-5' : 'px-3.5'
 
   return (
-    <div className={`${styles.scroll} ${bleed ? '' : styles.flush}`}>
-      <div className={styles.table} role="table">
-        <div className={`${styles.row} ${styles.head}`} style={{ gridTemplateColumns: template }} role="row">
+    <div className={cn('overflow-x-auto', bleed ? '-mx-5' : 'rounded-xl border border-border')}>
+      <div className="flex min-w-160 flex-col" role="table">
+        <div className={cn('grid min-h-[38px] items-center gap-3 bg-surface', rowPadding)} style={{ gridTemplateColumns: template }} role="row">
           {columns.map((c) => (
-            <span key={c.key} className={styles.headCell} style={align(c)} role="columnheader">
+            <span key={c.key} className="flex text-11 font-bold text-ink-faint" style={align(c)} role="columnheader">
               {c.header}
             </span>
           ))}
@@ -39,13 +43,18 @@ export function DataTable<T>({ columns, rows, rowKey, rowHeight = 48, onRowClick
         {rows.map((row) => (
           <div
             key={rowKey(row)}
-            className={`${styles.row} ${onRowClick ? styles.clickable : ''} ${isRowSelected?.(row) ? styles.selected : ''}`}
+            className={cn(
+              'grid items-center gap-3 border-b border-border last:border-b-0',
+              rowPadding,
+              onRowClick && 'cursor-pointer hover:bg-surface',
+              isRowSelected?.(row) && 'bg-primary/4 hover:bg-primary/4',
+            )}
             style={{ gridTemplateColumns: template, minHeight: rowHeight }}
             role="row"
             onClick={onRowClick ? () => onRowClick(row) : undefined}
           >
             {columns.map((c) => (
-              <span key={c.key} className={styles.cell} style={align(c)} role="cell">
+              <span key={c.key} className="flex min-w-0 items-center gap-2 text-12 font-semibold" style={align(c)} role="cell">
                 {c.render(row)}
               </span>
             ))}

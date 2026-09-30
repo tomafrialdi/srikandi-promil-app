@@ -2,13 +2,12 @@ import { Card, CardHeader } from '../../../../shared/ui'
 import { BarRow } from '../../../../shared/charts'
 import { CHANNEL_COLOR, CHANNEL_LABEL } from '../../config/labels'
 import type { SubscriptionsOverview } from '../../types'
-import styles from './overview.module.css'
 
 export function PaymentMixCard({ data }: { data: SubscriptionsOverview['payment_mix'] }) {
   return (
-    <Card className={styles.side}>
+    <Card className="w-full flex-none min-[1101px]:w-95">
       <CardHeader title="Payment methods" subtitle="Share of transactions · last 30 days" />
-      <div className={styles.mixRows}>
+      <div className="flex flex-col gap-3">
         {data.rows.map((row) => (
           <BarRow
             key={row.channel}
@@ -21,7 +20,7 @@ export function PaymentMixCard({ data }: { data: SubscriptionsOverview['payment_
             valueWidth={36}
           />
         ))}
-        {data.rows.length === 0 && <p className={styles.muted}>No transactions in the last 30 days.</p>}
+        {data.rows.length === 0 && <p className="text-12 text-ink-muted">No transactions in the last 30 days.</p>}
       </div>
     </Card>
   )

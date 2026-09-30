@@ -1,19 +1,15 @@
-import { Card, CardHeader, ProgressBar } from '../../../shared/ui'
+import { Card, CardHeader } from '../../../shared/ui'
+import { BarRow } from '../../../shared/charts'
 import type { FeatureAdoption } from '../types'
-import styles from './FeatureAdoptionCard.module.css'
 
 export function FeatureAdoptionCard({ data }: { data: FeatureAdoption[] }) {
   return (
-    <Card className={styles.card}>
+    <Card className="min-w-0 flex-1">
       <CardHeader title="Feature adoption" subtitle="% of MAU using each feature" />
       {data.map((row) => (
-        <div key={row.feature} className={styles.row}>
-          <span className={styles.label}>{row.feature}</span>
-          <ProgressBar value={row.pct} color="var(--secondary)" height={10} radius={3} />
-          <span className={styles.value}>{row.pct}%</span>
-        </div>
+        <BarRow key={row.feature} label={row.feature} labelWidth={130} value={row.pct} color="var(--secondary)" barHeight={10} valueLabel={`${row.pct}%`} valueWidth={34} />
       ))}
-      {data.length === 0 && <p className={styles.empty}>No feature usage in the last 30 days.</p>}
+      {data.length === 0 && <p className="text-13 text-ink-muted">No feature usage in the last 30 days.</p>}
     </Card>
   )
 }

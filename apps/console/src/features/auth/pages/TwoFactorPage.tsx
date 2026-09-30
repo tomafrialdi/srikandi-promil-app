@@ -6,7 +6,6 @@ import { CodeInput } from '../components/CodeInput'
 import { useAuth } from '../hooks/useAuth'
 import { logEvent, signOut } from '../services/auth.service'
 import { enrollTotp, getVerifiedTotpFactorId, verifyTotp, type TotpEnrollment } from '../services/mfa.service'
-import styles from './AuthPages.module.css'
 
 const CODE_LENGTH = 6
 const TOTP_PERIOD_SECONDS = 30
@@ -77,18 +76,18 @@ export function TwoFactorPage() {
 
   return (
     <AuthLayout>
-      <button type="button" className={styles.back} onClick={() => void signOut()}>
+      <button type="button" className="inline-flex items-center gap-1.5 self-start text-13 font-semibold text-ink-muted" onClick={() => void signOut()}>
         <ArrowLeft size={15} />
         {session?.user.email}
       </button>
 
-      <span className={styles.heroIcon}>
+      <span className="inline-flex size-14 items-center justify-center rounded-2xl bg-primary-soft">
         <DeviceMobile size={26} color="var(--primary)" />
       </span>
 
-      <div className={styles.heading}>
-        <h1 className={styles.title}>Two-factor verification</h1>
-        <p className={styles.subtitle}>
+      <div className="flex flex-col gap-1.5">
+        <h1 className="text-28 font-extrabold text-ink">Two-factor verification</h1>
+        <p className="text-14 leading-normal text-ink-muted">
           {enrollment
             ? 'Scan the QR code with your authenticator app (Google Authenticator, 1Password…), then enter the 6-digit code.'
             : 'Enter the 6-digit code from your authenticator app (Google Authenticator, 1Password…).'}
@@ -96,16 +95,16 @@ export function TwoFactorPage() {
       </div>
 
       {enrollment && (
-        <div className={styles.enroll}>
-          <img className={styles.qr} src={enrollment.qrCode} alt="Authenticator QR code" width={132} height={132} />
-          <div className={styles.secret}>
-            <span className={styles.secretLabel}>Or enter this key manually</span>
-            <code className={styles.secretValue}>{enrollment.secret}</code>
+        <div className="flex items-center gap-4 rounded-xl border border-border bg-card p-3.5">
+          <img className="flex-none rounded-lg" src={enrollment.qrCode} alt="Authenticator QR code" width={132} height={132} />
+          <div className="flex min-w-0 flex-col gap-1.5">
+            <span className="text-12 font-semibold text-ink-muted">Or enter this key manually</span>
+            <code className="text-13 font-bold break-all">{enrollment.secret}</code>
           </div>
         </div>
       )}
 
-      <form className={styles.form} onSubmit={handleSubmit}>
+      <form className="flex flex-col gap-5.5" onSubmit={handleSubmit}>
         <CodeInput
           length={CODE_LENGTH}
           value={code}
@@ -115,12 +114,12 @@ export function TwoFactorPage() {
           hasError={Boolean(error)}
         />
 
-        <div className={styles.timer}>
-          <span className={styles.timerLabel}>
+        <div className="flex items-center justify-between">
+          <span className="inline-flex items-center gap-1.5 text-12 font-semibold text-ink-faint">
             <Timer size={14} />
             Code refreshes in {secondsLeft} s
           </span>
-          <span className={`${styles.link} ${styles.disabledLink}`} title="Backup codes are not available yet">
+          <span className="cursor-not-allowed text-13 font-bold text-primary opacity-60" title="Backup codes are not available yet">
             Use a backup code
           </span>
         </div>
@@ -136,16 +135,16 @@ export function TwoFactorPage() {
         </Button>
       </form>
 
-      <div className={styles.alternatives}>
-        <span className={styles.altHeading}>Other ways to verify</span>
-        <button type="button" className={styles.altRow} disabled title="Passkeys are not available yet">
+      <div className="flex flex-col gap-2.5">
+        <span className="text-12 font-bold text-ink-faint">Other ways to verify</span>
+        <button type="button" className="flex items-center gap-2.5 rounded-xl border border-border bg-card px-3.5 py-3 text-left opacity-60" disabled title="Passkeys are not available yet">
           <FingerprintSimple size={17} />
-          <span className={styles.altText}>Use passkey on this Mac</span>
+          <span className="flex-1 text-13 font-semibold">Use passkey on this Mac</span>
           <CaretRight size={15} color="var(--ink-faint)" />
         </button>
-        <button type="button" className={styles.altRow} disabled title="Security keys are not available yet">
+        <button type="button" className="flex items-center gap-2.5 rounded-xl border border-border bg-card px-3.5 py-3 text-left opacity-60" disabled title="Security keys are not available yet">
           <Key size={17} />
-          <span className={styles.altText}>Security key (YubiKey)</span>
+          <span className="flex-1 text-13 font-semibold">Security key (YubiKey)</span>
           <CaretRight size={15} color="var(--ink-faint)" />
         </button>
       </div>

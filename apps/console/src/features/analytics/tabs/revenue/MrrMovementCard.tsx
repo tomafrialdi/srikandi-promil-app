@@ -1,7 +1,7 @@
+import { cn } from '../../../../shared/lib/cn'
 import { Badge, Card, CardHeader } from '../../../../shared/ui'
 import { formatIdrCompact, formatIdrSigned } from '../../../../shared/lib/format'
 import type { RevenueData } from '../../types'
-import styles from './RevenueTab.module.css'
 
 interface Step {
   key: string
@@ -41,28 +41,28 @@ export function MrrMovementCard({ data }: { data: RevenueData['mrr_movement'] })
   const net = data.end - data.start
 
   return (
-    <Card className={styles.grow}>
+    <Card className="min-w-0 flex-1">
       <CardHeader
         title="MRR movement"
         subtitle="What changed in the selected range"
         action={<Badge tone={net >= 0 ? 'success' : 'warning'}>{`Net ${formatIdrSigned(net)}`}</Badge>}
       />
-      <div className={styles.movement}>
+      <div className="flex flex-col gap-1.5">
         {steps.map((step) => {
           const left = step.kind === 'total' ? 0 : pos(Math.min(step.from, step.to))
           const right = pos(Math.max(step.from, step.to))
           const color =
             step.kind === 'total' ? 'var(--secondary)' : step.amount >= 0 ? 'var(--success)' : 'var(--error)'
           return (
-            <div key={step.key} className={`${styles.moveRow} ${step.kind === 'total' ? styles.moveTotal : ''}`}>
-              <span className={styles.moveLabel}>{step.label}</span>
-              <span className={styles.moveTrack}>
+            <div key={step.key} className={cn('flex items-center gap-3 rounded-lg px-2.5 py-1.5', step.kind === 'total' && 'bg-surface')}>
+              <span className="w-47.5 flex-none text-12 font-semibold">{step.label}</span>
+              <span className="relative h-3 min-w-0 flex-1">
                 <span
-                  className={styles.moveBar}
+                  className="absolute inset-y-0 rounded-[3px]"
                   style={{ left: `${left}%`, width: `${Math.max(right - left, 0.8)}%`, background: color }}
                 />
               </span>
-              <span className={styles.moveValue}>
+              <span className="w-24 flex-none text-right text-12 font-bold">
                 {step.kind === 'total' ? formatIdrCompact(step.amount) : formatIdrSigned(step.amount)}
               </span>
             </div>

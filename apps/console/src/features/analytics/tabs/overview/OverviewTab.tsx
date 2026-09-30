@@ -2,7 +2,6 @@ import { formatNumber, formatPercent } from '../../../../shared/lib/format'
 import { MetricCard, MetricStrip } from '../../components/MetricCard'
 import { QueryBoundary } from '../../components/QueryBoundary'
 import { trendBadge } from '../../components/trend-badge'
-import layout from '../../components/TabContent.module.css'
 import { useAnalyticsQuery } from '../../hooks/useAnalyticsQuery'
 import { fetchOverview } from '../../services/analytics.service'
 import { ChannelsCard } from './ChannelsCard'
@@ -17,7 +16,7 @@ export function OverviewTab() {
   return (
     <QueryBoundary data={data} loading={loading} error={error} onRetry={retry}>
       {(d) => (
-        <div className={layout.content}>
+        <div className="flex flex-col gap-6">
           <MetricStrip>
             <MetricCard
               label="DAU"
@@ -51,8 +50,8 @@ export function OverviewTab() {
             />
           </MetricStrip>
 
-          <div className={layout.row}>
-            <div className={layout.grow}>
+          <div className="flex flex-col items-stretch gap-4 min-[1101px]:flex-row">
+            <div className="min-w-0 flex-1">
               <DailyLogsCard data={d.daily_logs} />
             </div>
             <PlatformCard data={d.platform} />
@@ -60,7 +59,7 @@ export function OverviewTab() {
 
           <RetentionCohortsCard data={d.retention_cohorts} />
 
-          <div className={layout.row}>
+          <div className="flex flex-col items-stretch gap-4 min-[1101px]:flex-row">
             <ChannelsCard data={d.channels} />
             <SignalsOutcomeCard data={d.signals_vs_outcome} />
           </div>

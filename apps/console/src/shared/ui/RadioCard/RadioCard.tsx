@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import styles from './RadioCard.module.css'
+import { cn } from '../../lib/cn'
 
 interface RadioCardProps {
   selected: boolean
@@ -15,16 +15,28 @@ interface RadioCardProps {
 /** A selectable card with a radio dot; use inside a group with the same `name`. */
 export function RadioCard({ selected, onSelect, title, description, badge, disabled, name }: RadioCardProps) {
   return (
-    <label className={`${styles.card} ${selected ? styles.selected : ''} ${disabled ? styles.disabled : ''}`}>
-      <input type="radio" className={styles.input} name={name} checked={selected} disabled={disabled} onChange={onSelect} />
-      <span className={styles.text}>
-        <span className={styles.titleRow}>
-          <span className={styles.title}>{title}</span>
+    <label
+      className={cn(
+        'relative flex items-center justify-between gap-3 rounded-xl border px-3.5 py-3',
+        selected ? 'border-primary bg-primary-soft' : 'border-border bg-card',
+        disabled ? 'cursor-not-allowed opacity-55' : 'cursor-pointer',
+      )}
+    >
+      <input type="radio" className="peer absolute inset-0 m-0 cursor-[inherit] opacity-0" name={name} checked={selected} disabled={disabled} onChange={onSelect} />
+      <span className="flex min-w-0 flex-col gap-0.5">
+        <span className="flex items-center gap-2">
+          <span className="text-13 font-bold">{title}</span>
           {badge}
         </span>
-        {description && <span className={styles.description}>{description}</span>}
+        {description && <span className="text-11 text-ink-muted">{description}</span>}
       </span>
-      <span className={styles.dot} aria-hidden="true" />
+      <span
+        className={cn(
+          'size-[18px] shrink-0 rounded-full bg-card peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-primary',
+          selected ? 'border-[5px] border-primary' : 'border-[1.5px] border-border',
+        )}
+        aria-hidden="true"
+      />
     </label>
   )
 }

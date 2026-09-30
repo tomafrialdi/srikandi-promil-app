@@ -1,5 +1,3 @@
-import styles from './ProgressBar.module.css'
-
 interface ProgressBarProps {
   /** 0–100 */
   value: number
@@ -12,14 +10,14 @@ export function ProgressBar({ value, color = 'var(--primary)', height = 8, radiu
   const clamped = Math.min(100, Math.max(0, value))
   return (
     <div
-      className={styles.track}
+      className="w-full min-w-0 overflow-hidden bg-surface-alt"
       style={{ height, borderRadius: radius }}
       role="progressbar"
       aria-valuenow={Math.round(clamped)}
       aria-valuemin={0}
       aria-valuemax={100}
     >
-      <div className={styles.fill} style={{ width: `${clamped}%`, background: color, borderRadius: radius }} />
+      <div className="h-full" style={{ width: `${clamped}%`, background: color, borderRadius: radius }} />
     </div>
   )
 }

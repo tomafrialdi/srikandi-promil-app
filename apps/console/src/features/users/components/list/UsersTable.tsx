@@ -7,7 +7,6 @@ import { PAGE_SIZE, STATUS_BADGE } from '../../config/labels'
 import type { UserRow, UsersFilters, UsersList, UsersSummary } from '../../types'
 import { BulkBar } from './BulkBar'
 import { UsersFilterBar } from './UsersFilterBar'
-import styles from './UsersList.module.css'
 
 const joinedFormat = new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'UTC' })
 
@@ -49,11 +48,11 @@ export function UsersTable(props: UsersTableProps) {
       key: 'user',
       header: 'USER',
       render: (r) => (
-        <span className={styles.userCell}>
+        <span className="inline-flex min-w-0 items-center gap-2.5">
           <Avatar label={initials(r.name)[0] ?? ''} size={34} />
-          <span className={styles.userText}>
-            <span className={styles.userName}>{r.name}</span>
-            <span className={styles.userEmail}>{r.email}</span>
+          <span className="flex min-w-0 flex-col">
+            <span className="truncate text-13 font-bold">{r.name}</span>
+            <span className="truncate text-12 font-medium text-ink-muted">{r.email}</span>
           </span>
         </span>
       ),
@@ -64,15 +63,15 @@ export function UsersTable(props: UsersTableProps) {
       width: 100,
       render: (r) => <Badge tone={PLAN_BADGE[r.plan].tone}>{PLAN_BADGE[r.plan].label}</Badge>,
     },
-    { key: 'mode', header: 'MODE', width: 76, render: (r) => <span className={styles.plain}>{MODE_LABEL[r.mode]}</span> },
-    { key: 'phase', header: 'PHASE', width: 128, render: (r) => <span className={styles.muted}>{r.phase}</span> },
-    { key: 'logs', header: 'LOGS (7D)', width: 72, render: (r) => <span className={styles.plain}>{r.logs_7d}</span> },
-    { key: 'joined', header: 'JOINED', width: 100, render: (r) => <span className={styles.muted}>{joinedFormat.format(new Date(r.joined))}</span> },
+    { key: 'mode', header: 'MODE', width: 76, render: (r) => <span className="text-13 font-semibold">{MODE_LABEL[r.mode]}</span> },
+    { key: 'phase', header: 'PHASE', width: 128, render: (r) => <span className="text-12 font-medium text-ink-muted">{r.phase}</span> },
+    { key: 'logs', header: 'LOGS (7D)', width: 72, render: (r) => <span className="text-13 font-semibold">{r.logs_7d}</span> },
+    { key: 'joined', header: 'JOINED', width: 100, render: (r) => <span className="text-12 font-medium text-ink-muted">{joinedFormat.format(new Date(r.joined))}</span> },
     {
       key: 'last',
       header: 'LAST ACTIVE',
       width: 96,
-      render: (r) => <span className={styles.muted}>{r.last_active_at ? timeAgo(r.last_active_at) : '—'}</span>,
+      render: (r) => <span className="text-12 font-medium text-ink-muted">{r.last_active_at ? timeAgo(r.last_active_at) : '—'}</span>,
     },
     {
       key: 'status',
@@ -82,7 +81,7 @@ export function UsersTable(props: UsersTableProps) {
         const s = STATUS_BADGE[r.status]
         return (
           <Badge tone={s.tone}>
-            <span className={styles.statusDot} style={{ background: s.dot }} />
+            <span className="mr-1.5 inline-block size-1.5 rounded-full" style={{ background: s.dot }} />
             {s.label}
           </Badge>
         )
@@ -101,7 +100,7 @@ export function UsersTable(props: UsersTableProps) {
   ]
 
   return (
-    <Card className={styles.table}>
+    <Card className="gap-3.5">
       <CountTabs tabs={tabs} active={filters.tab} onChange={(key) => props.onFilter('tab', key)} />
       <UsersFilterBar filters={filters} cities={summary?.cities ?? []} onChange={props.onFilter} />
 
@@ -110,7 +109,7 @@ export function UsersTable(props: UsersTableProps) {
       )}
 
       {rows.length > 0 && (
-        <label className={styles.selectAll}>
+        <label className="inline-flex items-center gap-2.5 self-start text-12 font-semibold text-ink-muted">
           <Checkbox
             checked={allSelected}
             indeterminate={!allSelected && someSelected}
@@ -123,11 +122,11 @@ export function UsersTable(props: UsersTableProps) {
 
       <div style={{ opacity: loading && list ? 0.55 : 1, transition: 'opacity 0.15s' }}>
         {error && !list ? (
-          <p className={styles.state}>
-            {error} <button type="button" className={styles.retry} onClick={props.onRetry}>Try again</button>
+          <p className="py-8 text-center text-13 text-ink-muted">
+            {error} <button type="button" className="font-bold text-primary" onClick={props.onRetry}>Try again</button>
           </p>
         ) : rows.length === 0 && !loading ? (
-          <p className={styles.state}>No users match these filters.</p>
+          <p className="py-8 text-center text-13 text-ink-muted">No users match these filters.</p>
         ) : (
           <DataTable
             columns={columns}

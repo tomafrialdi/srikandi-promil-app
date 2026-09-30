@@ -1,7 +1,6 @@
 import { Card, CardHeader, DataTable, ProgressBar, type Column } from '../../../../shared/ui'
 import { formatNumber } from '../../../../shared/lib/format'
 import type { HealthData } from '../../types'
-import styles from './HealthTab.module.css'
 
 type Row = HealthData['by_mode'][number]
 
@@ -20,8 +19,8 @@ const COLUMNS: Column<Row>[] = [
     key: 'mode',
     header: 'MODE',
     render: (r) => (
-      <strong className={styles.modeName}>
-        <span className={styles.dot} style={{ background: MODE_COLOR[r.mode] }} />
+      <strong className="inline-flex items-center gap-2">
+        <span className="size-2 rounded-full" style={{ background: MODE_COLOR[r.mode] }} />
         {r.label}
       </strong>
     ),
@@ -32,8 +31,8 @@ const COLUMNS: Column<Row>[] = [
     header: 'CONCEIVED',
     width: 190,
     render: (r) => (
-      <span className={styles.pctCell}>
-        <span className={styles.pctBar}>
+      <span className="inline-flex w-full items-center gap-2.5">
+        <span className="min-w-0 flex-1">
           <ProgressBar value={r.conceived_pct ?? 0} color="var(--success)" height={8} />
         </span>
         {pct(r.conceived_pct)}

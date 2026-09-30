@@ -2,7 +2,6 @@ import { Card, CardHeader, DataTable, ProgressBar, type Column } from '../../../
 import { formatNumber, formatPercent } from '../../../../shared/lib/format'
 import { SEGMENT_LABEL } from '../../config/labels'
 import type { RetentionData } from '../../types'
-import styles from './RetentionTab.module.css'
 
 type Row = RetentionData['segments'][number]
 
@@ -15,8 +14,8 @@ function retentionColor(value: number): string {
 function RetentionCell({ value }: { value: number | null }) {
   if (value == null) return <>—</>
   return (
-    <span className={styles.retentionCell}>
-      <span className={styles.retentionMini}>
+    <span className="inline-flex items-center gap-2">
+      <span className="w-14">
         <ProgressBar value={value} color={retentionColor(value)} height={6} />
       </span>
       {formatPercent(value, 0)}
@@ -34,7 +33,7 @@ const COLUMNS: Column<Row>[] = [
 
 export function SegmentsCard({ data }: { data: RetentionData['segments'] }) {
   return (
-    <Card className={styles.grow}>
+    <Card className="min-w-0 flex-1">
       <CardHeader title="Retention by segment" subtitle="W4 and W12 active %, monthly churn" />
       <DataTable columns={COLUMNS} rows={data} rowKey={(r) => r.key} rowHeight={44} />
     </Card>

@@ -7,7 +7,6 @@ import { logEvent } from '../../auth/services/auth.service'
 import { useDateRange } from '../../analytics/hooks/useDateRange'
 import { TransactionStats } from '../components/transactions/TransactionStats'
 import { TransactionsTable } from '../components/transactions/TransactionsTable'
-import styles from '../components/transactions/transactions.module.css'
 import { useTransactions, useTransactionsSummary } from '../hooks/useSubscriptionsData'
 import { ReceiptModal } from '../modals/ReceiptModal'
 import { fetchTransactions } from '../services/subscriptions.service'
@@ -50,14 +49,14 @@ export function TransactionsPage() {
 
   return (
     <>
-      <div className={styles.head}>
-        <div className={styles.headText}>
-          <h1 className={styles.h1}>
-            <Link to="/subscriptions" className={styles.crumb}>Subscriptions</Link> / Transactions
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div className="flex flex-col gap-1">
+          <h1 className="text-26 font-extrabold">
+            <Link to="/subscriptions" className="text-ink-muted hover:text-primary">Subscriptions</Link> / Transactions
           </h1>
-          <p className={styles.sub}>All payments across Midtrans, Google Play and App Store.</p>
+          <p className="text-14 text-ink-muted">All payments across Midtrans, Google Play and App Store.</p>
         </div>
-        <div className={styles.actions}>
+        <div className="flex gap-2.5">
           <Button variant="outline" disabled title="Reconciliation runs automatically with the payment gateway">Reconcile</Button>
           <Button onClick={exportCsv} disabled={exporting}>{exporting ? 'Exporting…' : 'Export CSV'}</Button>
         </div>

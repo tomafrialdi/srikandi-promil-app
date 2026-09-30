@@ -2,7 +2,6 @@ import { Bell, Crown, ProhibitInset, ArrowCounterClockwise } from '@phosphor-ico
 import { Link } from 'react-router-dom'
 import { Button } from '../../../../shared/ui'
 import type { UserDetail } from '../../types'
-import styles from './UserDetail.module.css'
 
 interface DetailHeaderProps {
   profile: UserDetail['profile']
@@ -13,16 +12,16 @@ interface DetailHeaderProps {
 export function DetailHeader({ profile, onChangePlan, onToggleSuspend }: DetailHeaderProps) {
   const suspended = profile.status === 'suspended'
   return (
-    <div className={styles.head}>
-      <div className={styles.headText}>
-        <h1 className={styles.h1}>
-          <Link to="/users" className={styles.crumb}>Users</Link> / {profile.name}
+    <div className="flex flex-wrap items-start justify-between gap-4">
+      <div className="flex flex-col gap-1">
+        <h1 className="text-26 font-extrabold">
+          <Link to="/users" className="text-ink-muted hover:text-primary">Users</Link> / {profile.name}
         </h1>
-        <p className={styles.sub}>
+        <p className="text-14 text-ink-muted">
           User ID {profile.ref} · Joined {profile.joined} via {profile.signup_method}
         </p>
       </div>
-      <div className={styles.actions}>
+      <div className="flex flex-wrap gap-2.5">
         <Button variant="outline" disabled title="Notifications module is not built yet" leadingIcon={<Bell size={16} />}>
           Send notification
         </Button>

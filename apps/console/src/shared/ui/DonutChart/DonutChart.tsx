@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react'
-import styles from './DonutChart.module.css'
 
 export interface DonutSegment {
   value: number
@@ -23,18 +22,15 @@ export function DonutChart({ segments, size = 140, thickness = 22, children }: D
       return `${s.color} ${start}% ${cursor}%`
     })
     .join(', ')
+  const mask = `radial-gradient(circle, transparent ${size / 2 - thickness - 1}px, #000 ${size / 2 - thickness}px)`
 
   return (
-    <div className={styles.wrap} style={{ width: size, height: size }}>
+    <div className="relative shrink-0" style={{ width: size, height: size }}>
       <div
-        className={styles.ring}
-        style={{
-          background: total > 0 ? `conic-gradient(${stops})` : 'var(--surface-alt)',
-          mask: `radial-gradient(circle, transparent ${size / 2 - thickness - 1}px, #000 ${size / 2 - thickness}px)`,
-          WebkitMask: `radial-gradient(circle, transparent ${size / 2 - thickness - 1}px, #000 ${size / 2 - thickness}px)`,
-        }}
+        className="absolute inset-0 rounded-full"
+        style={{ background: total > 0 ? `conic-gradient(${stops})` : 'var(--surface-alt)', mask, WebkitMask: mask }}
       />
-      <div className={styles.center}>{children}</div>
+      <div className="absolute inset-0 flex flex-col items-center justify-center">{children}</div>
     </div>
   )
 }

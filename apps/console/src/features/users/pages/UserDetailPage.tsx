@@ -12,7 +12,6 @@ import { PrivacyCard } from '../components/detail/PrivacyCard'
 import { ProfileCard } from '../components/detail/ProfileCard'
 import { SubscriptionCard } from '../components/detail/SubscriptionCard'
 import { TrackingSummaryCard } from '../components/detail/TrackingSummaryCard'
-import detail from '../components/detail/UserDetail.module.css'
 import { useModalData } from '../hooks/useModalData'
 import { useUnmaskGate } from '../hooks/useUnmaskGate'
 import { useUserDetail } from '../hooks/useUsersData'
@@ -53,15 +52,15 @@ export function UserDetailPage() {
       <DetailHeader profile={data.profile} onChangePlan={changePlan.onOpen} onToggleSuspend={status.onOpen} />
       <ProfileCard profile={data.profile} />
 
-      <div className={detail.columns}>
-        <div className={detail.left}>
+      <div className="flex flex-col items-start gap-4 min-[1201px]:flex-row">
+        <div className="flex w-full min-w-0 flex-1 flex-col gap-4">
           <TrackingSummaryCard data={data.tracking} />
           {data.engine && <EngineStatusCard engine={data.engine} cycles={data.cycles} onViewLog={() => engine.ask(userId)} />}
           <MedicationsCard data={data.medications} onOpen={medication.ask} />
           <DoctorsCard data={data.doctors} onOpen={doctor.openWith} />
           <ActivityCard data={data.activity} />
         </div>
-        <div className={detail.right}>
+        <div className="flex w-full flex-none flex-col gap-4 min-[1201px]:w-95">
           <SubscriptionCard data={data.subscription} />
           <ClinicsCard data={data.clinics} onOpen={() => clinics.openWith(userId)} />
           <DevicesCard data={data.devices} />

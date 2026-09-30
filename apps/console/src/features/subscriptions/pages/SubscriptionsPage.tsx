@@ -8,7 +8,6 @@ import { PlansRow } from '../components/overview/PlansRow'
 import { PromoCodesCard } from '../components/overview/PromoCodesCard'
 import { RecentTransactionsCard } from '../components/overview/RecentTransactionsCard'
 import { SubscriptionsHeader } from '../components/overview/SubscriptionsHeader'
-import styles from '../components/overview/overview.module.css'
 import { useOverview } from '../hooks/useSubscriptionsData'
 import { EditPlanModal } from '../modals/EditPlanModal'
 import { ReceiptModal } from '../modals/ReceiptModal'
@@ -33,12 +32,12 @@ export function SubscriptionsPage() {
     <>
       <SubscriptionsHeader onEditPlans={() => edit('plus_yearly')} />
       <OverviewKpis data={data.kpis} />
-      <div className={styles.row}>
+      <div className="flex flex-col items-stretch gap-4 min-[1101px]:flex-row">
         <MrrChartCard data={data.mrr_chart} />
         <PaymentMixCard data={data.payment_mix} />
       </div>
       <PlansRow plans={data.plans} onEdit={edit} />
-      <div className={styles.promoRow}>
+      <div className="flex flex-col items-stretch gap-4 min-[1101px]:flex-row">
         <PromoCodesCard data={data.promos} />
         <CodeUsageCard data={data.code_usage} />
       </div>

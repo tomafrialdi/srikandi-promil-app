@@ -1,5 +1,5 @@
+import { cn } from '../../lib/cn'
 import { formatNumber } from '../../lib/format'
-import styles from './CohortTable.module.css'
 
 interface CohortRow {
   label: string
@@ -26,28 +26,28 @@ function tone(value: number): { background: string; color: string } {
 export function CohortTable({ rows, weekLabels, cohortHeader = 'COHORT' }: CohortTableProps) {
   const cols = `96px 72px repeat(${weekLabels.length}, minmax(0, 1fr))`
   return (
-    <div className={styles.table} role="table">
-      <div className={`${styles.row} ${styles.head}`} style={{ gridTemplateColumns: cols }} role="row">
+    <div className="flex flex-col gap-1 overflow-x-auto">
+      <div className="grid min-w-140 items-center gap-1 text-11 font-bold text-ink-faint" style={{ gridTemplateColumns: cols }} role="row">
         <span>{cohortHeader}</span>
         <span>USERS</span>
         {weekLabels.map((label) => (
-          <span key={label} className={styles.center}>
+          <span key={label} className="text-center">
             {label}
           </span>
         ))}
       </div>
       {rows.map((row) => (
-        <div key={row.label} className={styles.row} style={{ gridTemplateColumns: cols }} role="row">
-          <span className={styles.cohort}>{row.label}</span>
-          <span className={styles.users}>{formatNumber(row.users)}</span>
+        <div key={row.label} className="grid min-w-140 items-center gap-1" style={{ gridTemplateColumns: cols }} role="row">
+          <span className="text-13 font-semibold">{row.label}</span>
+          <span className="text-13 text-ink-muted">{formatNumber(row.users)}</span>
           {weekLabels.map((label, index) => {
             const value = row.values[index]
             return value == null ? (
-              <span key={label} className={`${styles.cell} ${styles.empty}`}>
+              <span key={label} className={cn('flex h-9 items-center justify-center rounded-md text-12 font-medium text-ink-faint')}>
                 —
               </span>
             ) : (
-              <span key={label} className={styles.cell} style={tone(value)}>
+              <span key={label} className="flex h-9 items-center justify-center rounded-md text-12 font-bold" style={tone(value)} title={`${row.label} · ${label}: ${value}% active`}>
                 {value}%
               </span>
             )

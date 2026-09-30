@@ -1,7 +1,7 @@
 import { Badge, Card } from '../../../../shared/ui'
 import { formatIdr, formatNumber } from '../../../../shared/lib/format'
 import type { SubscriptionsOverview } from '../../types'
-import styles from './overview.module.css'
+import { cn } from '../../../../shared/lib/cn'
 
 type Plan = SubscriptionsOverview['plans'][number]
 
@@ -13,30 +13,30 @@ function per(plan: Plan): string {
 
 export function PlansRow({ plans, onEdit }: { plans: Plan[]; onEdit: (plan: string) => void }) {
   return (
-    <div className={styles.plans}>
+    <div className="grid gap-4 min-[1101px]:grid-cols-3">
       {plans.map((plan) => {
         const popular = plan.badge === 'Most popular'
         return (
           <button
             key={plan.plan}
             type="button"
-            className={`${styles.plan} ${popular ? styles.planPopular : ''}`}
+            className={cn('flex cursor-pointer flex-col gap-2.5 rounded-card border bg-card p-5 text-left hover:border-ink-faint', popular ? 'border-primary shadow-[inset_0_0_0_1px_var(--primary)]' : 'border-border')}
             onClick={() => onEdit(plan.plan)}
             aria-label={`Edit ${plan.label}`}
           >
-            <span className={styles.planHead}>
-              <span className={styles.planName}>{plan.label}</span>
+            <span className="flex items-center justify-between gap-2">
+              <span className="text-15 font-bold">{plan.label}</span>
               {plan.badge && (
                 <Badge tone={popular ? 'primary' : plan.plan === 'clinic_sponsored' ? 'info' : 'success'}>
                   {plan.plan === 'clinic_sponsored' && plan.clinics ? `${plan.badge} · ${plan.clinics} clinics` : plan.badge}
                 </Badge>
               )}
             </span>
-            <span className={styles.planPrice}>
-              <span className={styles.planAmount}>{formatIdr(plan.price_idr)}</span>
-              <span className={styles.planPer}>{per(plan)}</span>
+            <span className="flex flex-wrap items-baseline gap-1.5">
+              <span className="text-24 font-extrabold">{formatIdr(plan.price_idr)}</span>
+              <span className="text-12 text-ink-muted">{per(plan)}</span>
             </span>
-            <span className={styles.planSubs}>{formatNumber(plan.subscribers)} subs</span>
+            <span className="text-12 text-ink-muted">{formatNumber(plan.subscribers)} subs</span>
           </button>
         )
       })}

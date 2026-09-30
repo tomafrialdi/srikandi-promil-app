@@ -6,7 +6,6 @@ import {
 import { formatIdr, formatIdrCompact, formatNumber } from '../../../shared/lib/format'
 import { fetchPlanEditor, fetchPromoDetail, savePromo, setPromoStatus } from '../services/subscriptions.service'
 import type { DiscountType, PromoDetail } from '../types'
-import styles from './Forms.module.css'
 
 interface PromoForm {
   code: string
@@ -211,7 +210,7 @@ export function PromoFormModal({ open, code, onClose, onSaved, onDuplicate, pref
       {error && <Notice tone="error" icon={<Warning size={16} />}>{error}</Notice>}
 
       {editing && detail && (
-        <div className={styles.row2}>
+        <div className="grid grid-cols-[1fr_auto] items-end gap-2.5">
           <span style={{ fontSize: 12, color: 'var(--ink-muted)' }}>{formatNumber(detail.used_count)} / {detail.max_uses ? formatNumber(detail.max_uses) : '∞'} used{detail.days_left != null ? ` · ${detail.days_left} days left` : ''}</span>
           <Segmented label="Status" value={status} onChange={setStatus} options={[{ value: 'active', label: 'Active' }, { value: 'paused', label: 'Paused' }]} />
         </div>
@@ -223,7 +222,7 @@ export function PromoFormModal({ open, code, onClose, onSaved, onDuplicate, pref
       )}
 
       <ModalSection label={editing ? 'Code & offer' : 'Code'}>
-        <div className={styles.row2}>
+        <div className="grid grid-cols-[1fr_auto] items-end gap-2.5">
           <Field label="Promo code" htmlFor="promo-code" required hint="A–Z, 0–9, dash · max 16">
             <TextField id="promo-code" label="" hideLabel placeholder="e.g. HARIIBU25" maxLength={16} value={form.code} disabled={editing}
               onChange={(e) => patch({ code: e.target.value.toUpperCase().replace(/[^A-Z0-9-]/g, '') })} />
@@ -237,30 +236,30 @@ export function PromoFormModal({ open, code, onClose, onSaved, onDuplicate, pref
 
       <ModalSection label="Offer">
         <Field label="Discount type" required>
-          <div className={styles.grid}>
+          <div className="grid gap-3.5 min-[701px]:grid-cols-2">
             {TYPES.map((t) => (
               <RadioCard key={t.value} name="promo-type" selected={form.type === t.value} disabled={locked} onSelect={() => patch({ type: t.value })} title={t.label} />
             ))}
           </div>
         </Field>
-        <div className={styles.grid}>
+        <div className="grid gap-3.5 min-[701px]:grid-cols-2">
           {form.type === 'percentage' && (
             <Field label="Discount" htmlFor="promo-pct" required>
-              <div className={styles.money}><span>%</span>
+              <div className="flex h-11 items-center gap-2 rounded-control border border-border bg-card px-3.5 focus-within:border-primary [&_span]:text-12 [&_span]:font-bold [&_span]:text-ink-muted [&_input]:min-w-0 [&_input]:flex-1 [&_input]:border-0 [&_input]:bg-transparent [&_input]:text-13 [&_input]:font-bold [&_input]:outline-0"><span>%</span>
                 <input id="promo-pct" inputMode="numeric" disabled={locked} value={form.pct} onChange={(e) => patch({ pct: digits(e.target.value).slice(0, 3) })} />
               </div>
             </Field>
           )}
           {form.type === 'fixed' && (
             <Field label="Discount" htmlFor="promo-fixed" required>
-              <div className={styles.money}><span>Rp</span>
+              <div className="flex h-11 items-center gap-2 rounded-control border border-border bg-card px-3.5 focus-within:border-primary [&_span]:text-12 [&_span]:font-bold [&_span]:text-ink-muted [&_input]:min-w-0 [&_input]:flex-1 [&_input]:border-0 [&_input]:bg-transparent [&_input]:text-13 [&_input]:font-bold [&_input]:outline-0"><span>Rp</span>
                 <input id="promo-fixed" inputMode="numeric" disabled={locked} value={form.fixed} onChange={(e) => patch({ fixed: digits(e.target.value) })} />
               </div>
             </Field>
           )}
           {form.type === 'extend_trial' && (
             <Field label="Extra trial days" htmlFor="promo-trial" required>
-              <div className={styles.money}><span>days</span>
+              <div className="flex h-11 items-center gap-2 rounded-control border border-border bg-card px-3.5 focus-within:border-primary [&_span]:text-12 [&_span]:font-bold [&_span]:text-ink-muted [&_input]:min-w-0 [&_input]:flex-1 [&_input]:border-0 [&_input]:bg-transparent [&_input]:text-13 [&_input]:font-bold [&_input]:outline-0"><span>days</span>
                 <input id="promo-trial" inputMode="numeric" value={form.trialDays} onChange={(e) => patch({ trialDays: digits(e.target.value).slice(0, 2) })} />
               </div>
             </Field>
@@ -270,23 +269,23 @@ export function PromoFormModal({ open, code, onClose, onSaved, onDuplicate, pref
           </Field>
           {form.type === 'percentage' && (
             <Field label="Max discount" htmlFor="promo-max-discount" hint="optional">
-              <div className={styles.money}><span>Rp</span>
+              <div className="flex h-11 items-center gap-2 rounded-control border border-border bg-card px-3.5 focus-within:border-primary [&_span]:text-12 [&_span]:font-bold [&_span]:text-ink-muted [&_input]:min-w-0 [&_input]:flex-1 [&_input]:border-0 [&_input]:bg-transparent [&_input]:text-13 [&_input]:font-bold [&_input]:outline-0"><span>Rp</span>
                 <input id="promo-max-discount" inputMode="numeric" value={form.maxDiscount} onChange={(e) => patch({ maxDiscount: digits(e.target.value) })} />
               </div>
             </Field>
           )}
         </div>
         <Field label="Applies to plans" required>
-          <div className={styles.chips}>
+          <div className="flex flex-wrap gap-2">
             {PLANS.map((p) => (
-              <button key={p.value} type="button" className={styles.chip} aria-pressed={form.plans.includes(p.value)} disabled={locked} onClick={() => toggle('plans', p.value)}>{p.label}</button>
+              <button key={p.value} type="button" className="rounded-full border border-border bg-card px-3 py-[7px] text-12 font-semibold aria-pressed:border-primary aria-pressed:bg-primary-soft aria-pressed:text-primary disabled:cursor-not-allowed disabled:opacity-55" aria-pressed={form.plans.includes(p.value)} disabled={locked} onClick={() => toggle('plans', p.value)}>{p.label}</button>
             ))}
           </div>
         </Field>
         <Field label="Channels" required hint="Store offers are created via API">
-          <div className={styles.chips}>
+          <div className="flex flex-wrap gap-2">
             {CHANNELS.map((c) => (
-              <button key={c.value} type="button" className={styles.chip} aria-pressed={form.channels.includes(c.value)} onClick={() => toggle('channels', c.value)}>{c.label}</button>
+              <button key={c.value} type="button" className="rounded-full border border-border bg-card px-3 py-[7px] text-12 font-semibold aria-pressed:border-primary aria-pressed:bg-primary-soft aria-pressed:text-primary disabled:cursor-not-allowed disabled:opacity-55" aria-pressed={form.channels.includes(c.value)} onClick={() => toggle('channels', c.value)}>{c.label}</button>
             ))}
           </div>
         </Field>
@@ -296,7 +295,7 @@ export function PromoFormModal({ open, code, onClose, onSaved, onDuplicate, pref
         <Field label="Eligible users" htmlFor="promo-eligibility">
           <SelectField id="promo-eligibility" value={form.eligibility} options={ELIGIBILITY} onChange={(eligibility) => patch({ eligibility })} />
         </Field>
-        <div className={styles.grid}>
+        <div className="grid gap-3.5 min-[701px]:grid-cols-2">
           <Field label="Total redemptions" htmlFor="promo-max" hint="blank = unlimited">
             <TextField id="promo-max" label="" hideLabel inputMode="numeric" placeholder="500" value={form.maxUses} onChange={(e) => patch({ maxUses: digits(e.target.value) })} />
           </Field>
@@ -304,10 +303,10 @@ export function PromoFormModal({ open, code, onClose, onSaved, onDuplicate, pref
             <TextField id="promo-per-user" label="" hideLabel inputMode="numeric" value={form.perUser} onChange={(e) => patch({ perUser: digits(e.target.value) })} />
           </Field>
           <Field label="Starts (WIB)" htmlFor="promo-starts" required>
-            <input id="promo-starts" type="datetime-local" className={styles.dateInput} value={form.starts} onChange={(e) => patch({ starts: e.target.value })} />
+            <input id="promo-starts" type="datetime-local" className="h-11 rounded-control border border-border px-3.5 font-[inherit] text-13 font-semibold" value={form.starts} onChange={(e) => patch({ starts: e.target.value })} />
           </Field>
           <Field label="Ends (WIB)" htmlFor="promo-ends" hint="blank = always on">
-            <input id="promo-ends" type="datetime-local" className={styles.dateInput} value={form.ends} onChange={(e) => patch({ ends: e.target.value })} />
+            <input id="promo-ends" type="datetime-local" className="h-11 rounded-control border border-border px-3.5 font-[inherit] text-13 font-semibold" value={form.ends} onChange={(e) => patch({ ends: e.target.value })} />
           </Field>
         </div>
         <ToggleRow label="Combinable with other codes" title="Combinable with other codes" description="Off by default to protect margin" checked={form.combinable} onChange={(combinable) => patch({ combinable })} />
@@ -315,14 +314,14 @@ export function PromoFormModal({ open, code, onClose, onSaved, onDuplicate, pref
 
       {preview && (
         <ModalSection label="Preview">
-          <div className={styles.preview}>
+          <div className="flex flex-col gap-2 rounded-xl border border-dashed border-border bg-surface p-3.5 text-12">
             <strong>{preview.plan.label}</strong>
             {form.code && <span style={{ color: 'var(--success)', fontWeight: 700 }}>{form.code} applied</span>}
-            <div className={styles.previewPrice}>
-              <span className={styles.previewOld}>{formatIdr(preview.plan.price)}</span>
-              <span className={styles.previewNew}>{formatIdr(preview.price)}</span>
+            <div className="flex items-baseline gap-2.5">
+              <span className="text-12 text-ink-faint line-through">{formatIdr(preview.plan.price)}</span>
+              <span className="text-20 font-extrabold">{formatIdr(preview.price)}</span>
             </div>
-            <span className={styles.previewBtn}>Subscribe</span>
+            <span className="self-start rounded-lg bg-primary px-3.5 py-2 text-12 font-bold text-white">Subscribe</span>
             <span style={{ color: 'var(--ink-muted)' }}>
               {form.type === 'extend_trial' ? `Trial extended by ${form.trialDays || 0} days.` : `${form.type === 'sponsored' ? '100%' : form.type === 'fixed' ? formatIdrCompact(Number(form.fixed || 0)) : `${form.pct || 0}%`} off ${form.duration === 'first_billing' ? 'the first billing' : 'the selected period'}. Renews at ${formatIdr(preview.plan.price)}.`}
             </span>
@@ -333,7 +332,7 @@ export function PromoFormModal({ open, code, onClose, onSaved, onDuplicate, pref
       {editing && detail && (
         <>
           <ModalSection label="Performance">
-            <div className={styles.tiles}>
+            <div className="grid grid-cols-2 gap-2.5 min-[701px]:grid-cols-4">
               <Tile label="Redemptions" value={formatNumber(detail.performance.redemptions)} />
               <Tile label="Revenue" value={formatIdrCompact(detail.performance.revenue_idr)} />
               <Tile label="Discount given" value={formatIdrCompact(detail.performance.discount_idr)} />
@@ -341,7 +340,7 @@ export function PromoFormModal({ open, code, onClose, onSaved, onDuplicate, pref
             </div>
           </ModalSection>
           <ModalSection label="Change history">
-            <ul className={styles.history}>
+            <ul className="m-0 flex list-none flex-col gap-2 p-0 text-12 [&_span]:block [&_span]:text-ink-muted">
               {detail.history.map((h) => (
                 <li key={`${h.at}-${h.text}`}>
                   <strong>{h.at} · {h.actor}</strong>
@@ -358,7 +357,7 @@ export function PromoFormModal({ open, code, onClose, onSaved, onDuplicate, pref
 
 function Tile({ label, value }: { label: string; value: string }) {
   return (
-    <div className={styles.tile}>
+    <div className="flex flex-col gap-0.5 rounded-[10px] bg-surface px-3 py-2.5 [&_span]:text-11 [&_span]:text-ink-muted [&_strong]:text-16">
       <span>{label}</span>
       <strong>{value}</strong>
     </div>

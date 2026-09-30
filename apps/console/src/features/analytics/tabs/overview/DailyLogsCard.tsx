@@ -2,6 +2,8 @@ import { Card, CardHeader } from '../../../../shared/ui'
 import { Legend, StackedColumns, type StackedColumn } from '../../../../shared/charts'
 import type { OverviewData } from '../../types'
 
+const dayFormat = new Intl.DateTimeFormat('en-GB', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC' })
+
 const COLORS = { lh: '#c13d68', bbt: '#2574c4', cervical: '#e07a9b', mood: '#e0a030' }
 
 const LEGEND = [
@@ -15,6 +17,7 @@ export function DailyLogsCard({ data }: { data: OverviewData['daily_logs'] }) {
   const columns: StackedColumn[] = data.map((day, index) => ({
     label: String(Number(day.date.slice(8))),
     active: index === data.length - 1,
+    tooltipTitle: dayFormat.format(new Date(day.date)),
     segments: [
       { value: day.lh, color: COLORS.lh, name: 'LH test' },
       { value: day.bbt, color: COLORS.bbt, name: 'BBT' },

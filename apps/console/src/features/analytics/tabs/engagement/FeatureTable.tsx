@@ -2,7 +2,6 @@ import { Badge, Card, CardHeader, DataTable, ProgressBar, type Column } from '..
 import { formatNumber } from '../../../../shared/lib/format'
 import { trendBadge } from '../../components/trend-badge'
 import type { EngagementData } from '../../types'
-import styles from './EngagementTab.module.css'
 
 type Row = EngagementData['features'][number]
 
@@ -17,8 +16,8 @@ const COLUMNS: Column<Row>[] = [
     header: '% OF MAU',
     width: 190,
     render: (r) => (
-      <span className={styles.pctCell}>
-        <span className={styles.pctBar}>
+      <span className="inline-flex w-full items-center gap-2.5">
+        <span className="min-w-0 flex-1">
           <ProgressBar value={r.pct_of_mau ?? 0} color="var(--secondary)" height={8} />
         </span>
         {r.pct_of_mau ?? 0}%

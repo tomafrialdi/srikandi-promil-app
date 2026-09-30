@@ -1,7 +1,6 @@
 import { Card, CardHeader } from '../../../../shared/ui'
 import { formatNumber, formatPercent, toPercentOf } from '../../../../shared/lib/format'
 import type { RevenueData } from '../../types'
-import styles from './RevenueTab.module.css'
 
 export function TrialFunnelCard({ data }: { data: RevenueData['trial_funnel'] }) {
   const steps = [
@@ -16,21 +15,21 @@ export function TrialFunnelCard({ data }: { data: RevenueData['trial_funnel'] })
     data.strong_start_convert_pct > data.weak_start_convert_pct
 
   return (
-    <Card className={styles.grow}>
+    <Card className="min-w-0 flex-1">
       <CardHeader title="Trial conversion" subtitle={`${formatNumber(data.started)} trials in the selected range`} />
-      <div className={styles.tiles}>
+      <div className="grid grid-cols-2 gap-2.5 min-[701px]:grid-cols-4">
         {steps.map((step) => (
-          <div key={step.label} className={styles.tile} style={{ background: step.tint }}>
-            <span className={styles.tilePct} style={{ color: step.ink }}>
+          <div key={step.label} className="flex flex-col gap-0.5 rounded-xl p-3" style={{ background: step.tint }}>
+            <span className="text-11 font-bold" style={{ color: step.ink }}>
               {formatPercent(toPercentOf(step.count, data.started), step.label === 'Converted to paid' ? 1 : 0)}
             </span>
-            <span className={styles.tileCount}>{formatNumber(step.count)}</span>
-            <span className={styles.tileLabel}>{step.label}</span>
+            <span className="text-20 font-extrabold">{formatNumber(step.count)}</span>
+            <span className="text-12 font-semibold text-ink-muted">{step.label}</span>
           </div>
         ))}
       </div>
       {hasSplit && (
-        <p className={styles.note}>
+        <p className="text-12 text-ink-muted">
           Trials that log 3 signals in the first 3 days convert at {data.strong_start_convert_pct}% vs{' '}
           {data.weak_start_convert_pct}% for those who don't.
         </p>

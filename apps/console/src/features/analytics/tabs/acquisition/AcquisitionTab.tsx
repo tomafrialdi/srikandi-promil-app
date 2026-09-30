@@ -2,7 +2,6 @@ import { formatIdr, formatNumber, formatPercent } from '../../../../shared/lib/f
 import { MetricCard, MetricStrip } from '../../components/MetricCard'
 import { QueryBoundary } from '../../components/QueryBoundary'
 import { trendBadge } from '../../components/trend-badge'
-import layout from '../../components/TabContent.module.css'
 import { useAnalyticsQuery } from '../../hooks/useAnalyticsQuery'
 import { fetchAcquisition } from '../../services/analytics.service'
 import { CampaignsCard } from './CampaignsCard'
@@ -17,7 +16,7 @@ export function AcquisitionTab() {
   return (
     <QueryBoundary data={data} loading={loading} error={error} onRetry={retry}>
       {(d) => (
-        <div className={layout.content}>
+        <div className="flex flex-col gap-6">
           <MetricStrip>
             <MetricCard
               label="Installs (range)"
@@ -46,8 +45,8 @@ export function AcquisitionTab() {
             />
           </MetricStrip>
 
-          <div className={layout.row}>
-            <div className={layout.grow}>
+          <div className="flex flex-col items-stretch gap-4 min-[1101px]:flex-row">
+            <div className="min-w-0 flex-1">
               <WeeklyInstallsCard data={d.weekly_installs} />
             </div>
             <InstallFunnelCard data={d.funnel} />
@@ -55,7 +54,7 @@ export function AcquisitionTab() {
 
           <ChannelsTable data={d.channels} />
 
-          <div className={layout.row}>
+          <div className="flex flex-col items-stretch gap-4 min-[1101px]:flex-row">
             <CampaignsCard data={d.campaigns} />
             <RegionsCard data={d.regions} />
           </div>

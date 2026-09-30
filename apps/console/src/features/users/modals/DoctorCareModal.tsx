@@ -2,7 +2,6 @@ import { Stethoscope } from '@phosphor-icons/react'
 import { Badge, Button, Modal, ModalFooter, ModalSection, Notice, type BadgeTone } from '../../../shared/ui'
 import { formatIdrCompact } from '../../../shared/lib/format'
 import type { DoctorCare } from '../types'
-import parts from './modal-parts.module.css'
 
 const TONE: Record<string, BadgeTone> = { Completed: 'success', Upcoming: 'warning', visited: 'success', upcoming: 'warning', recommended: 'primary' }
 
@@ -30,18 +29,18 @@ export function DoctorCareModal({ data, loading, error, onClose }: DoctorCareMod
         </ModalFooter>
       }
     >
-      {loading && <p className={parts.state}>Loading…</p>}
+      {loading && <p className="py-10 text-center text-13 text-ink-muted">Loading…</p>}
       {error && <Notice tone="error" icon={null}>{error}</Notice>}
       {data && (
         <>
-          <div className={parts.badges}>
+          <div className="flex flex-wrap items-center gap-2">
             <Badge tone={TONE[data.relation] ?? 'neutral'}>{data.relation}</Badge>
             {data.primary && <Badge tone="info">Primary doctor</Badge>}
-            {d?.clinic_line && <span className={parts.muted}>{d.clinic_line}</span>}
+            {d?.clinic_line && <span className="text-12 text-ink-muted">{d.clinic_line}</span>}
           </div>
 
           {d?.stats && (
-            <div className={parts.stats}>
+            <div className="flex flex-wrap gap-5.5">
               <Stat value={String(d.stats.visits)} label="Visits" />
               <Stat value={String(d.stats.teleconsults)} label="Teleconsults" />
               <Stat value={formatIdrCompact(d.stats.spent_idr)} label="Spent" />
@@ -50,12 +49,12 @@ export function DoctorCareModal({ data, loading, error, onClose }: DoctorCareMod
 
           {d?.timeline && (
             <ModalSection label="Care timeline">
-              <ul className={parts.rows}>
+              <ul className="m-0 flex list-none flex-col p-0">
                 {d.timeline.map((item) => (
-                  <li key={item.title} className={parts.row}>
-                    <span className={parts.rowMain}>
-                      <span className={parts.rowTitle}>{item.title}</span>
-                      <span className={parts.rowMeta}>{item.meta}</span>
+                  <li key={item.title} className="flex items-start justify-between gap-3 border-b border-border py-2.5 last:border-b-0">
+                    <span className="flex min-w-0 flex-col gap-0.5">
+                      <span className="text-13 font-bold">{item.title}</span>
+                      <span className="text-11 text-ink-muted">{item.meta}</span>
                     </span>
                     <Badge tone={TONE[item.status] ?? 'neutral'}>{item.status}</Badge>
                   </li>
@@ -65,11 +64,11 @@ export function DoctorCareModal({ data, loading, error, onClose }: DoctorCareMod
           )}
 
           {(d?.shared || d?.review) && (
-            <div className={parts.two}>
+            <div className="grid gap-3.5 min-[701px]:grid-cols-2">
               {d.shared && (
-                <section className={parts.box}>
-                  <h3 className={parts.boxTitle}>Data shared with doctor</h3>
-                  <dl className={parts.kv}>
+                <section className="flex flex-col gap-2.5 rounded-xl border border-border p-3.5">
+                  <h3 className="text-13 font-extrabold">Data shared with doctor</h3>
+                  <dl className="m-0 flex flex-col">
                     <KV label="Doctor reports" value={d.shared.reports} />
                     <KV label="Live cycle data" value={d.shared.live_data} />
                     <KV label="Notes & mood" value={d.shared.notes} />
@@ -77,26 +76,26 @@ export function DoctorCareModal({ data, loading, error, onClose }: DoctorCareMod
                 </section>
               )}
               {d.review && (
-                <section className={parts.box}>
-                  <h3 className={parts.boxTitle}>User's review</h3>
-                  <p className={parts.rowTitle}>{'★'.repeat(d.review.stars)} · {d.review.date}</p>
-                  <p className={parts.muted}>“{d.review.quote}”</p>
+                <section className="flex flex-col gap-2.5 rounded-xl border border-border p-3.5">
+                  <h3 className="text-13 font-extrabold">User's review</h3>
+                  <p className="text-13 font-bold">{'★'.repeat(d.review.stars)} · {d.review.date}</p>
+                  <p className="text-12 text-ink-muted">“{d.review.quote}”</p>
                 </section>
               )}
             </div>
           )}
 
-          {!d?.timeline && <p className={parts.muted}>No visits yet. This doctor was {data.relation} for this user.</p>}
+          {!d?.timeline && <p className="text-12 text-ink-muted">No visits yet. This doctor was {data.relation} for this user.</p>}
 
           {data.others.length > 0 && (
             <ModalSection label="Other doctors for this user">
-              <ul className={parts.rows}>
+              <ul className="m-0 flex list-none flex-col p-0">
                 {data.others.map((other) => (
-                  <li key={other.title} className={parts.row}>
-                    <span className={parts.rowMain}>
-                      <span className={parts.rowTitle}>{other.title}</span>
+                  <li key={other.title} className="flex items-start justify-between gap-3 border-b border-border py-2.5 last:border-b-0">
+                    <span className="flex min-w-0 flex-col gap-0.5">
+                      <span className="text-13 font-bold">{other.title}</span>
                       {other.summary.filter(Boolean).map((line) => (
-                        <span key={line} className={parts.rowMeta}>{line}</span>
+                        <span key={line} className="text-11 text-ink-muted">{line}</span>
                       ))}
                     </span>
                     <Badge tone={TONE[other.relation] ?? 'neutral'}>{other.relation}</Badge>
@@ -113,16 +112,16 @@ export function DoctorCareModal({ data, loading, error, onClose }: DoctorCareMod
 
 function Stat({ value, label }: { value: string; label: string }) {
   return (
-    <div className={parts.stat}>
-      <span className={parts.statValue}>{value}</span>
-      <span className={parts.statLabel}>{label}</span>
+    <div className="flex flex-col">
+      <span className="text-18 font-extrabold">{value}</span>
+      <span className="text-11 text-ink-muted">{label}</span>
     </div>
   )
 }
 
 function KV({ label, value }: { label: string; value: string }) {
   return (
-    <div className={parts.kvRow}>
+    <div className="flex justify-between gap-3 py-1.5 text-12 [&_dt]:text-ink-muted [&_dd]:m-0 [&_dd]:text-right [&_dd]:font-bold">
       <dt>{label}</dt>
       <dd>{value}</dd>
     </div>

@@ -1,5 +1,3 @@
-import styles from './Sparkline.module.css'
-
 interface SparklineProps {
   values: number[]
   color?: string
@@ -12,18 +10,14 @@ export function Sparkline({ values, color = 'var(--primary)', height = 26 }: Spa
   const max = Math.max(...values)
   const range = max - min || 1
   return (
-    <span className={styles.spark} style={{ height }} aria-hidden="true">
-      {values.map((value, index) => {
-        const isLast = index === values.length - 1
-        const barHeight = 6 + ((value - min) / range) * (height - 6)
-        return (
-          <span
-            key={index}
-            className={styles.bar}
-            style={{ height: barHeight, background: color, opacity: isLast ? 1 : 0.33 }}
-          />
-        )
-      })}
+    <span className="inline-flex flex-none items-end gap-0.5" style={{ height }} aria-hidden="true">
+      {values.map((value, index) => (
+        <span
+          key={index}
+          className="w-1 rounded-[1px]"
+          style={{ height: 6 + ((value - min) / range) * (height - 6), background: color, opacity: index === values.length - 1 ? 1 : 0.33 }}
+        />
+      ))}
     </span>
   )
 }

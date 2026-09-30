@@ -2,7 +2,6 @@ import { Card, CardHeader, DataTable, type Column } from '../../../../shared/ui'
 import { formatIdr, formatIdrCompact, formatNumber, formatPercent } from '../../../../shared/lib/format'
 import { CHANNEL_COLOR, CHANNEL_LABEL } from '../../config/labels'
 import type { AcquisitionData } from '../../types'
-import styles from './AcquisitionTab.module.css'
 
 type Row = AcquisitionData['channels'][number]
 
@@ -11,8 +10,8 @@ const COLUMNS: Column<Row>[] = [
     key: 'channel',
     header: 'CHANNEL',
     render: (r) => (
-      <strong className={styles.channelName}>
-        <span className={styles.dot} style={{ background: CHANNEL_COLOR[r.channel] }} />
+      <strong className="inline-flex items-center gap-2">
+        <span className="size-2 rounded-full" style={{ background: CHANNEL_COLOR[r.channel] }} />
         {CHANNEL_LABEL[r.channel]}
       </strong>
     ),
@@ -31,7 +30,7 @@ const COLUMNS: Column<Row>[] = [
       r.ltv_cac == null ? (
         '∞'
       ) : (
-        <span className={r.ltv_cac >= 3 ? styles.good : styles.warn}>{`${r.ltv_cac}×`}</span>
+        <span className={r.ltv_cac >= 3 ? 'font-bold text-success' : 'font-bold text-warning-ink'}>{`${r.ltv_cac}×`}</span>
       ),
   },
 ]

@@ -14,7 +14,8 @@ export function DauTrendCard({ data }: { data: EngagementData['dau_trend'] }) {
       value: point.dau,
       color: isLast ? 'var(--primary)' : 'rgba(37, 116, 196, 0.7)',
       active: isLast,
-      title: `${dayMonth.format(date)}: ${point.dau} DAU`,
+      tooltipTitle: dayMonth.format(date),
+      tooltipValue: `${point.dau.toLocaleString('en-US')} active users`,
     }
   })
 

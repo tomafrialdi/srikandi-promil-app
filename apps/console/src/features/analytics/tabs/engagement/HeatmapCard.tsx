@@ -1,7 +1,6 @@
 import { Card, CardHeader } from '../../../../shared/ui'
 import { HeatGrid } from '../../../../shared/charts'
 import type { EngagementData } from '../../types'
-import styles from './EngagementTab.module.css'
 
 const HOURS = [5, 6, 7, 8, 9, 12, 15, 18, 20, 21, 22, 23]
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
@@ -16,11 +15,11 @@ export function HeatmapCard({ data }: { data: EngagementData['heatmap'] }) {
   const [peak, second] = [...totals].sort((a, b) => b.total - a.total)
 
   return (
-    <Card className={styles.heatmap}>
+    <Card className="w-full flex-none min-[1101px]:w-115">
       <CardHeader title="When users open the app" subtitle="Sessions by weekday × hour (Jakarta time)" />
       <HeatGrid rowLabels={DAYS} colLabels={HOURS.map(pad)} values={values} />
       {peak && second && (
-        <p className={styles.note}>
+        <p className="text-12 text-ink-muted">
           Peak {pad(peak.hour)}:00–{pad(peak.hour + 1)}:00. Second peak {pad(second.hour)}:00.
         </p>
       )}

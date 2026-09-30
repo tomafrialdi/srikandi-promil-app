@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
+import { cn } from '../../lib/cn'
 import { Badge, type BadgeTone } from '../Badge'
 import { Card } from '../Card'
-import styles from './StatCard.module.css'
 
 interface StatCardProps {
   label: string
@@ -14,17 +14,26 @@ interface StatCardProps {
 /** Compact KPI card: label, big value, optional badge. */
 export function StatCard({ label, value, badge, hint }: StatCardProps) {
   return (
-    <Card className={styles.card}>
-      <span className={styles.label}>{label}</span>
-      <div className={styles.row}>
-        <span className={styles.value}>{value}</span>
+    <Card className="gap-1.5 p-4">
+      <span className="text-12 font-semibold text-ink-muted">{label}</span>
+      <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
+        <span className="text-22 leading-tight font-extrabold">{value}</span>
         {badge && <Badge tone={badge.tone}>{badge.text}</Badge>}
-        {hint && <span className={styles.hint}>{hint}</span>}
+        {hint && <span className="text-12 text-ink-faint">{hint}</span>}
       </div>
     </Card>
   )
 }
 
 export function StatGrid({ children, columns = 5 }: { children: ReactNode; columns?: 4 | 5 }) {
-  return <div className={`${styles.grid} ${columns === 4 ? styles.four : styles.five}`}>{children}</div>
+  return (
+    <div
+      className={cn(
+        'grid grid-cols-2 gap-4',
+        columns === 4 ? 'min-[1281px]:grid-cols-4' : 'min-[801px]:grid-cols-3 min-[1281px]:grid-cols-5',
+      )}
+    >
+      {children}
+    </div>
+  )
 }

@@ -69,7 +69,7 @@ export function ConfirmDialog({
         </ModalFooter>
       }
     >
-      {description && <p style={{ fontSize: 14, lineHeight: 1.5, color: 'var(--ink-muted)' }}>{description}</p>}
+      {description && <p className="text-14 leading-normal text-ink-muted">{description}</p>}
       {children}
       {error && (
         <Notice tone="error" icon={<Warning size={16} />}>

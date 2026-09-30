@@ -1,7 +1,7 @@
 import { Badge, Field, RadioCard, ToggleRow } from '../../../../shared/ui'
 import type { RoleCatalog } from '../../types'
 import { TICKET_QUEUES, type InviteForm } from './invite-form'
-import styles from './InviteAdmin.module.css'
+import { cn } from '../../../../shared/lib/cn'
 
 interface StepProps {
   form: InviteForm
@@ -25,9 +25,9 @@ export function RoleStep({ form, update, catalog }: StepProps) {
 
   return (
     <>
-      <section className={styles.group}>
-        <h3 className={styles.groupLabel}>Choose a role</h3>
-        <div className={styles.roleGrid}>
+      <section className="flex flex-col gap-3.5">
+        <h3 className="text-11 font-bold tracking-[0.02em] text-ink-faint uppercase">Choose a role</h3>
+        <div className="grid gap-2.5 min-[701px]:grid-cols-2">
           {roles.map((r) => (
             <RadioCard
               key={r.role}
@@ -44,13 +44,13 @@ export function RoleStep({ form, update, catalog }: StepProps) {
       </section>
 
       {role && (
-        <section className={styles.group}>
-          <h3 className={styles.groupLabel}>What {role.label} can do</h3>
-          <dl className={styles.permissions}>
+        <section className="flex flex-col gap-3.5">
+          <h3 className="text-11 font-bold tracking-[0.02em] text-ink-faint uppercase">What {role.label} can do</h3>
+          <dl className="m-0 flex flex-col rounded-xl border border-border">
             {role.permissions.map((p) => (
-              <div key={p.area} className={styles.permissionRow}>
+              <div key={p.area} className="flex items-center justify-between border-b border-border px-3.5 py-2.5 text-13 last:border-b-0 [&_dt]:font-semibold [&_dd]:m-0 [&_dd]:font-bold [&_dd]:text-primary">
                 <dt>{p.area}</dt>
-                <dd className={p.level === 'None' ? styles.none : undefined}>{p.level}</dd>
+                <dd className={p.level === 'None' ? 'text-ink-faint!' : undefined}>{p.level}</dd>
               </div>
             ))}
           </dl>
@@ -58,8 +58,8 @@ export function RoleStep({ form, update, catalog }: StepProps) {
       )}
 
       {role && !NO_OVERRIDES.includes(role.role) && (
-        <section className={styles.group}>
-          <h3 className={styles.groupLabel}>Custom overrides</h3>
+        <section className="flex flex-col gap-3.5">
+          <h3 className="text-11 font-bold tracking-[0.02em] text-ink-faint uppercase">Custom overrides</h3>
           <ToggleRow
             label="Issue refunds up to Rp 500.000"
             title="Issue refunds up to Rp 500.000"
@@ -82,13 +82,13 @@ export function RoleStep({ form, update, catalog }: StepProps) {
             onChange={(engineEdit) => setOverride({ engineEdit })}
           />
           <Field label="Ticket queues">
-            <div className={styles.chips}>
+            <div className="flex flex-wrap gap-2">
               {TICKET_QUEUES.map((queue) => (
                 <button
                   key={queue}
                   type="button"
                   aria-pressed={form.overrides.queues.includes(queue)}
-                  className={`${styles.queue} ${form.overrides.queues.includes(queue) ? styles.queueOn : ''}`}
+                  className={cn('rounded-full border px-3 py-1.5 text-12 font-semibold', form.overrides.queues.includes(queue) ? 'border-primary bg-primary-soft text-primary' : 'border-border')}
                   onClick={() => toggleQueue(queue)}
                 >
                   {queue}

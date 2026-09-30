@@ -1,6 +1,6 @@
 # Console (`apps/console`)
 
-Admin dashboard: React 19 + Vite + TypeScript, CSS Modules, Phosphor icons, React Router, `@supabase/supabase-js`.
+Admin dashboard: React 19 + Vite + TypeScript, **Tailwind CSS v4**, Phosphor icons, React Router, `@supabase/supabase-js`, Lenis (smooth scroll).
 
 ## Run
 
@@ -19,7 +19,7 @@ src/
   app/        router.tsx, providers/AppProviders
   config/     env.ts, app.ts
   lib/        supabase.ts (client)
-  styles/     tokens.css (colors/fonts from Pencil), base.css
+  styles/     index.css (Tailwind + @theme), tokens.css (Pencil design tokens)
   shared/     ui/  charts/  layout/  lib/format.ts
   features/   auth/  dashboard/  analytics/  users/  subscriptions/
 ```
@@ -31,7 +31,7 @@ Rule: **a feature owns its pages, components, services, hooks and config.** Shar
 | Folder | What goes in it |
 |---|---|
 | `pages/` | Route-level screens (compose components) |
-| `components/` | UI for this feature, one card = one file (+ `.module.css`) |
+| `components/` | UI for this feature, one card = one file (Tailwind classes) |
 | `services/` | Supabase calls only (no React) |
 | `hooks/` | Data loading / state (`useXxx`) |
 | `config/` | Labels, colors, constants |
@@ -86,7 +86,7 @@ Rule: **a feature owns its pages, components, services, hooks and config.** Shar
 |---|---|
 | **`shared/charts`** | `BarRow` `CohortTable` `Columns` `HeatGrid` `Legend` `LineChart` `Sparkline` `StackedColumns` |
 | **`shared/layout`** | `AdminShell` (Sidebar + sticky Topbar + page), `nav.config.ts` (menu + placeholder routes), `PlaceholderPage` |
-| **`shared/lib`** | `format.ts` (number, %, Rp, duration, time-ago), `labels.ts` (plan/mode labels), `csv.ts` (CSV download) |
+| **`shared/lib`** | `cn.ts` (class join + Tailwind conflict merge), `smooth-scroll.ts` (Lenis), `format.ts` (number, %, Rp, duration, time-ago), `labels.ts` (plan/mode labels), `csv.ts` (CSV download) |
 | **`shared/hooks`** | `useAsyncData(key, fetcher)` (load + reload), `useUrlFilters(keys)` (filters + page in the URL) |
 
 ## Add a new page
@@ -95,7 +95,7 @@ Rule: **a feature owns its pages, components, services, hooks and config.** Shar
 2. Migration + RPC in `supabase/` (see `documentations/supabase`).
 3. `services/` (call RPC) → `hooks/` → `components/` → `pages/`.
 4. Add a route in `app/router.tsx` (menu item lives in `shared/layout/nav.config.ts`).
-5. Reuse `shared/ui` and `shared/charts`; add colors to `styles/tokens.css`, never hardcode.
+5. Reuse `shared/ui` and `shared/charts`; add colors to `styles/tokens.css` + `@theme` in `styles/index.css`, never hardcode.
 
 ## Modal (reusable)
 
@@ -122,3 +122,16 @@ const dialog = useDisclosure()
 | `useToast()` | `toast({ title, description, tone })` after an action |
 
 Printing: put `data-print-area` on the content of a `Modal` and add the class `print-modal` to `<body>` before `window.print()` (see `ReceiptModal`). `Modal` also supports stacked dialogs (only the top one handles Esc/Tab) and a `headerActions` slot.
+
+## Styling (Tailwind v4)
+
+- Design tokens live in `styles/tokens.css` (CSS variables mirroring Pencil) and are mapped in `@theme` (`styles/index.css`): `bg-primary`, `text-ink-muted`, `border-border`, `rounded-card`, `rounded-control`, `text-13` (font sizes 9–38), `shadow-modal`.
+- No CSS Modules. Write utilities in JSX; for conditional / overridable classes use `cn()` from `shared/lib/cn` (it is `tailwind-merge` configured for our theme, so `cn('p-5', 'p-4')` → `p-4`).
+- Dynamic values (chart heights, grid templates) stay inline via `style`.
+- Breakpoints used: `min-[701px]`, `min-[801px]`, `min-[1101px]`, `min-[1281px]` (same as the old media queries).
+
+## Motion & interaction
+
+- **Modal** fades + scales in and out (200 ms, respects `prefers-reduced-motion`); it stays mounted until the exit animation ends.
+- **Tooltip / TooltipBody** (`shared/ui/Tooltip`): hover bubble used by `Columns`, `StackedColumns`, `LineChart`, `HeatGrid` and the journey bar. Give chart items `tooltipTitle` / `tooltipValue` (or `formatValue`) for nicer text.
+- **Lenis** smooth scrolling starts in `app/providers/SmoothScroll`. Modals pause it while open; any inner scroll area needs `data-lenis-prevent` (the modal body and sidebar nav already have it).

@@ -1,5 +1,5 @@
 import type { ElementType, ReactNode } from 'react'
-import styles from './Card.module.css'
+import { cn } from '../../lib/cn'
 
 interface CardProps {
   as?: ElementType
@@ -7,8 +7,9 @@ interface CardProps {
   children: ReactNode
 }
 
+/** White rounded surface. Pass `className` to override gap / padding. */
 export function Card({ as: Tag = 'section', className, children }: CardProps) {
-  return <Tag className={[styles.card, className].filter(Boolean).join(' ')}>{children}</Tag>
+  return <Tag className={cn('flex min-w-0 flex-col gap-4 rounded-card border border-border bg-card p-5', className)}>{children}</Tag>
 }
 
 interface CardHeaderProps {
@@ -19,10 +20,10 @@ interface CardHeaderProps {
 
 export function CardHeader({ title, subtitle, action }: CardHeaderProps) {
   return (
-    <header className={styles.header}>
-      <div className={styles.headerText}>
-        <h2 className={styles.title}>{title}</h2>
-        {subtitle && <p className={styles.subtitle}>{subtitle}</p>}
+    <header className="flex items-start justify-between gap-3">
+      <div className="flex flex-none flex-col gap-0.5">
+        <h2 className="text-15 font-bold text-ink">{title}</h2>
+        {subtitle && <p className="text-12 font-medium text-ink-muted">{subtitle}</p>}
       </div>
       {action}
     </header>

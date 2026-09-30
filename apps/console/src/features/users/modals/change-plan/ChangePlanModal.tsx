@@ -4,7 +4,6 @@ import { Badge, Button, Field, Modal, ModalFooter, ModalSection, Notice, RadioCa
 import { formatIdr } from '../../../../shared/lib/format'
 import { changePlan, fetchPlanCatalog, fetchPlanQuote } from '../../services/users.service'
 import type { PlanCatalogItem, PlanQuote } from '../../types'
-import styles from './ChangePlan.module.css'
 
 const REASONS = ['Clinic partnership enrolment', 'Customer request', 'Billing correction', 'Goodwill gesture', 'Fraud / chargeback', 'Other']
   .map((r) => ({ value: r, label: r }))
@@ -146,12 +145,12 @@ export function ChangePlanModal({ open, onClose, userId, userName, userRef, onCh
       )}
 
       {current && (
-        <div className={styles.current}>
-          <div className={styles.currentHead}>
+        <div className="flex flex-col gap-1 rounded-xl bg-surface px-3.5 py-3 text-13">
+          <div className="flex items-center justify-between gap-2.5">
             <strong>Current: {current.label}</strong>
             <Badge tone={current.active ? 'success' : 'warning'}>{current.active ? 'Active' : 'Suspended'}</Badge>
           </div>
-          <span className={styles.muted}>
+          <span className="text-12 text-ink-muted">
             {current.price_idr > 0
               ? `Paid ${formatIdr(current.price_idr)}${current.payment ? ` via ${current.payment}` : ''} · renews ${current.renews ?? '—'} · ${current.days_left} days left`
               : 'No paid subscription'}
@@ -160,7 +159,7 @@ export function ChangePlanModal({ open, onClose, userId, userName, userRef, onCh
       )}
 
       <ModalSection label="New plan">
-        <div className={styles.plans}>
+        <div className="grid gap-2.5 min-[701px]:grid-cols-2">
           {catalog.map((item) => (
             <RadioCard
               key={item.plan}
@@ -178,18 +177,18 @@ export function ChangePlanModal({ open, onClose, userId, userName, userRef, onCh
 
       <ModalSection label="Promo code">
         {promoOk && quote?.promo ? (
-          <div className={styles.promoApplied}>
-            <div className={styles.currentHead}>
+          <div className="flex flex-col gap-1 rounded-xl bg-success-soft px-3.5 py-3 text-12 font-semibold text-success [&_strong]:text-14 [&_strong]:text-ink">
+            <div className="flex items-center justify-between gap-2.5">
               <strong>{quote.promo.code}</strong>
-              <button type="button" className={styles.link} onClick={() => { setPromo(''); setPromoInput('') }}>Remove</button>
+              <button type="button" className="text-12 font-bold text-error" onClick={() => { setPromo(''); setPromoInput('') }}>Remove</button>
             </div>
             <span>Code applied · {quote.promo.description}</span>
-            <span className={styles.muted}>
+            <span className="text-12 text-ink-muted">
               {quote.promo.audience} · {quote.promo.used} / {quote.promo.max} used · valid until {quote.promo.valid_until}
             </span>
           </div>
         ) : (
-          <div className={styles.promoRow}>
+          <div className="grid grid-cols-[1fr_auto] items-start gap-2.5">
             <TextField
               id="promo-code"
               label=""
@@ -205,10 +204,10 @@ export function ChangePlanModal({ open, onClose, userId, userName, userRef, onCh
           <Notice tone="error" icon={<Warning size={16} />}>{quote.promo_error}</Notice>
         )}
         {quote && quote.valid_promos.length > 0 && !promoOk && (
-          <div className={styles.suggestions}>
-            <span className={styles.muted}>Valid codes:</span>
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-12 text-ink-muted">Valid codes:</span>
             {quote.valid_promos.map((code) => (
-              <button key={code} type="button" className={styles.suggestion} onClick={() => { setPromoInput(code); setPromo(code) }}>
+              <button key={code} type="button" className="rounded-full bg-surface-alt px-2.5 py-1 text-11 font-bold" onClick={() => { setPromoInput(code); setPromo(code) }}>
                 {code}
               </button>
             ))}
@@ -217,7 +216,7 @@ export function ChangePlanModal({ open, onClose, userId, userName, userRef, onCh
       </ModalSection>
 
       <ModalSection label="When to apply">
-        <div className={styles.two}>
+        <div className="grid gap-2.5 min-[701px]:grid-cols-2">
           <RadioCard
             name="apply-when"
             selected={when === 'immediately'}
@@ -239,25 +238,25 @@ export function ChangePlanModal({ open, onClose, userId, userName, userRef, onCh
 
       {quote && plan && !quote.promo_error && (
         <ModalSection label="Price breakdown">
-          <div className={styles.breakdown}>
+          <div className="flex flex-col gap-2.5 rounded-xl border border-border p-3.5">
             {quote.lines.map((line) => (
-              <div key={line.label} className={styles.line}>
+              <div key={line.label} className="flex justify-between text-12 font-semibold">
                 <span>{line.label}</span>
                 <span>{line.amount < 0 ? `− ${formatIdr(-line.amount)}` : formatIdr(line.amount)}</span>
               </div>
             ))}
-            <div className={styles.totals}>
+            <div className="flex justify-between gap-4 border-t border-border pt-2.5 [&>div]:flex [&>div]:flex-col [&>div]:gap-0.5">
               <div>
-                <span className={styles.muted}>Due now</span>
-                <strong className={styles.total}>{formatIdr(quote.due_now)}</strong>
+                <span className="text-12 text-ink-muted">Due now</span>
+                <strong className="text-18 font-extrabold">{formatIdr(quote.due_now)}</strong>
               </div>
               <div>
-                <span className={styles.muted}>Refund to user</span>
-                <strong className={styles.total}>{formatIdr(quote.refund)}</strong>
+                <span className="text-12 text-ink-muted">Refund to user</span>
+                <strong className="text-18 font-extrabold">{formatIdr(quote.refund)}</strong>
               </div>
             </div>
             {quote.refund > 0 && (
-              <div className={styles.two}>
+              <div className="grid gap-2.5 min-[701px]:grid-cols-2">
                 <RadioCard name="refund-as" selected={refundAs === 'original'} onSelect={() => setRefundAs('original')} title={refundLabel} description="Refund as original payment" />
                 <RadioCard name="refund-as" selected={refundAs === 'credit'} onSelect={() => setRefundAs('credit')} title="Account credit" description="Refund as account credit" />
               </div>
@@ -267,7 +266,7 @@ export function ChangePlanModal({ open, onClose, userId, userName, userRef, onCh
       )}
 
       <ModalSection label="Reason & notification">
-        <div className={styles.two}>
+        <div className="grid gap-2.5 min-[701px]:grid-cols-2">
           <Field label="Reason" htmlFor="plan-reason">
             <SelectField id="plan-reason" value={reason} options={REASONS} onChange={setReason} />
           </Field>

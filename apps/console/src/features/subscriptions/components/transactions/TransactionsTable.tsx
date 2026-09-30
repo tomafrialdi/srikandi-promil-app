@@ -7,7 +7,6 @@ import { DateRangeMenu } from '../../../analytics/components/DateRangeMenu'
 import type { DateRange, RangePresetKey } from '../../../analytics/config/date-range'
 import { CHANNEL_FILTER_OPTIONS, CHANNEL_LABEL, PLAN_FILTER_OPTIONS, PROMO_FILTER_OPTIONS, TX_PAGE_SIZE, TX_STATUS } from '../../config/labels'
 import type { TransactionFilters, TransactionRow, TransactionsList, TransactionsSummary } from '../../types'
-import styles from './transactions.module.css'
 
 const dateTime = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Jakarta' })
 
@@ -39,22 +38,22 @@ export function TransactionsTable(props: TransactionsTableProps) {
   }, [draft, filters.search, props])
 
   const columns: Column<TransactionRow>[] = [
-    { key: 'invoice', header: 'INVOICE', width: 118, render: (r) => <span className={styles.invoice}>{r.invoice}</span> },
+    { key: 'invoice', header: 'INVOICE', width: 118, render: (r) => <span className="text-11 font-bold">{r.invoice}</span> },
     {
       key: 'user',
       header: 'USER',
       render: (r) => (
-        <span className={styles.userCell}>
-          <span className={styles.userName}>{r.name}</span>
-          <span className={styles.userEmail}>{r.email}</span>
+        <span className="flex min-w-0 flex-col">
+          <span className="truncate text-13 font-bold">{r.name}</span>
+          <span className="truncate text-11 font-medium text-ink-muted">{r.email}</span>
         </span>
       ),
     },
-    { key: 'plan', header: 'PLAN', width: 92, render: (r) => <span className={styles.plain}>{PLAN_LABEL[r.plan]}</span> },
-    { key: 'channel', header: 'CHANNEL', width: 84, render: (r) => <span className={styles.plain}>{CHANNEL_LABEL[r.channel]}</span> },
-    { key: 'promo', header: 'PROMO', width: 92, render: (r) => (r.promo ? <span className={styles.codeChip}>{r.promo}</span> : <span className={styles.muted}>—</span>) },
-    { key: 'amount', header: 'AMOUNT', width: 88, render: (r) => <span className={styles.amount}>{formatIdr(r.amount_idr)}</span> },
-    { key: 'net', header: 'NET', width: 80, render: (r) => <span className={styles.muted}>{r.net_idr > 0 ? formatIdr(r.net_idr) : '—'}</span> },
+    { key: 'plan', header: 'PLAN', width: 92, render: (r) => <span className="text-12 font-semibold">{PLAN_LABEL[r.plan]}</span> },
+    { key: 'channel', header: 'CHANNEL', width: 84, render: (r) => <span className="text-12 font-semibold">{CHANNEL_LABEL[r.channel]}</span> },
+    { key: 'promo', header: 'PROMO', width: 92, render: (r) => (r.promo ? <span className="inline-block rounded-md bg-surface-alt px-1.5 py-0.5 text-10 font-extrabold">{r.promo}</span> : <span className="text-12 font-medium text-ink-muted">—</span>) },
+    { key: 'amount', header: 'AMOUNT', width: 88, render: (r) => <span className="text-13 font-bold">{formatIdr(r.amount_idr)}</span> },
+    { key: 'net', header: 'NET', width: 80, render: (r) => <span className="text-12 font-medium text-ink-muted">{r.net_idr > 0 ? formatIdr(r.net_idr) : '—'}</span> },
     {
       key: 'status',
       header: 'STATUS',
@@ -63,7 +62,7 @@ export function TransactionsTable(props: TransactionsTableProps) {
         <Badge tone={TX_STATUS[r.status].tone}>{r.status === 'failed' ? `Failed · retry ${r.retry}/3` : TX_STATUS[r.status].label}</Badge>
       ),
     },
-    { key: 'date', header: 'DATE', width: 92, render: (r) => <span className={styles.muted}>{dateTime.format(new Date(r.at))}</span> },
+    { key: 'date', header: 'DATE', width: 92, render: (r) => <span className="text-12 font-medium text-ink-muted">{dateTime.format(new Date(r.at))}</span> },
     { key: 'receipt', header: '', width: 16, render: () => <Receipt size={16} color="var(--ink-muted)" /> },
   ]
 
@@ -76,13 +75,13 @@ export function TransactionsTable(props: TransactionsTableProps) {
   ]
 
   return (
-    <Card className={styles.table}>
+    <Card className="gap-3.5">
       <CountTabs tabs={tabs} active={filters.tab} onChange={(key) => props.onFilter('tab', key)} />
 
-      <div className={styles.filterBar}>
-        <label className={styles.search}>
+      <div className="flex flex-wrap items-center gap-2.5">
+        <label className="flex h-9 w-75 max-w-full items-center gap-2 rounded-lg bg-surface px-3 focus-within:outline focus-within:outline-primary">
           <MagnifyingGlass size={15} color="var(--ink-faint)" />
-          <input className={styles.searchInput} placeholder="Invoice, user, email or order ID" value={draft} onChange={(e) => setDraft(e.target.value)} aria-label="Search transactions" />
+          <input className="min-w-0 flex-1 border-0 bg-transparent text-13 outline-0 placeholder:text-ink-faint" placeholder="Invoice, user, email or order ID" value={draft} onChange={(e) => setDraft(e.target.value)} aria-label="Search transactions" />
         </label>
         <DateRangeMenu range={range} onChange={props.onRange} />
         <SelectField variant="pill" aria-label="Channel" value={filters.channel} options={CHANNEL_FILTER_OPTIONS} onChange={(v) => props.onFilter('channel', v)} />
@@ -92,9 +91,9 @@ export function TransactionsTable(props: TransactionsTableProps) {
 
       <div style={{ opacity: loading && list ? 0.55 : 1, transition: 'opacity 0.15s' }}>
         {error && !list ? (
-          <p className={styles.state}>{error} <button type="button" onClick={props.onRetry} style={{ fontWeight: 700, color: 'var(--primary)' }}>Try again</button></p>
+          <p className="py-8 text-center text-13 text-ink-muted">{error} <button type="button" onClick={props.onRetry} style={{ fontWeight: 700, color: 'var(--primary)' }}>Try again</button></p>
         ) : list && list.rows.length === 0 ? (
-          <p className={styles.state}>No transactions match these filters.</p>
+          <p className="py-8 text-center text-13 text-ink-muted">No transactions match these filters.</p>
         ) : (
           <DataTable columns={columns} rows={list?.rows ?? []} rowKey={(r) => r.invoice} rowHeight={56} onRowClick={(r) => props.onOpen(r.invoice)} />
         )}

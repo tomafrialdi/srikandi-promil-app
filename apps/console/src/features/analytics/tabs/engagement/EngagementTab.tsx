@@ -2,7 +2,6 @@ import { formatCompact, formatDuration, formatPercent } from '../../../../shared
 import { MetricCard, MetricStrip } from '../../components/MetricCard'
 import { QueryBoundary } from '../../components/QueryBoundary'
 import { trendBadge } from '../../components/trend-badge'
-import layout from '../../components/TabContent.module.css'
 import { useAnalyticsQuery } from '../../hooks/useAnalyticsQuery'
 import { fetchEngagement } from '../../services/analytics.service'
 import { DauTrendCard } from './DauTrendCard'
@@ -17,7 +16,7 @@ export function EngagementTab() {
   return (
     <QueryBoundary data={data} loading={loading} error={error} onRetry={retry}>
       {(d) => (
-        <div className={layout.content}>
+        <div className="flex flex-col gap-6">
           <MetricStrip>
             <MetricCard
               label="Sessions / user / day"
@@ -46,8 +45,8 @@ export function EngagementTab() {
             />
           </MetricStrip>
 
-          <div className={layout.row}>
-            <div className={layout.grow}>
+          <div className="flex flex-col items-stretch gap-4 min-[1101px]:flex-row">
+            <div className="min-w-0 flex-1">
               <DauTrendCard data={d.dau_trend} />
             </div>
             <HeatmapCard data={d.heatmap} />
@@ -55,7 +54,7 @@ export function EngagementTab() {
 
           <FeatureTable data={d.features} />
 
-          <div className={layout.row}>
+          <div className="flex flex-col items-stretch gap-4 min-[1101px]:flex-row">
             <StreaksCard data={d.streaks} />
             <TopContentCard data={d.top_content} />
           </div>

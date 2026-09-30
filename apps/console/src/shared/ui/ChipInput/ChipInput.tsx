@@ -1,6 +1,6 @@
 import { X } from '@phosphor-icons/react'
 import { useState, type KeyboardEvent } from 'react'
-import styles from './ChipInput.module.css'
+import { cn } from '../../lib/cn'
 
 interface ChipInputProps {
   id?: string
@@ -34,18 +34,17 @@ export function ChipInput({ id, values, onChange, validate, placeholder }: ChipI
   }
 
   return (
-    <div className={styles.box}>
+    <div className="flex min-h-11 flex-wrap items-center gap-1.5 rounded-control border border-border bg-card px-2.5 py-1.5 focus-within:border-primary">
       {values.map((value) => {
         const error = validate?.(value)
         return (
-          <span key={value} className={`${styles.chip} ${error ? styles.invalid : ''}`} title={error ?? undefined}>
+          <span
+            key={value}
+            className={cn('inline-flex items-center gap-1.5 rounded-lg px-2 py-1 text-12 font-semibold', error ? 'bg-error-soft text-error' : 'bg-surface-alt')}
+            title={error ?? undefined}
+          >
             {value}
-            <button
-              type="button"
-              className={styles.remove}
-              aria-label={`Remove ${value}`}
-              onClick={() => onChange(values.filter((v) => v !== value))}
-            >
+            <button type="button" className="inline-flex opacity-70" aria-label={`Remove ${value}`} onClick={() => onChange(values.filter((v) => v !== value))}>
               <X size={11} weight="bold" />
             </button>
           </span>
@@ -53,7 +52,7 @@ export function ChipInput({ id, values, onChange, validate, placeholder }: ChipI
       })}
       <input
         id={id}
-        className={styles.input}
+        className="min-w-40 flex-1 border-0 bg-transparent text-12 font-semibold outline-0"
         value={draft}
         placeholder={values.length === 0 ? placeholder : undefined}
         onChange={(event) => setDraft(event.target.value)}

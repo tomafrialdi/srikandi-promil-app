@@ -2,7 +2,6 @@ import { Info } from '@phosphor-icons/react'
 import { formatNumber, formatPercent } from '../../../../shared/lib/format'
 import { MetricCard, MetricStrip } from '../../components/MetricCard'
 import { QueryBoundary } from '../../components/QueryBoundary'
-import layout from '../../components/TabContent.module.css'
 import { useAnalyticsQuery } from '../../hooks/useAnalyticsQuery'
 import { fetchHealth } from '../../services/analytics.service'
 import { ByAgeCard } from './ByAgeCard'
@@ -11,7 +10,6 @@ import { CareCard } from './CareCard'
 import { PregnanciesPerMonthCard } from './PregnanciesPerMonthCard'
 import { SignalsCard } from './SignalsCard'
 import { TimeToPregnancyCard } from './TimeToPregnancyCard'
-import styles from './HealthTab.module.css'
 
 export function HealthTab() {
   const { data, loading, error, retry } = useAnalyticsQuery(fetchHealth)
@@ -24,8 +22,8 @@ export function HealthTab() {
             ? Math.round(((d.kpis.conceived_this_month - d.kpis.conceived_prev_month) / d.kpis.conceived_prev_month) * 100)
             : null
         return (
-          <div className={layout.content}>
-            <div className={styles.disclaimer}>
+          <div className="flex flex-col gap-6">
+            <div className="flex items-start gap-2.5 rounded-xl bg-secondary-soft px-3.5 py-3 text-12 leading-normal font-semibold text-secondary">
               <Info size={16} />
               <p>
                 Outcomes are self-reported (positive test or pregnancy mode) and aggregated anonymously. Figures are not
@@ -65,14 +63,14 @@ export function HealthTab() {
               />
             </MetricStrip>
 
-            <div className={layout.row}>
+            <div className="flex flex-col items-stretch gap-4 min-[1101px]:flex-row">
               <PregnanciesPerMonthCard data={d.pregnancies_per_month} />
               <TimeToPregnancyCard data={d.time_to_pregnancy} />
             </div>
 
             <ByModeTable data={d.by_mode} />
 
-            <div className={layout.row}>
+            <div className="flex flex-col items-stretch gap-4 min-[1101px]:flex-row">
               <ByAgeCard data={d.by_age} />
               <SignalsCard data={d.signals} />
               <CareCard data={d.care} />

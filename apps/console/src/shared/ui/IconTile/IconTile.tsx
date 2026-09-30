@@ -1,5 +1,4 @@
 import type { CSSProperties, ReactNode } from 'react'
-import styles from './IconTile.module.css'
 
 interface IconTileProps {
   /** Background colour (CSS value or var()). */
@@ -17,7 +16,7 @@ export function IconTile({ background, size = 32, round = false, children }: Ico
     borderRadius: round ? '100%' : size <= 32 ? 9 : 10,
   }
   return (
-    <span className={styles.tile} style={style}>
+    <span className="inline-flex shrink-0 items-center justify-center" style={style}>
       {children}
     </span>
   )

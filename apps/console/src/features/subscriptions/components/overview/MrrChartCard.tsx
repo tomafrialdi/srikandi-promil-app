@@ -2,10 +2,10 @@ import { useState } from 'react'
 import { Card, CardHeader, Segmented } from '../../../../shared/ui'
 import { Columns, type ColumnItem } from '../../../../shared/charts'
 import type { SubscriptionsOverview } from '../../types'
-import styles from './overview.module.css'
 
 type View = 'total' | 'monthly' | 'yearly'
 const monthShort = new Intl.DateTimeFormat('en-US', { month: 'short', timeZone: 'UTC' })
+const monthLong = new Intl.DateTimeFormat('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' })
 
 export function MrrChartCard({ data }: { data: SubscriptionsOverview['mrr_chart'] }) {
   const [view, setView] = useState<View>('total')
@@ -19,12 +19,13 @@ export function MrrChartCard({ data }: { data: SubscriptionsOverview['mrr_chart'
       valueLabel: isLast ? String(Math.round(value / 1_000_000)) : undefined,
       color: isLast ? 'var(--primary)' : 'rgba(193, 61, 104, 0.35)',
       active: isLast,
-      title: `${Math.round(value / 1_000_000)} juta`,
+      tooltipTitle: monthLong.format(new Date(point.month)),
+      tooltipValue: `Rp ${(value / 1_000_000).toFixed(1)} juta`,
     }
   })
 
   return (
-    <Card className={styles.grow}>
+    <Card className="min-w-0 flex-1">
       <CardHeader
         title="MRR"
         subtitle="Rp juta · last 12 months"

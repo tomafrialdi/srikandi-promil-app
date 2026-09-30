@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import { SelectField } from '../../../../shared/ui'
 import { MODE_FILTER_OPTIONS, PLAN_FILTER_OPTIONS, STATUS_FILTER_OPTIONS } from '../../config/labels'
 import type { UsersFilters } from '../../types'
-import styles from './UsersList.module.css'
 
 interface UsersFilterBarProps {
   filters: UsersFilters
@@ -22,11 +21,11 @@ export function UsersFilterBar({ filters, cities, onChange }: UsersFilterBarProp
   }, [draft, filters.search, onChange])
 
   return (
-    <div className={styles.filterBar}>
-      <label className={styles.search}>
+    <div className="flex flex-wrap items-center gap-2.5">
+      <label className="flex h-9 w-70 max-w-full items-center gap-2 rounded-lg bg-surface px-3 focus-within:outline focus-within:outline-primary">
         <MagnifyingGlass size={15} color="var(--ink-faint)" />
         <input
-          className={styles.searchInput}
+          className="min-w-0 flex-1 border-0 bg-transparent text-13 outline-0 placeholder:text-ink-faint"
           placeholder="Search name, email or ID"
           value={draft}
           onChange={(event) => setDraft(event.target.value)}

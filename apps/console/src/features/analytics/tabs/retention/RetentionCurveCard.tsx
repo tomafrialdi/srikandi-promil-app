@@ -1,7 +1,6 @@
 import { Card, CardHeader } from '../../../../shared/ui'
 import { Legend, LineChart, type LineSeries } from '../../../../shared/charts'
 import type { RetentionData } from '../../types'
-import styles from './RetentionTab.module.css'
 
 const SEGMENTS: Record<RetentionData['curve'][number]['segment'], { label: string; color: string; emphasis?: boolean }> = {
   partner_linked: { label: 'Partner linked', color: '#c13d68', emphasis: true },
@@ -27,7 +26,7 @@ export function RetentionCurveCard({ data }: { data: RetentionData['curve'] }) {
   const ratio = partnerW8 != null && calendarW8 ? partnerW8 / calendarW8 : null
 
   return (
-    <Card className={styles.grow}>
+    <Card className="min-w-0 flex-1">
       <CardHeader
         title="Retention curve by segment"
         subtitle="% active in week N after sign-up"
@@ -35,7 +34,7 @@ export function RetentionCurveCard({ data }: { data: RetentionData['curve'] }) {
       />
       <LineChart series={series} xLabels={weeks.map((w) => `W${w}`)} height={220} />
       {ratio != null && (
-        <p className={styles.insight}>
+        <p className="text-12 text-ink-muted">
           Partner-linked users retain {Number(ratio.toFixed(1))}× better at W8.
           {calendarW12 != null && ` Calendar-only users drop to ${calendarW12}% by W12.`}
         </p>

@@ -2,7 +2,6 @@ import { formatIdr, formatIdrCompact, formatPercent } from '../../../../shared/l
 import { MetricCard, MetricStrip } from '../../components/MetricCard'
 import { QueryBoundary } from '../../components/QueryBoundary'
 import { trendBadge } from '../../components/trend-badge'
-import layout from '../../components/TabContent.module.css'
 import { useAnalyticsQuery } from '../../hooks/useAnalyticsQuery'
 import { fetchRevenue } from '../../services/analytics.service'
 import { CancelReasonsCard } from './CancelReasonsCard'
@@ -18,7 +17,7 @@ export function RevenueTab() {
   return (
     <QueryBoundary data={data} loading={loading} error={error} onRetry={retry}>
       {(d) => (
-        <div className={layout.content}>
+        <div className="flex flex-col gap-6">
           <MetricStrip>
             <MetricCard
               label="MRR"
@@ -50,17 +49,17 @@ export function RevenueTab() {
             />
           </MetricStrip>
 
-          <div className={layout.row}>
+          <div className="flex flex-col items-stretch gap-4 min-[1101px]:flex-row">
             <MrrMovementCard data={d.mrr_movement} />
             <RevenueByPlanCard data={d.revenue_by_plan} />
           </div>
 
-          <div className={layout.row}>
+          <div className="flex flex-col items-stretch gap-4 min-[1101px]:flex-row">
             <RevenueTrendCard data={d.revenue_trend} />
             <LtvByChannelCard data={d.ltv_by_channel} />
           </div>
 
-          <div className={layout.row}>
+          <div className="flex flex-col items-stretch gap-4 min-[1101px]:flex-row">
             <TrialFunnelCard data={d.trial_funnel} />
             <CancelReasonsCard data={d.churn_reasons} />
           </div>

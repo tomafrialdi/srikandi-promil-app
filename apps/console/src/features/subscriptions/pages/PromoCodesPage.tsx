@@ -5,7 +5,6 @@ import { downloadCsv } from '../../../shared/lib/csv'
 import { PromoDetailPanel } from '../components/promos/PromoDetailPanel'
 import { PromoStats } from '../components/promos/PromoStats'
 import { PromoTable } from '../components/promos/PromoTable'
-import styles from '../components/promos/promos.module.css'
 import { usePromoDetail, usePromos, usePromosSummary } from '../hooks/useSubscriptionsData'
 import { PromoFormModal } from '../modals/PromoFormModal'
 import { setPromoStatus } from '../services/subscriptions.service'
@@ -60,14 +59,14 @@ export function PromoCodesPage() {
 
   return (
     <>
-      <div className={styles.head}>
-        <div className={styles.headText}>
-          <h1 className={styles.h1}>
-            <Link to="/subscriptions" className={styles.crumb}>Subscriptions</Link> / Promo codes
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div className="flex flex-col gap-1">
+          <h1 className="text-26 font-extrabold">
+            <Link to="/subscriptions" className="text-ink-muted hover:text-primary">Subscriptions</Link> / Promo codes
           </h1>
-          <p className={styles.sub}>Create, schedule and monitor discount codes. App-store purchases use store offer codes.</p>
+          <p className="text-14 text-ink-muted">Create, schedule and monitor discount codes. App-store purchases use store offer codes.</p>
         </div>
-        <div className={styles.actions}>
+        <div className="flex gap-2.5">
           <Button
             variant="outline"
             disabled={!rows || rows.length === 0}
@@ -84,7 +83,7 @@ export function PromoCodesPage() {
 
       <PromoStats data={summary.data} />
 
-      <div className={styles.split}>
+      <div className="flex flex-col items-start gap-4 min-[1201px]:flex-row">
         <PromoTable counts={summary.data?.counts} rows={rows} loading={list.loading} tab={tab} selected={active} onTab={setTab} onSelect={setSelected} />
         {detail.data && (
           <PromoDetailPanel

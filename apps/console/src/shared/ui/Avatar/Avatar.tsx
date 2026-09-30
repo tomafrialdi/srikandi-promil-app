@@ -1,4 +1,4 @@
-import styles from './Avatar.module.css'
+import { cn } from '../../lib/cn'
 
 interface AvatarProps {
   label: string
@@ -6,11 +6,16 @@ interface AvatarProps {
   tone?: 'primary' | 'secondary'
 }
 
+const TONE = {
+  primary: 'bg-primary text-white',
+  secondary: 'bg-secondary-soft text-secondary',
+}
+
 export function Avatar({ label, size = 32, tone = 'secondary' }: AvatarProps) {
   return (
     <span
-      className={`${styles.avatar} ${styles[tone]}`}
-      style={{ width: size, height: size, fontSize: size >= 34 ? 13 : 12 }}
+      className={cn('inline-flex shrink-0 items-center justify-center rounded-full font-bold', TONE[tone], size >= 34 ? 'text-13' : 'text-12')}
+      style={{ width: size, height: size }}
       aria-hidden="true"
     >
       {label}

@@ -1,5 +1,5 @@
 import { useEffect, useRef, type ClipboardEvent, type KeyboardEvent } from 'react'
-import styles from './CodeInput.module.css'
+import { cn } from '../../../shared/lib/cn'
 
 interface CodeInputProps {
   length?: number
@@ -51,14 +51,17 @@ export function CodeInput({ length = 6, value, onChange, onComplete, disabled, h
   }
 
   return (
-    <div className={styles.code} role="group" aria-label="Verification code">
+    <div className="flex gap-2.5" role="group" aria-label="Verification code">
       {Array.from({ length }, (_, index) => (
         <input
           key={index}
           ref={(node) => {
             refs.current[index] = node
           }}
-          className={`${styles.digit} ${hasError ? styles.error : ''}`}
+          className={cn(
+            'h-15 min-w-0 flex-1 rounded-xl border bg-card p-0 text-center text-26 font-extrabold caret-primary outline-0 focus:border-primary',
+            hasError ? 'border-error' : 'border-border',
+          )}
           inputMode="numeric"
           autoComplete={index === 0 ? 'one-time-code' : 'off'}
           maxLength={1}

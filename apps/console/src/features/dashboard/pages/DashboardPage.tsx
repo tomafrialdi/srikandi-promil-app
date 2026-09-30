@@ -15,7 +15,6 @@ import {
   UserGrowthCard,
 } from '../components'
 import { useDashboardOverview } from '../hooks/useDashboardOverview'
-import styles from './DashboardPage.module.css'
 
 export function DashboardPage() {
   const { profile } = useAuth()
@@ -38,25 +37,25 @@ export function DashboardPage() {
       <DashboardHeader firstName={firstName} />
       <KpiGrid kpis={data.kpis} />
 
-      <div className={styles.row}>
+      <div className="flex flex-col items-stretch gap-4 min-[1101px]:flex-row">
         <UserGrowthCard data={data.user_growth} />
         <PlanSplitCard data={data.plan_split} />
       </div>
 
       <JourneyCard journey={data.journey} outcomes={data.outcomes} />
 
-      <div className={styles.row}>
+      <div className="flex flex-col items-stretch gap-4 min-[1101px]:flex-row">
         <LocationCard data={data.locations} />
         <AgeCard data={data.age_distribution} />
       </div>
 
-      <div className={styles.row}>
+      <div className="flex flex-col items-stretch gap-4 min-[1101px]:flex-row">
         <FunnelCard data={data.funnel} />
         <FeatureAdoptionCard data={data.feature_adoption} />
         <OutcomesPanel data={data.outcomes} />
       </div>
 
-      <div className={styles.row}>
+      <div className="flex flex-col items-stretch gap-4 min-[1101px]:flex-row">
         <RecentSignupsCard data={data.recent_signups} />
         <NeedsAttentionCard data={data.attention} />
       </div>

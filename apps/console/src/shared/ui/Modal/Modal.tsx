@@ -1,7 +1,8 @@
 import { X } from '@phosphor-icons/react'
-import { useEffect, useId, useRef, type ReactNode } from 'react'
+import { useEffect, useId, useRef, useState, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
-import styles from './Modal.module.css'
+import { cn } from '../../lib/cn'
+import { pauseSmoothScroll, resumeSmoothScroll } from '../../lib/smooth-scroll'
 
 export type ModalSize = 'sm' | 'md' | 'lg' | 'xl'
 
@@ -24,12 +25,18 @@ export interface ModalProps {
   children: ReactNode
 }
 
+/** Must match the duration-* classes below. */
+const EXIT_MS = 200
+
+const SIZE: Record<ModalSize, string> = { sm: 'max-w-120', md: 'max-w-190', lg: 'max-w-205', xl: 'max-w-220' }
+
 let stack: symbol[] = []
 
 const FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
 
 /**
- * Accessible modal: portal, backdrop, Esc to close, focus trap, scroll lock, focus restore.
+ * Accessible modal: portal, backdrop, fade + scale transition, Esc to close, focus trap, scroll lock,
+ * focus restore, stacked dialogs (only the top one reacts to Esc / Tab). Stays mounted while it animates out.
  * Compose the body with <ModalSection>, the footer with <ModalFooter>.
  */
 export function Modal({
@@ -48,6 +55,15 @@ export function Modal({
   const titleId = useId()
   const dialogRef = useRef<HTMLDivElement>(null)
   const onCloseRef = useRef(onClose)
+  const [mounted, setMounted] = useState(open)
+
+  // Mount immediately when opening; unmount only after the exit transition finished.
+  if (open && !mounted) setMounted(true)
+  useEffect(() => {
+    if (open || !mounted) return
+    const id = window.setTimeout(() => setMounted(false), EXIT_MS)
+    return () => window.clearTimeout(id)
+  }, [open, mounted])
 
   useEffect(() => {
     onCloseRef.current = onClose
@@ -60,7 +76,8 @@ export function Modal({
     const previouslyFocused = document.activeElement as HTMLElement | null
     const previousOverflow = document.body.style.overflow
     document.body.style.overflow = 'hidden'
-    dialogRef.current?.focus()
+    pauseSmoothScroll()
+    const focusTimer = window.setTimeout(() => dialogRef.current?.focus(), 0)
 
     const onKeyDown = (event: KeyboardEvent) => {
       if (stack[stack.length - 1] !== id) return
@@ -84,47 +101,60 @@ export function Modal({
     }
     document.addEventListener('keydown', onKeyDown)
     return () => {
+      window.clearTimeout(focusTimer)
       document.removeEventListener('keydown', onKeyDown)
       stack = stack.filter((item) => item !== id)
       document.body.style.overflow = previousOverflow
+      if (stack.length === 0) resumeSmoothScroll()
       previouslyFocused?.focus?.()
     }
   }, [open])
 
-  if (!open) return null
+  if (!mounted) return null
+
+  const closing = !open || undefined
 
   return createPortal(
     <div
-      className={styles.overlay}
+      className="fixed inset-0 z-100 flex items-center justify-center bg-ink/45 px-4 py-6 transition-opacity duration-200 ease-out starting:opacity-0 data-closing:opacity-0 motion-reduce:transition-none"
       data-modal-overlay
+      data-closing={closing}
       onMouseDown={(event) => {
-        if (closeOnOverlay && event.target === event.currentTarget) onClose()
+        if (closeOnOverlay && open && event.target === event.currentTarget) onClose()
       }}
     >
       <div
         ref={dialogRef}
-        className={`${styles.dialog} ${styles[size]}`}
-        data-modal-dialog
+        className={cn(
+          'flex max-h-[calc(100vh-48px)] w-full flex-col overflow-hidden rounded-[20px] bg-card shadow-modal outline-0',
+          'transition-[opacity,transform] duration-200 ease-out starting:translate-y-3 starting:scale-[0.97] starting:opacity-0',
+          'data-closing:translate-y-2 data-closing:scale-[0.98] data-closing:opacity-0 motion-reduce:transition-none',
+          SIZE[size],
+        )}
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
         tabIndex={-1}
+        data-modal-dialog
+        data-closing={closing}
       >
-        <header className={styles.header} data-no-print>
-          {icon && <span className={styles.icon}>{icon}</span>}
-          <div className={styles.titles}>
-            <h2 id={titleId} className={styles.title}>
+        <header className="flex items-center gap-3.5 border-b border-border px-6 py-5" data-no-print>
+          {icon && <span className="inline-flex size-10 flex-none items-center justify-center rounded-xl bg-primary-soft text-primary">{icon}</span>}
+          <div className="min-w-0 flex-1">
+            <h2 id={titleId} className="text-18 font-extrabold">
               {title}
             </h2>
-            {subtitle && <p className={styles.subtitle}>{subtitle}</p>}
+            {subtitle && <p className="mt-0.5 text-12 text-ink-muted">{subtitle}</p>}
           </div>
           {headerActions}
-          <button type="button" className={styles.close} onClick={onClose} aria-label="Close">
+          <button type="button" className="inline-flex size-8 flex-none items-center justify-center rounded-full bg-surface-alt text-ink-muted hover:text-ink" onClick={onClose} aria-label="Close">
             <X size={16} weight="bold" />
           </button>
         </header>
         {tabs}
-        <div className={styles.body}>{children}</div>
+        <div className="flex min-h-0 flex-1 flex-col gap-5 overflow-y-auto px-6 py-5" data-lenis-prevent>
+          {children}
+        </div>
         {footer}
       </div>
     </div>,
@@ -135,8 +165,8 @@ export function Modal({
 /** Uppercase label + stacked content, used to group a modal body. */
 export function ModalSection({ label, children }: { label?: string; children: ReactNode }) {
   return (
-    <section className={styles.section}>
-      {label && <h3 className={styles.sectionLabel}>{label}</h3>}
+    <section className="flex flex-col gap-3">
+      {label && <h3 className="text-11 font-bold tracking-[0.02em] text-ink-faint uppercase">{label}</h3>}
       {children}
     </section>
   )
@@ -151,9 +181,9 @@ interface ModalFooterProps {
 
 export function ModalFooter({ info, children }: ModalFooterProps) {
   return (
-    <footer className={styles.footer} data-no-print>
-      <div className={styles.info}>{info}</div>
-      <div className={styles.actions}>{children}</div>
+    <footer className="flex items-center justify-between gap-3 border-t border-border bg-surface px-6 py-3.5" data-no-print>
+      <div className="min-w-0 text-12 text-ink-muted">{info}</div>
+      <div className="flex flex-none items-center gap-2.5">{children}</div>
     </footer>
   )
 }

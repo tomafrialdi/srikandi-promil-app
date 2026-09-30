@@ -1,6 +1,6 @@
 import { CaretLeft, CaretRight } from '@phosphor-icons/react'
+import { cn } from '../../lib/cn'
 import { formatNumber } from '../../lib/format'
-import styles from './Pagination.module.css'
 
 interface PaginationProps {
   /** 1-based */
@@ -10,7 +10,6 @@ interface PaginationProps {
   onChange: (page: number) => void
 }
 
-/** 1 2 3 … N with previous / next, plus "Showing a–b of total". */
 function pageItems(page: number, last: number): Array<number | 'gap'> {
   if (last <= 6) return Array.from({ length: last }, (_, i) => i + 1)
   const items: Array<number | 'gap'> = [1]
@@ -23,30 +22,33 @@ function pageItems(page: number, last: number): Array<number | 'gap'> {
   return items
 }
 
+const PAGE = 'inline-flex h-8 min-w-8 items-center justify-center rounded-lg border border-border bg-card px-2 text-12 font-bold disabled:opacity-45'
+
+/** 1 2 3 … N with previous / next, plus "Showing a–b of total". */
 export function Pagination({ page, pageSize, total, onChange }: PaginationProps) {
   const last = Math.max(1, Math.ceil(total / pageSize))
   const from = total === 0 ? 0 : (page - 1) * pageSize + 1
   const to = Math.min(total, page * pageSize)
 
   return (
-    <div className={styles.bar}>
-      <span className={styles.summary}>
+    <div className="flex flex-wrap items-center justify-between gap-3">
+      <span className="text-12 text-ink-muted">
         Showing {formatNumber(from)}–{formatNumber(to)} of {formatNumber(total)}
       </span>
-      <nav className={styles.pages} aria-label="Pagination">
-        <button type="button" className={styles.page} disabled={page <= 1} onClick={() => onChange(page - 1)} aria-label="Previous page">
+      <nav className="flex items-center gap-1.5" aria-label="Pagination">
+        <button type="button" className={PAGE} disabled={page <= 1} onClick={() => onChange(page - 1)} aria-label="Previous page">
           <CaretLeft size={14} />
         </button>
         {pageItems(page, last).map((item, index) =>
           item === 'gap' ? (
-            <span key={`gap-${index}`} className={styles.gap}>
+            <span key={`gap-${index}`} className="px-1 text-ink-faint">
               …
             </span>
           ) : (
             <button
               key={item}
               type="button"
-              className={`${styles.page} ${item === page ? styles.current : ''}`}
+              className={cn(PAGE, item === page && 'border-ink bg-ink text-white')}
               aria-current={item === page ? 'page' : undefined}
               onClick={() => onChange(item)}
             >
@@ -54,7 +56,7 @@ export function Pagination({ page, pageSize, total, onChange }: PaginationProps)
             </button>
           ),
         )}
-        <button type="button" className={styles.page} disabled={page >= last} onClick={() => onChange(page + 1)} aria-label="Next page">
+        <button type="button" className={PAGE} disabled={page >= last} onClick={() => onChange(page + 1)} aria-label="Next page">
           <CaretRight size={14} />
         </button>
       </nav>

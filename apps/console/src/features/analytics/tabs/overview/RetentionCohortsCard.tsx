@@ -1,7 +1,6 @@
 import { Card, CardHeader } from '../../../../shared/ui'
 import { COHORT_LEGEND, CohortTable, Legend } from '../../../../shared/charts'
 import type { OverviewData } from '../../types'
-import styles from './OverviewTab.module.css'
 
 const monthFormat = new Intl.DateTimeFormat('en-US', { month: 'short', year: 'numeric', timeZone: 'UTC' })
 const WEEK_LABELS = ['W0', 'W1', 'W2', 'W3', 'W4', 'W5', 'W6']
@@ -31,7 +30,7 @@ export function RetentionCohortsCard({ data }: { data: OverviewData['retention_c
           values: row.weeks,
         }))}
       />
-      {note && <p className={styles.insight}>{note}</p>}
+      {note && <p className="text-12 text-ink-muted">{note}</p>}
     </Card>
   )
 }

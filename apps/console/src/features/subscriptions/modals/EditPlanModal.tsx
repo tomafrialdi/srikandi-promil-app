@@ -4,7 +4,6 @@ import { Button, CheckRow, Field, Modal, ModalFooter, ModalSection, Notice, Radi
 import { formatIdr, formatIdrSigned, formatNumber } from '../../../shared/lib/format'
 import { fetchPlanEditor, reviewPlanRequest, savePlan } from '../services/subscriptions.service'
 import type { EditablePlan, PlanEditor } from '../types'
-import styles from './Forms.module.css'
 
 interface PlanForm {
   label: string
@@ -178,7 +177,7 @@ export function EditPlanModal({ open, initialPlan, onClose, onSaved }: EditPlanM
       }
     >
       {error && <Notice tone="error" icon={<Warning size={16} />}>{error}</Notice>}
-      {!plan && !error && <p className={styles.state}>Loading…</p>}
+      {!plan && !error && <p className="py-10 text-center text-13 text-ink-muted">Loading…</p>}
 
       {plan && form && editor && (
         <>
@@ -193,7 +192,7 @@ export function EditPlanModal({ open, initialPlan, onClose, onSaved }: EditPlanM
             <Notice tone="warning" icon={<Warning size={16} />}>
               A price change for this plan is waiting for approval.
               {editor.my_role === 'super_admin' && (
-                <span className={styles.inlineActions}>
+                <span className="ml-3 inline-flex gap-3 [&_button]:font-extrabold [&_button]:underline">
                   <button type="button" onClick={() => review(true)} disabled={saving}>Approve</button>
                   <button type="button" onClick={() => review(false)} disabled={saving}>Reject</button>
                 </span>
@@ -202,7 +201,7 @@ export function EditPlanModal({ open, initialPlan, onClose, onSaved }: EditPlanM
           )}
 
           <ModalSection label="Plan details">
-            <div className={styles.grid}>
+            <div className="grid gap-3.5 min-[701px]:grid-cols-2">
               <Field label="Display name" htmlFor="plan-name" required>
                 <TextField id="plan-name" label="" hideLabel value={form.label} onChange={(e) => patch({ label: e.target.value })} />
               </Field>
@@ -222,30 +221,30 @@ export function EditPlanModal({ open, initialPlan, onClose, onSaved }: EditPlanM
           </ModalSection>
 
           <ModalSection label="Pricing by channel">
-            <div className={styles.grid3}>
+            <div className="grid gap-3.5 min-[701px]:grid-cols-3">
               <Field label="Midtrans (GoPay, QRIS, OVO, card)" htmlFor="price-midtrans">
-                <div className={styles.money}><span>Rp</span>
+                <div className="flex h-11 items-center gap-2 rounded-control border border-border bg-card px-3.5 focus-within:border-primary [&_span]:text-12 [&_span]:font-bold [&_span]:text-ink-muted [&_input]:min-w-0 [&_input]:flex-1 [&_input]:border-0 [&_input]:bg-transparent [&_input]:text-13 [&_input]:font-bold [&_input]:outline-0"><span>Rp</span>
                   <input id="price-midtrans" inputMode="numeric" value={money(form.price)} onChange={(e) => patch({ price: digits(e.target.value) })} />
                 </div>
               </Field>
               <Field label="Google Play" htmlFor="price-google">
-                <div className={styles.money}><span>Rp</span>
+                <div className="flex h-11 items-center gap-2 rounded-control border border-border bg-card px-3.5 focus-within:border-primary [&_span]:text-12 [&_span]:font-bold [&_span]:text-ink-muted [&_input]:min-w-0 [&_input]:flex-1 [&_input]:border-0 [&_input]:bg-transparent [&_input]:text-13 [&_input]:font-bold [&_input]:outline-0"><span>Rp</span>
                   <input id="price-google" inputMode="numeric" value={money(form.google)} onChange={(e) => patch({ google: digits(e.target.value) })} />
                 </div>
-                {plan.google_tier && <small className={styles.hint}>tier: {plan.google_tier}</small>}
+                {plan.google_tier && <small className="text-11 text-ink-faint">tier: {plan.google_tier}</small>}
               </Field>
               <Field label="Apple App Store" htmlFor="price-apple">
-                <div className={styles.money}><span>Rp</span>
+                <div className="flex h-11 items-center gap-2 rounded-control border border-border bg-card px-3.5 focus-within:border-primary [&_span]:text-12 [&_span]:font-bold [&_span]:text-ink-muted [&_input]:min-w-0 [&_input]:flex-1 [&_input]:border-0 [&_input]:bg-transparent [&_input]:text-13 [&_input]:font-bold [&_input]:outline-0"><span>Rp</span>
                   <input id="price-apple" inputMode="numeric" value={money(form.apple)} onChange={(e) => patch({ apple: digits(e.target.value) })} />
                 </div>
-                {plan.apple_tier && <small className={styles.hint}>{plan.apple_tier}</small>}
+                {plan.apple_tier && <small className="text-11 text-ink-faint">{plan.apple_tier}</small>}
               </Field>
             </div>
-            {yearlyNote && <div className={styles.success}>{yearlyNote}</div>}
+            {yearlyNote && <div className="rounded-[10px] bg-success-soft px-3 py-2.5 text-12 font-semibold text-success">{yearlyNote}</div>}
           </ModalSection>
 
           <ModalSection label="Included features">
-            <div className={styles.features}>
+            <div className="grid gap-x-5 gap-y-3 min-[701px]:grid-cols-2">
               {form.features.map((feature, index) => (
                 <CheckRow
                   key={feature.label}
@@ -258,7 +257,7 @@ export function EditPlanModal({ open, initialPlan, onClose, onSaved }: EditPlanM
           </ModalSection>
 
           <ModalSection label="Display">
-            <div className={styles.grid}>
+            <div className="grid gap-3.5 min-[701px]:grid-cols-2">
               <Field label="Badge label" htmlFor="plan-badge">
                 <TextField id="plan-badge" label="" hideLabel value={form.badge} onChange={(e) => patch({ badge: e.target.value })} />
               </Field>
@@ -269,7 +268,7 @@ export function EditPlanModal({ open, initialPlan, onClose, onSaved }: EditPlanM
           </ModalSection>
 
           <ModalSection label="When price changes">
-            <div className={styles.stack}>
+            <div className="flex flex-col gap-2.5">
               <RadioCard
                 name="price-scope"
                 selected={!form.migrate}
@@ -285,7 +284,7 @@ export function EditPlanModal({ open, initialPlan, onClose, onSaved }: EditPlanM
                 description="Users are notified 30 days before (required by app stores). Expect higher churn."
               />
             </div>
-            <div className={styles.impact}>
+            <div className="grid gap-2.5 min-[701px]:grid-cols-4">
               <Impact label="Active subscribers" value={formatNumber(plan.subscribers)} />
               <Impact label="Price change" value={change?.changed && change.pct !== 0 ? `${change.pct > 0 ? '+' : ''}${change.pct.toFixed(1)}%` : 'none'} />
               <Impact label="Projected MRR impact" value={migrateImpact === 0 ? 'Rp 0' : formatIdrSigned(Math.round(migrateImpact))} />
@@ -300,7 +299,7 @@ export function EditPlanModal({ open, initialPlan, onClose, onSaved }: EditPlanM
 
 function Impact({ label, value }: { label: string; value: string }) {
   return (
-    <div className={styles.impactItem}>
+    <div className="flex flex-col gap-0.5 rounded-[10px] bg-surface px-3 py-2.5 [&_span]:text-11 [&_span]:text-ink-muted [&_strong]:text-13">
       <span>{label}</span>
       <strong>{value}</strong>
     </div>

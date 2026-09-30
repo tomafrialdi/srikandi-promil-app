@@ -3,14 +3,13 @@ import { BarRow } from '../../../../shared/charts'
 import { formatIdr, formatNumber } from '../../../../shared/lib/format'
 import { CHANNEL_COLOR, CHANNEL_LABEL } from '../../config/labels'
 import type { OverviewData } from '../../types'
-import styles from './OverviewTab.module.css'
 
 export function ChannelsCard({ data }: { data: OverviewData['channels'] }) {
   const max = Math.max(1, ...data.map((c) => c.new_users))
   return (
-    <Card className={styles.grow}>
+    <Card className="min-w-0 flex-1">
       <CardHeader title="Acquisition channels" subtitle="New users · selected range · CAC per paying user" />
-      <div className={styles.rows}>
+      <div className="flex flex-col gap-3.5">
         {data.map((row) => (
           <BarRow
             key={row.channel}

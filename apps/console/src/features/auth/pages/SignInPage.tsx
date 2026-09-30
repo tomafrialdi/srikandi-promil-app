@@ -1,10 +1,10 @@
 import { useState, type FormEvent } from 'react'
 import { ArrowRight, Check, Envelope, Eye, EyeSlash, FingerprintSimple, GoogleLogo, Lock, Shield } from '@phosphor-icons/react'
+import { cn } from '../../../shared/lib/cn'
 import { Button, Notice, TextField } from '../../../shared/ui'
 import { AuthLayout } from '../components/AuthLayout'
 import { useAuth } from '../hooks/useAuth'
 import { signInWithGoogle, signInWithPassword } from '../services/auth.service'
-import styles from './AuthPages.module.css'
 
 export function SignInPage() {
   const { accessDenied, dismissAccessDenied } = useAuth()
@@ -43,9 +43,9 @@ export function SignInPage() {
 
   return (
     <AuthLayout>
-      <div className={styles.heading}>
-        <h1 className={styles.title}>Sign in to the console</h1>
-        <p className={styles.subtitle}>
+      <div className="flex flex-col gap-1.5">
+        <h1 className="text-28 font-extrabold text-ink">Sign in to the console</h1>
+        <p className="text-14 leading-normal text-ink-muted">
           Use your @srikandipromil.id Google Workspace account or clinic-issued admin email.
         </p>
       </div>
@@ -63,13 +63,13 @@ export function SignInPage() {
         Sign in with a passkey
       </Button>
 
-      <div className={styles.divider}>
-        <span className={styles.dividerLine} />
+      <div className="flex items-center gap-3 text-12 font-semibold text-ink-faint">
+        <span className="h-px flex-1 bg-border" />
         or with email
-        <span className={styles.dividerLine} />
+        <span className="h-px flex-1 bg-border" />
       </div>
 
-      <form className={styles.form} onSubmit={handleSubmit}>
+      <form className="flex flex-col gap-5.5" onSubmit={handleSubmit}>
         <TextField
           id="email"
           type="email"
@@ -91,11 +91,11 @@ export function SignInPage() {
           value={password}
           onChange={(event) => setPassword(event.target.value)}
           icon={<Lock size={17} />}
-          labelAction={<span className={styles.link}>Forgot?</span>}
+          labelAction={<span className="text-13 font-bold text-primary">Forgot?</span>}
           trailing={
             <button
               type="button"
-              className={styles.iconButton}
+              className="inline-flex text-ink-muted"
               aria-label={showPassword ? 'Hide password' : 'Show password'}
               onClick={() => setShowPassword((visible) => !visible)}
             >
@@ -104,14 +104,16 @@ export function SignInPage() {
           }
         />
 
-        <label className={styles.remember}>
+        <label className="relative flex cursor-pointer items-center gap-2.5 text-13 font-semibold">
           <input
             type="checkbox"
-            className={styles.checkInput}
+            className="peer absolute size-[18px] opacity-0"
             checked={trustDevice}
             onChange={(event) => setTrustDevice(event.target.checked)}
           />
-          <span className={styles.check}>{trustDevice && <Check size={12} weight="bold" color="#fff" />}</span>
+          <span className={cn('inline-flex size-[18px] items-center justify-center rounded-[5px] border peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-primary', trustDevice ? 'border-primary bg-primary' : 'border-border bg-card')}>
+            {trustDevice && <Check size={12} weight="bold" color="#fff" />}
+          </span>
           Trust this device for 30 days
         </label>
 

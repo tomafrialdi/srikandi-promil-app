@@ -1,5 +1,5 @@
+import { cn } from '../../lib/cn'
 import { formatNumber } from '../../lib/format'
-import styles from './CountTabs.module.css'
 
 interface CountTab {
   key: string
@@ -16,7 +16,7 @@ interface CountTabsProps {
 /** Filter tabs with a count pill (All users · 124,806). */
 export function CountTabs({ tabs, active, onChange }: CountTabsProps) {
   return (
-    <div className={styles.tabs} role="tablist">
+    <div className="flex gap-6 overflow-x-auto border-b border-border" role="tablist">
       {tabs.map((tab) => {
         const isActive = tab.key === active
         return (
@@ -25,11 +25,18 @@ export function CountTabs({ tabs, active, onChange }: CountTabsProps) {
             type="button"
             role="tab"
             aria-selected={isActive}
-            className={`${styles.tab} ${isActive ? styles.active : ''}`}
+            className={cn(
+              '-mb-px inline-flex items-center gap-2 border-b-2 border-transparent pb-3 text-13 font-semibold whitespace-nowrap text-ink-muted',
+              isActive && 'border-primary font-bold text-ink',
+            )}
             onClick={() => onChange(tab.key)}
           >
             {tab.label}
-            {tab.count != null && <span className={styles.count}>{formatNumber(tab.count)}</span>}
+            {tab.count != null && (
+              <span className={cn('rounded-full px-[7px] py-0.5 text-11 font-bold', isActive ? 'bg-primary-soft text-primary' : 'bg-surface-alt text-ink-muted')}>
+                {formatNumber(tab.count)}
+              </span>
+            )}
           </button>
         )
       })}

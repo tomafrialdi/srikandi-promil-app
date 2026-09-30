@@ -4,7 +4,6 @@ import { initials } from '../../../../shared/lib/format'
 import { CheckCircle, Warning } from '@phosphor-icons/react'
 import type { RoleCatalog } from '../../types'
 import { displayName, validEmails, type InviteForm } from './invite-form'
-import styles from './InviteAdmin.module.css'
 
 interface ReviewStepProps {
   form: InviteForm
@@ -45,17 +44,17 @@ export function ReviewStep({ form, catalog, onEdit, senderEmail }: ReviewStepPro
 
   return (
     <>
-      <section className={styles.group}>
-        <div className={styles.reviewHead}>
-          <h3 className={styles.groupLabel}>Invitees</h3>
-          <button type="button" className={styles.edit} onClick={() => onEdit(0)}>Edit</button>
+      <section className="flex flex-col gap-3.5">
+        <div className="flex items-center justify-between">
+          <h3 className="text-11 font-bold tracking-[0.02em] text-ink-faint uppercase">Invitees</h3>
+          <button type="button" className="text-12 font-bold text-primary" onClick={() => onEdit(0)}>Edit</button>
         </div>
         {emails.map((email) => {
           const name = displayName(form, email, emails.length)
           return (
-            <div key={email} className={styles.invitee}>
+            <div key={email} className="flex items-center gap-3">
               <Avatar label={initials(name)[0] ?? ''} size={34} />
-              <span className={styles.inviteeText}>
+              <span className="flex min-w-0 flex-1 flex-col text-12 text-ink-muted [&_strong]:text-13 [&_strong]:text-ink">
                 <strong>{name}</strong>
                 <span>{email}</span>
               </span>
@@ -70,19 +69,19 @@ export function ReviewStep({ form, catalog, onEdit, senderEmail }: ReviewStepPro
         )}
       </section>
 
-      <div className={styles.grid2}>
+      <div className="grid gap-3.5 min-[701px]:grid-cols-2">
         <SummaryCard title="Role" rows={roleRows} onEdit={() => onEdit(1)} />
         <SummaryCard title="Access" rows={accessRows} onEdit={() => onEdit(2)} />
       </div>
 
-      <section className={styles.group}>
-        <h3 className={styles.groupLabel}>Email preview</h3>
-        <div className={styles.email}>
-          <span className={styles.emailFrom}>from: admin@srikandipromil.id</span>
-          <strong className={styles.emailSubject}>{senderName} invited you to the Srikandi Promil admin console</strong>
-          <p className={styles.emailBody}>{form.message.trim() || 'You have been invited to join the Srikandi Promil admin console.'}</p>
-          <span className={styles.emailButton}>Accept invitation</span>
-          <span className={styles.emailFoot}>This link expires in {form.expiresDays} days ({dateFormat.format(expires)}).</span>
+      <section className="flex flex-col gap-3.5">
+        <h3 className="text-11 font-bold tracking-[0.02em] text-ink-faint uppercase">Email preview</h3>
+        <div className="flex flex-col gap-2 rounded-xl border border-dashed border-border bg-surface p-3.5">
+          <span className="text-11 text-ink-faint">from: admin@srikandipromil.id</span>
+          <strong className="text-14">{senderName} invited you to the Srikandi Promil admin console</strong>
+          <p className="text-12 leading-normal whitespace-pre-wrap">{form.message.trim() || 'You have been invited to join the Srikandi Promil admin console.'}</p>
+          <span className="self-start rounded-lg bg-primary px-3.5 py-2 text-12 font-bold text-white">Accept invitation</span>
+          <span className="text-11 text-ink-muted">This link expires in {form.expiresDays} days ({dateFormat.format(expires)}).</span>
         </div>
       </section>
 
@@ -99,14 +98,14 @@ export function ReviewStep({ form, catalog, onEdit, senderEmail }: ReviewStepPro
 
 function SummaryCard({ title, rows, onEdit }: { title: string; rows: Array<[string, string]>; onEdit: () => void }) {
   return (
-    <section className={styles.summary}>
-      <div className={styles.reviewHead}>
-        <h3 className={styles.summaryTitle}>{title}</h3>
-        <button type="button" className={styles.edit} onClick={onEdit}>Edit</button>
+    <section className="rounded-xl border border-border p-3.5 [&_dl]:mt-2.5 [&_dl]:mb-0">
+      <div className="flex items-center justify-between">
+        <h3 className="text-13 font-extrabold">{title}</h3>
+        <button type="button" className="text-12 font-bold text-primary" onClick={onEdit}>Edit</button>
       </div>
       <dl>
         {rows.map(([label, value]) => (
-          <div key={label} className={styles.summaryRow}>
+          <div key={label} className="flex justify-between gap-3 py-[5px] text-12 [&_dt]:text-ink-muted [&_dd]:m-0 [&_dd]:text-right [&_dd]:font-bold">
             <dt>{label}</dt>
             <dd>{value}</dd>
           </div>
