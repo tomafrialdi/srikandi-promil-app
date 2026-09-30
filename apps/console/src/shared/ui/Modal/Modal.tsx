@@ -77,8 +77,11 @@ export function Modal({
     const id = Symbol('modal')
     stack = [...stack, id]
     const previouslyFocused = document.activeElement as HTMLElement | null
-    const previousOverflow = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
+    // Lock on <html>, not <body>: Lenis puts overflow on <html> while stopped, and a <body> overflow would then stop
+    // propagating to the viewport, turning <body> into its own scroll container and un-sticking the sidebar + topbar.
+    const root = document.documentElement
+    const previousOverflow = root.style.overflow
+    root.style.overflow = 'hidden'
     pauseSmoothScroll()
     const focusTimer = window.setTimeout(() => dialogRef.current?.focus(), 0)
 
@@ -107,7 +110,7 @@ export function Modal({
       window.clearTimeout(focusTimer)
       document.removeEventListener('keydown', onKeyDown)
       stack = stack.filter((item) => item !== id)
-      document.body.style.overflow = previousOverflow
+      root.style.overflow = previousOverflow
       if (stack.length === 0) resumeSmoothScroll()
       previouslyFocused?.focus?.()
     }
