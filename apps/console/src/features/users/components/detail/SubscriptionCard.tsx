@@ -8,12 +8,12 @@ export function SubscriptionCard({ data }: { data: UserDetail['subscription'] })
   const price = data.price_idr > 0 ? `${formatIdr(data.price_idr)} / ${data.period_months >= 12 ? 'yr' : 'mo'}` : formatIdr(0)
 
   return (
-    <Card>
+    <Card className="gap-1">
       <CardHeader
         title="Subscription"
         action={paid ? <Badge tone={data.auto_renew ? 'success' : 'neutral'}>{data.auto_renew ? 'Auto-renew on' : 'Auto-renew off'}</Badge> : undefined}
       />
-      <dl className="flex flex-col">
+      <dl className="m-0 mt-2 flex flex-col">
         <Row label="Plan" value={data.label ?? PLAN_LABEL[data.plan]} />
         <Row label="Price" value={price} />
         <Row label="Next renewal" value={data.next_renewal ?? '—'} />
@@ -31,8 +31,8 @@ export function SubscriptionCard({ data }: { data: UserDetail['subscription'] })
 
 export function Row({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex items-center justify-between gap-3 border-b border-border py-[9px] text-13 last:border-b-0">
-      <dt className="text-ink-muted">{label}</dt>
+    <div className="flex min-h-9 items-center justify-between gap-3 border-b border-border py-2 text-13 last:border-b-0">
+      <dt className="font-medium text-ink-muted">{label}</dt>
       <dd className="text-right font-bold" style={{ margin: 0 }}>{value}</dd>
     </div>
   )

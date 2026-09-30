@@ -1,22 +1,24 @@
+import { Flag } from '@phosphor-icons/react'
 import { Badge, Card, CardHeader, DataTable, type Column } from '../../../../shared/ui'
+import { CardLink } from './CardLink'
 import { MODE_LABEL } from '../../../../shared/lib/labels'
 import type { UserDetail } from '../../types'
 
 type CycleRow = UserDetail['cycles'][number]
 
-const CONTRIBUTION_COLORS = ['#c13d68', '#2574c4', '#e07a9b', '#e0a030']
+const CONTRIBUTION_COLORS = ['#c13d68', '#e07a9b', '#2574c4', '#a6a49b']
 const runFormat = new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Jakarta' })
 
 const COLUMNS: Column<CycleRow>[] = [
-  { key: 'cycle', header: 'CYCLE', width: 90, render: (r) => `#${r.no}${r.current ? ' (now)' : ''}` },
-  { key: 'length', header: 'LENGTH', width: 90, render: (r) => r.length },
-  { key: 'ovulation', header: 'OVULATION', render: (r) => r.ovulation },
-  { key: 'luteal', header: 'LUTEAL', width: 80, render: (r) => r.luteal },
+  { key: 'cycle', header: 'CYCLE', width: 90, render: (r) => <span className="text-12 font-bold">{`#${r.no}${r.current ? ' (now)' : ''}`}</span> },
+  { key: 'length', header: 'LENGTH', width: 80, render: (r) => <span className="text-12 font-medium text-ink-muted">{r.length}</span> },
+  { key: 'ovulation', header: 'OVULATION', render: (r) => <span className="text-12 font-semibold">{r.ovulation}</span> },
+  { key: 'luteal', header: 'LUTEAL', width: 80, render: (r) => <span className="text-12 font-medium text-ink-muted">{r.luteal}</span> },
   {
     key: 'outcome',
     header: 'OUTCOME',
-    width: 130,
-    render: (r) => <Badge tone={r.outcome === 'Anovulatory?' ? 'warning' : r.outcome === 'Positive test' ? 'success' : r.current ? 'info' : 'neutral'}>{r.outcome}</Badge>,
+    width: 150,
+    render: (r) => <Badge tone={r.outcome === 'Anovulatory?' ? 'warning' : r.outcome === 'Positive test' ? 'success' : r.current ? 'primary' : 'neutral'}>{r.outcome}</Badge>,
   },
 ]
 
@@ -28,58 +30,58 @@ interface EngineStatusCardProps {
 
 export function EngineStatusCard({ engine, cycles, onViewLog }: EngineStatusCardProps) {
   return (
-    <Card>
+    <Card className="gap-3.5">
       <CardHeader
         title="Fertility engine"
         subtitle={`Rule set ${engine.rule_set} · ${MODE_LABEL[engine.mode]} mode · last run today ${runFormat.format(new Date(engine.run_at))}`}
-        action={
-          <button type="button" className="text-12 font-bold text-primary disabled:text-ink-muted disabled:opacity-45" onClick={onViewLog}>
-            View engine log
-          </button>
-        }
+        action={<CardLink onClick={onViewLog}>View engine log</CardLink>}
       />
 
-      <div className="grid grid-cols-2 gap-3 min-[801px]:grid-cols-[1.3fr_1fr_1fr_1fr]">
-        <div className="flex flex-col gap-0.5 rounded-xl bg-surface px-3.5 py-3">
-          <span className="text-10 font-bold tracking-[0.02em] text-ink-faint uppercase">Current status</span>
-          <span className="text-18 font-extrabold">{engine.status}</span>
-          <span className="text-11 text-ink-muted">{engine.headline}</span>
+      <div className="grid grid-cols-2 gap-3 min-[801px]:grid-cols-4">
+        <div className="flex flex-col gap-1.5 rounded-[14px] bg-primary p-4 text-white">
+          <span className="text-10 font-extrabold tracking-[0.02em] text-white/70 uppercase">Current status</span>
+          <span className="text-20 leading-tight font-extrabold">{engine.status}</span>
+          <span className="text-12 font-semibold text-white/80">{engine.headline}</span>
         </div>
-        <div className="flex flex-col gap-0.5 rounded-xl bg-surface px-3.5 py-3">
-          <span className="text-10 font-bold tracking-[0.02em] text-ink-faint uppercase">Confidence</span>
-          <span className="text-18 font-extrabold">{engine.confidence}%</span>
-          <span className="text-11 text-ink-muted">{engine.signals_used} of 3 signals</span>
-        </div>
-        <div className="flex flex-col gap-0.5 rounded-xl bg-surface px-3.5 py-3">
-          <span className="text-10 font-bold tracking-[0.02em] text-ink-faint uppercase">Predicted ovulation</span>
-          <span className="text-18 font-extrabold">CD {engine.ovulation_day} · {engine.ovulation_date}</span>
-          <span className="text-11 text-ink-muted">window {engine.window}</span>
-        </div>
-        <div className="flex flex-col gap-0.5 rounded-xl bg-surface px-3.5 py-3">
-          <span className="text-10 font-bold tracking-[0.02em] text-ink-faint uppercase">Test day</span>
-          <span className="text-18 font-extrabold">{engine.test_date}</span>
-          <span className="text-11 text-ink-muted">if ovulation confirmed</span>
-        </div>
+        <Stat label="Confidence" value={`${engine.confidence}%`} hint={`${engine.signals_used} of 3 signals`} />
+        <Stat label="Predicted ovulation" value={`CD ${engine.ovulation_day} · ${engine.ovulation_date}`} hint={`window ${engine.window}`} />
+        <Stat label="Test day" value={engine.test_date} hint="if ovulation confirmed" />
       </div>
 
       <span className="text-12 font-bold text-ink-muted">Signal contribution today</span>
-      <div className="flex h-3 gap-0.5 overflow-hidden rounded-full" role="img" aria-label="Signal contribution">
+      <div className="flex h-3.5 overflow-hidden rounded-full" role="img" aria-label="Signal contribution">
         {engine.contribution.map((part, index) => (
           <span key={part.label} style={{ flexGrow: part.pct, flexBasis: 0, background: CONTRIBUTION_COLORS[index % CONTRIBUTION_COLORS.length] }} />
         ))}
       </div>
       <div className="flex flex-wrap gap-3.5">
         {engine.contribution.map((part, index) => (
-          <span key={part.label} className="text-11 text-ink-muted">
-            <span style={{ color: CONTRIBUTION_COLORS[index % CONTRIBUTION_COLORS.length] }}>●</span> {part.label} · {part.pct}%
+          <span key={part.label} className="inline-flex items-center gap-1.5 text-11 font-semibold text-ink-muted">
+            <span className="size-2 rounded-full" style={{ background: CONTRIBUTION_COLORS[index % CONTRIBUTION_COLORS.length] }} />
+            {part.label} · {part.pct}%
           </span>
         ))}
       </div>
 
       <span className="text-12 font-bold text-ink-muted">Cycle history</span>
-      <DataTable columns={COLUMNS} rows={cycles} rowKey={(r) => String(r.no)} rowHeight={40} />
+      <DataTable columns={COLUMNS} rows={cycles} rowKey={(r) => String(r.no)} rowHeight={40} bleed={false} />
 
-      {engine.flags && <div className="rounded-[10px] bg-warning-soft px-3 py-2.5 text-12 font-semibold text-warning-ink">{engine.flags}</div>}
+      {engine.flags && (
+        <div className="flex items-center gap-2 rounded-[10px] bg-warning-soft px-3.5 py-2.5 text-12 font-semibold text-warning-ink">
+          <Flag size={14} weight="fill" className="flex-none" />
+          {engine.flags}
+        </div>
+      )}
     </Card>
+  )
+}
+
+function Stat({ label, value, hint }: { label: string; value: string; hint: string }) {
+  return (
+    <div className="flex flex-col gap-1 rounded-[14px] bg-surface p-3.5">
+      <span className="text-11 font-semibold text-ink-muted">{label}</span>
+      <span className="text-15 font-extrabold">{value}</span>
+      <span className="text-11 font-medium text-ink-faint">{hint}</span>
+    </div>
   )
 }

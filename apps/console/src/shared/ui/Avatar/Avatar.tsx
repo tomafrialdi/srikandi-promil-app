@@ -14,7 +14,7 @@ const TONE = {
 export function Avatar({ label, size = 32, tone = 'secondary' }: AvatarProps) {
   return (
     <span
-      className={cn('inline-flex shrink-0 items-center justify-center rounded-full font-bold', TONE[tone], size >= 34 ? 'text-13' : 'text-12')}
+      className={cn('inline-flex shrink-0 items-center justify-center rounded-full font-bold', TONE[tone], size >= 60 ? 'text-24 font-extrabold' : size >= 34 ? 'text-13' : 'text-12')}
       style={{ width: size, height: size }}
       aria-hidden="true"
     >

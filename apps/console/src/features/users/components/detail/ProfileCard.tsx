@@ -18,12 +18,12 @@ export function ProfileCard({ profile }: { profile: UserDetail['profile'] }) {
           ) : profile.deletion_requested ? (
             <Badge tone="warning">Deletion requested</Badge>
           ) : (
-            <Badge tone="success">Active</Badge>
+            <Badge tone="success"><span className="mr-1.5 inline-block size-1.5 rounded-full bg-success" />Active</Badge>
           )}
           <Badge tone="primary">{PLAN_LABEL[profile.plan].replace(' ', ' · ')}</Badge>
           <Badge tone="info">{MODE_LABEL[profile.mode]} mode</Badge>
         </div>
-        <p className="text-13 text-ink-muted">{contact}</p>
+        <p className="text-13 font-medium text-ink-muted">{contact}</p>
         {profile.suspended_reason && <p className="text-13 text-ink-muted">Suspended: {profile.suspended_reason}</p>}
       </div>
       <div className="flex flex-wrap gap-7">
@@ -39,7 +39,7 @@ export function ProfileCard({ profile }: { profile: UserDetail['profile'] }) {
 function Quick({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex flex-col gap-0.5">
-      <span className="text-12 text-ink-muted">{label}</span>
+      <span className="text-12 font-semibold text-ink-muted">{label}</span>
       <span className="text-17 font-extrabold">{value}</span>
     </div>
   )

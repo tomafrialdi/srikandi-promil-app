@@ -1,3 +1,4 @@
+import { Bell, Crown, ShieldCheck, SignIn, TestTube, Pulse, type Icon } from '@phosphor-icons/react'
 import { Link } from 'react-router-dom'
 import { Card, CardHeader } from '../../../../shared/ui'
 import type { UserDetail } from '../../types'
@@ -11,6 +12,17 @@ function when(iso: string): string {
   return dayKey.format(date) === dayKey.format(new Date()) ? `Today, ${timeOnly.format(date)}` : dayTime.format(date)
 }
 
+/** Icon + tint guessed from the event text (events are free text from the audit trail / feature usage). */
+function look(text: string): { icon: Icon; tile: string } {
+  const t = text.toLowerCase()
+  if (/sign(ed)? in|login/.test(t)) return { icon: SignIn, tile: 'bg-surface-alt text-ink-muted' }
+  if (/lh test|scanned/.test(t)) return { icon: TestTube, tile: 'bg-primary-soft text-primary' }
+  if (/notification|push|delivered/.test(t)) return { icon: Bell, tile: 'bg-secondary-soft text-secondary' }
+  if (/renew|plan|payment|subscription|refund/.test(t)) return { icon: Crown, tile: 'bg-success-soft text-success' }
+  if (/admin|viewed|unmask|masked/.test(t)) return { icon: ShieldCheck, tile: 'bg-surface-alt text-ink-muted' }
+  return { icon: Pulse, tile: 'bg-surface-alt text-ink-muted' }
+}
+
 export function ActivityCard({ data }: { data: UserDetail['activity'] }) {
   return (
     <Card>
@@ -18,23 +30,25 @@ export function ActivityCard({ data }: { data: UserDetail['activity'] }) {
         title="Activity log"
         subtitle="Admin & system events"
         action={
-          <Link to="/audit-log" className="text-12 font-bold text-primary disabled:text-ink-muted disabled:opacity-45">
+          <Link to="/audit-log" className="text-13 font-bold text-primary">
             View audit log →
           </Link>
         }
       />
-      <ul className="m-0 flex list-none flex-col p-0">
+      <ul className="m-0 flex list-none flex-col gap-3 p-0">
         {data
+          .map((event) => ({ ...event, text: event.text ?? '' }))
           .filter((event) => event.text)
-          .map((event) => (
-            <li key={`${event.at}-${event.text}`} className="flex w-full items-center gap-3 border-b border-border py-3 text-left last:border-b-0">
-              <span className="size-2 flex-none rounded-full bg-primary" />
-              <span className="flex min-w-0 flex-1 flex-col gap-[3px]">
-                <span className="flex flex-wrap items-center gap-2 text-13 font-bold">{event.text}</span>
-                <span className="text-11 text-ink-faint">{when(event.at)}</span>
-              </span>
-            </li>
-          ))}
+          .map((event) => {
+            const { icon: Glyph, tile } = look(event.text)
+            return (
+              <li key={`${event.at}-${event.text}`} className="flex items-center gap-3">
+                <span className={`inline-flex size-8 flex-none items-center justify-center rounded-full ${tile}`}><Glyph size={15} /></span>
+                <span className="min-w-0 flex-1 truncate text-13 font-semibold">{event.text}</span>
+                <span className="flex-none text-12 font-medium text-ink-faint">{when(event.at)}</span>
+              </li>
+            )
+          })}
       </ul>
     </Card>
   )
