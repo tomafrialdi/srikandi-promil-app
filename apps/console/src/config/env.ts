@@ -7,5 +7,7 @@ function required(name: string): string {
 export const env = {
   supabaseUrl: required('VITE_SUPABASE_URL'),
   supabasePublishableKey: required('VITE_SUPABASE_PUBLISHABLE_KEY'),
+  imagekitUrlEndpoint: required('VITE_IMAGEKIT_URL_ENDPOINT').replace(/\/$/, ''),
+  imagekitPublicKey: required('VITE_IMAGEKIT_PUBLIC_KEY'),
   isProduction: import.meta.env.PROD,
 }
