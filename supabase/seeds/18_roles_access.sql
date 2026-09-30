@@ -125,3 +125,16 @@ join public.admin_profiles p on p.full_name = a.actor
 join auth.users u on u.id = p.id;
 
 drop table _team;
+-- Department and job title per role (dev data).
+update public.admin_profiles p set department = d.department, job_title = d.title
+from (values
+  ('super_admin', 'Operations', 'Chief operating officer'),
+  ('admin', 'Operations', 'Operations manager'),
+  ('medical_reviewer', 'Medical', 'Medical reviewer'),
+  ('engine_engineer', 'Engineering', 'Engine engineer'),
+  ('content_editor', 'Content', 'Content editor'),
+  ('moderator', 'Community', 'Community moderator'),
+  ('support_agent', 'Customer care', 'Support agent'),
+  ('analyst', 'Operations', 'Data analyst')
+) as d(role, department, title)
+where p.role = d.role::public.admin_role and p.id::text like '22222222-%' and p.department is null;

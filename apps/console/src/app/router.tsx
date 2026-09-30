@@ -16,7 +16,7 @@ import { CommunityPage } from '../features/community'
 import { ContentEditorPage, ContentLibraryPage } from '../features/content'
 import { DashboardPage } from '../features/dashboard'
 import { NotificationEditorPage, NotificationsPage } from '../features/notifications'
-import { RolesPage } from '../features/roles'
+import { MembersPage, RolesPage } from '../features/roles'
 import { PromoCodesPage } from '../features/subscriptions/pages/PromoCodesPage'
 import { SubscriptionsPage } from '../features/subscriptions/pages/SubscriptionsPage'
 import { TransactionsPage } from '../features/subscriptions/pages/TransactionsPage'
@@ -66,6 +66,7 @@ export const router = createBrowserRouter([
               { path: '/articles/:id', element: <ContentEditorPage /> },
               { path: '/community', element: <CommunityPage /> },
               { path: '/roles', element: <RolesPage /> },
+              { path: '/roles/members', element: <MembersPage /> },
               {
                 path: '/account-settings',
                 element: <AccountLayout />,

@@ -125,3 +125,51 @@ export interface SecurityDraft {
   ip_allowlist: AllowedRange[]
   alert_rules: Record<string, boolean>
 }
+
+/* ── Team members list ─────────────────────────────────── */
+export type MemberTfa = 'passkey' | 'authenticator' | 'none'
+export type MemberStatus = 'active' | 'suspended'
+
+export interface MemberRow {
+  id: string
+  name: string
+  email: string
+  role: string
+  role_label: string
+  job_title: string | null
+  department: string | null
+  status: MemberStatus
+  last_seen: string | null
+  online: boolean
+  joined: string
+  tfa: MemberTfa
+  is_me: boolean
+  can_manage: boolean
+}
+
+export interface MembersList {
+  rows: MemberRow[]
+  total: number
+}
+
+export interface MembersSummary {
+  counts: { all: number; active: number; suspended: number }
+  mini: { active: number; online: number; tfa: number; pending_invites: number; expiring_invites: number }
+  departments: string[]
+  can_manage: boolean
+}
+
+export interface MembersFilters {
+  tab: string
+  search: string
+  role: string
+  department: string
+  tfa: string
+}
+
+export interface MemberEdit {
+  full_name: string
+  job_title: string
+  department: string
+  role: string
+}

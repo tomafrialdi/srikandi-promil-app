@@ -1,5 +1,5 @@
 import { supabase } from '../../../lib/supabase'
-import type { AuditExportRow, RolesOverview, SecurityData, SecurityDraft } from '../types'
+import type { AuditExportRow, MemberEdit, MembersFilters, MembersList, MembersSummary, RolesOverview, SecurityData, SecurityDraft } from '../types'
 
 async function rpc<T>(name: string, args?: Record<string, unknown>): Promise<T> {
   const { data, error } = await supabase.rpc(name, args)
@@ -16,3 +16,21 @@ export const decideSecurityChange = (id: string, approve: boolean) => rpc<void>(
 export const cancelSecurityChange = (id: string) => rpc<void>('admin_security_cancel', { p_id: id })
 export const signOutAllSessions = () => rpc<number>('admin_security_sign_out_all')
 export const checkMyIp = (ranges: string[]) => rpc<{ ip: string | null; allowed: boolean | null }>('admin_security_check_ip', { p_ranges: ranges })
+
+export const fetchMembersSummary = () => rpc<MembersSummary>('admin_members_summary')
+
+export function fetchMembersList(filters: MembersFilters, page: number, pageSize: number) {
+  return rpc<MembersList>('admin_members_list', {
+    p_tab: filters.tab || 'all',
+    p_search: filters.search || null,
+    p_role: filters.role || null,
+    p_department: filters.department || null,
+    p_tfa: filters.tfa || null,
+    p_limit: pageSize,
+    p_offset: (page - 1) * pageSize,
+  })
+}
+
+export const updateMember = (id: string, payload: MemberEdit) => rpc<void>('admin_members_update', { p_id: id, p_payload: payload })
+export const setMemberActive = (id: string, active: boolean, reason: string) => rpc<void>('admin_members_set_active', { p_id: id, p_active: active, p_reason: reason })
+export const deleteMember = (id: string, reason: string) => rpc<void>('admin_members_delete', { p_id: id, p_reason: reason })

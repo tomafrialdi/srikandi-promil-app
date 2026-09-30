@@ -1,3 +1,5 @@
+export { ActionMenu } from './ActionMenu'
+export type { ActionMenuItem } from './ActionMenu'
 export { Avatar } from './Avatar'
 export { Badge } from './Badge'
 export type { BadgeTone } from './Badge'
