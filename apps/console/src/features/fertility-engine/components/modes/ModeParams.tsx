@@ -23,11 +23,11 @@ function ParamChip({ value, changed, tone, canEdit, label, onChange }: { value: 
   }
   if (editing) {
     return (
-      <input autoFocus aria-label={label} className="h-8 w-52 max-w-[55%] rounded-lg border px-2.5 text-right font-mono text-12 font-semibold outline-0" style={{ borderColor: tone.strong }} maxLength={80} value={text} onChange={(e) => setText(e.target.value)} onBlur={commit} onKeyDown={(e) => { if (e.key === 'Enter') commit(); if (e.key === 'Escape') { setText(value); setEditing(false) } }} />
+      <input autoFocus aria-label={label} className="h-[26px] w-52 max-w-[55%] rounded-lg border bg-card px-2.5 text-right text-12 font-semibold outline-0" style={{ borderColor: tone.strong }} maxLength={80} value={text} onChange={(e) => setText(e.target.value)} onBlur={commit} onKeyDown={(e) => { if (e.key === 'Enter') commit(); if (e.key === 'Escape') { setText(value); setEditing(false) } }} />
     )
   }
   return (
-    <button type="button" disabled={!canEdit} title={canEdit ? 'Click to edit' : undefined} className="max-w-[55%] truncate rounded-lg border px-2.5 py-1.5 font-mono text-12 font-semibold enabled:cursor-text" style={changed ? { background: tone.soft, borderColor: tone.hex } : { background: 'var(--surface-alt)', borderColor: 'transparent' }} onClick={() => { setText(value); setEditing(true) }}>
+    <button type="button" disabled={!canEdit} title={canEdit ? 'Click to edit' : undefined} className="max-w-[55%] truncate rounded-lg border px-2.5 py-1 text-12 font-semibold enabled:cursor-text" style={changed ? { background: tone.soft, borderColor: tone.hex } : { background: 'var(--surface)', borderColor: 'var(--border)' }} onClick={() => { setText(value); setEditing(true) }}>
       {value}
     </button>
   )
@@ -45,10 +45,10 @@ export function ModeParams({ params, baseline, color, isBaseline, canEdit, value
           const changed = !isBaseline && (!base || base.value !== current)
           const sub = p.note ?? (p.base ? `TTC: ${p.base}` : p.hint)
           return (
-            <li key={p.key} className="flex items-center justify-between gap-3 border-t border-border py-3 first:border-t-0">
+            <li key={p.key} className="flex min-h-[46px] items-center justify-between gap-3 border-t border-border py-2.5 first:border-t-0">
               <span className="flex min-w-0 flex-col">
-                <span className="text-13 font-bold">{p.label}</span>
-                {sub && <span className="text-11" style={{ color: !isBaseline && (p.note || p.base) ? tone.strong : 'var(--ink-muted)' }}>{sub}</span>}
+                <span className="text-12 font-semibold">{p.label}</span>
+                {sub && <span className="text-11 font-medium" style={{ color: !isBaseline && (p.note || p.base) ? tone.strong : 'var(--ink-faint)' }}>{sub}</span>}
               </span>
               <ParamChip value={current} changed={changed} tone={tone} canEdit={canEdit} label={p.label} onChange={(v) => onChange(p.key, v)} />
             </li>

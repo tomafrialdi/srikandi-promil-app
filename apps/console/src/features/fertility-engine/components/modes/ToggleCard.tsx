@@ -15,7 +15,7 @@ export function ToggleCard({ title, items, canEdit, value, onChange }: ToggleCar
       <CardHeader title={title} />
       <div className="flex flex-col gap-3.5">
         {items.map((t) => (
-          <ToggleRow key={t.key} label={t.title} title={t.title} description={t.detail} checked={value(t.key)} disabled={!canEdit} onChange={(on) => onChange(t.key, on)} />
+          <ToggleRow key={t.key} size="md" label={t.title} title={<span className="font-semibold">{t.title}</span>} description={t.detail} checked={value(t.key)} disabled={!canEdit} onChange={(on) => onChange(t.key, on)} />
         ))}
       </div>
     </Card>
