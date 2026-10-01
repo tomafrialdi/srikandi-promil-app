@@ -22,7 +22,7 @@ import { ScreenHeader } from "@/components/screen-header";
 import { StickyScreen } from "@/components/sticky-screen";
 import { SectionHeader } from "@/components/section-header";
 import { colors, fonts } from "@/constants/theme";
-import { reportApi } from "../api/report-api";
+import { NotAvailableError, reportApi } from "../api/report-api";
 import { useReport } from "../hooks/use-report";
 import type { ReportRange, ReportSection } from "../types";
 import { ReportPreviewCard } from "./report-preview-card";
@@ -43,6 +43,12 @@ const SECTIONS: { key: ReportSection; label: string; icon: Icon }[] = [
   { key: "notes", label: "Personal notes", icon: NotePencil },
 ];
 
+/** Features not built yet say so ("coming soon"); real failures get a retry hint. */
+function notify(error: unknown, failureTitle: string) {
+  if (error instanceof NotAvailableError) Alert.alert("Coming soon", error.message);
+  else Alert.alert(failureTitle, "Please try again.");
+}
+
 export function DoctorReportScreen() {
   const { range, setRange, preview, include, toggle } = useReport();
   const [busy, setBusy] = useState<"export" | "send" | null>(null);
@@ -59,6 +65,8 @@ export function DoctorReportScreen() {
       await reportApi.exportPdf({ range, include });
       // TODO: open / share the PDF at the returned `url`.
       Alert.alert("Report ready", "Your PDF is ready to share with your doctor.");
+    } catch (e) {
+      notify(e, "Couldn't create the PDF");
     } finally {
       setBusy(null);
     }
@@ -71,6 +79,8 @@ export function DoctorReportScreen() {
       await reportApi.sendToClinic({ range, include });
       // TODO: let the user pick which clinic to send to.
       Alert.alert("Sent", "Your report was sent to your clinic.");
+    } catch (e) {
+      notify(e, "Couldn't send the report");
     } finally {
       setBusy(null);
     }

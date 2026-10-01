@@ -1,17 +1,15 @@
-import { USE_DUMMY_API } from "@/config/api";
 import type { TrackingModeData } from "../types";
-import { dummyTrackingModeApi } from "./dummy-tracking-mode-api";
-import { httpTrackingModeApi } from "./http-tracking-mode-api";
+import { supabaseTrackingModeApi } from "./supabase-tracking-mode-api";
 
 /**
  * What the Tracking mode screen needs from the backend.
  *
- *   GET /tracking-mode -> TrackingModeData
- *   PUT /tracking-mode body: { modeId } -> 204
+ *   GET `app_users.tracking_mode`  -> TrackingModeData (mode copy is static, see data/)
+ *   RPC `app_set_tracking_mode`    <- the chosen mode
  */
 export interface TrackingModeApi {
   get(): Promise<TrackingModeData>;
   select(modeId: string): Promise<void>;
 }
 
-export const trackingModeApi: TrackingModeApi = USE_DUMMY_API ? dummyTrackingModeApi : httpTrackingModeApi;
+export const trackingModeApi: TrackingModeApi = supabaseTrackingModeApi;

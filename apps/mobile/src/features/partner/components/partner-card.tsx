@@ -8,7 +8,7 @@ import type { PartnerData } from "../types";
 const PARTNER_AVATAR = "#1B5A9A";
 
 /** Blue header card: the couple's avatars, status, and what the partner sees today. */
-export function PartnerCard({ data }: { data: PartnerData }) {
+export function PartnerCard({ data }: { data: PartnerData & { partner: NonNullable<PartnerData["partner"]> } }) {
   return (
     <View style={styles.card}>
       <View style={styles.people}>

@@ -1,5 +1,7 @@
+import { trackingModeLabel } from "@/features/tracking-mode/api/supabase-tracking-mode-api";
 import { supabase } from "@/lib/supabase";
-import type { CyclePreferences, Profile, SettingsSummary, UnitPreferences } from "../types";
+import type { CyclePreferences, Profile, SettingsSummary, SettingsValue, SettingsValueKey, UnitPreferences } from "../types";
+import { unitsLabel } from "../utils/units";
 import { dummySettingsApi } from "./dummy-settings-api";
 import type { SettingsApi } from "./settings-api";
 
@@ -33,7 +35,30 @@ const COLUMNS = [
   "unit_height",
   "unit_temperature",
   "avatar_url",
+  "tracking_mode",
 ].join(",");
+
+/** The phone's local date as "YYYY-MM-DD" (the server doesn't know the user's time zone). */
+function localToday(): string {
+  const d = new Date();
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+
+/** Live values for the fertility-journey rows; a failed lookup just leaves that row without a value. */
+async function fertilityJourneyValues(): Promise<Partial<Record<SettingsValueKey, SettingsValue>>> {
+  const [treatment, partner] = await Promise.all([
+    supabase.rpc("app_treatment_get", { p_today: localToday() }),
+    supabase.rpc("app_partner_get"),
+  ]);
+
+  const values: Partial<Record<SettingsValueKey, SettingsValue>> = {};
+  const program = treatment.data?.program as { title: string; dayLabel: string } | null | undefined;
+  if (program) values.treatment = { text: `${program.title.split(" · ")[0]} · ${program.dayLabel}` };
+  const name = (partner.data?.partner as { name: string } | null | undefined)?.name;
+  values.partner = name ? { text: name } : { text: "Not added" };
+  return values;
+}
 
 function check(error: { message: string } | null) {
   if (error) throw new Error(error.message);
@@ -43,9 +68,10 @@ export const supabaseSettingsApi: SettingsApi = {
   ...dummySettingsApi,
 
   async getSummary(): Promise<SettingsSummary> {
-    const [dummy, { data, error }] = await Promise.all([
+    const [dummy, { data, error }, journey] = await Promise.all([
       dummySettingsApi.getSummary(),
       supabase.from("app_users").select(COLUMNS).single(),
+      fertilityJourneyValues(),
     ]);
     check(error);
     const row = data as unknown as Record<string, any>;
@@ -55,8 +81,16 @@ export const supabaseSettingsApi: SettingsApi = {
       height: row.unit_height,
       temperature: row.unit_temperature,
     };
+    // Rows that now come from Supabase replace the dummy ones; no program/partner means no value.
+    const { treatment: _dummyTreatment, partner: _dummyPartner, ...dummyValues } = dummy.values;
     return {
       ...dummy,
+      values: {
+        ...dummyValues,
+        ...journey,
+        trackingMode: { text: trackingModeLabel(row.tracking_mode) },
+        units: { text: unitsLabel(units) },
+      },
       profile: {
         name: row.full_name,
         email: row.email,

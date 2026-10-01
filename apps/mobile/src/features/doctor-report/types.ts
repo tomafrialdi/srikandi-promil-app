@@ -11,12 +11,14 @@ export type ReportSection =
 
 export interface ReportPreview {
   name: string;
-  ageYears: number;
+  /** null when the birth date isn't known. */
+  ageYears: number | null;
   /** e.g. "Dec 2025 – May 2026 · 6 cycles". */
   rangeLabel: string;
   /** Four figures shown in a 2 x 2 grid. */
   stats: { label: string; value: string }[];
-  bbt: {
+  /** null until the user has logged temperatures (the chart is hidden). */
+  bbt: null | {
     title: string;
     biphasic: boolean;
     /** Cycle day of ovulation (highlighted bar). */

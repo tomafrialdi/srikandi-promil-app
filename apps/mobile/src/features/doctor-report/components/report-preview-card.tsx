@@ -12,7 +12,7 @@ export function ReportPreviewCard({ preview }: { preview: ReportPreview }) {
       <View style={styles.head}>
         <View style={styles.who}>
           <Text style={styles.name}>
-            {preview.name}, {preview.ageYears}
+            {preview.ageYears != null ? `${preview.name}, ${preview.ageYears}` : preview.name}
           </Text>
           <Text style={styles.range}>{preview.rangeLabel}</Text>
         </View>
@@ -32,7 +32,13 @@ export function ReportPreviewCard({ preview }: { preview: ReportPreview }) {
         ))}
       </View>
 
-      <BbtChart bbt={preview.bbt} />
+      {preview.bbt ? (
+        <BbtChart bbt={preview.bbt} />
+      ) : (
+        <View style={styles.noBbt}>
+          <Text style={styles.noBbtText}>Temperature charts will appear here once you log your BBT.</Text>
+        </View>
+      )}
 
       {preview.flag ? (
         <View style={styles.flag}>
@@ -64,6 +70,8 @@ const styles = StyleSheet.create({
   stat: { width: "50%", gap: 2, paddingRight: 12 },
   statLabel: { fontFamily: fonts.medium, fontSize: 11, color: colors.inkFaint },
   statValue: { fontFamily: fonts.bold, fontSize: 16, color: colors.ink },
+  noBbt: { padding: 14, borderRadius: radius.sm, backgroundColor: colors.surfaceAlt },
+  noBbtText: { fontFamily: fonts.medium, fontSize: 11, lineHeight: 16, color: colors.inkMuted },
   flag: {
     flexDirection: "row",
     alignItems: "flex-start",

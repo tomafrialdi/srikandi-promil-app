@@ -1,13 +1,13 @@
-import { StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { Chip } from "@/components/chip";
 import { colors, fonts, radius } from "@/constants/theme";
 import type { TreatmentProgram } from "../types";
 
 /** Current protocol: title, doctor, day, and a segmented progress bar over the stages. */
-export function ProgramCard({ program }: { program: TreatmentProgram }) {
+export function ProgramCard({ program, onPress }: { program: TreatmentProgram; onPress?: () => void }) {
   return (
-    <View style={styles.card}>
+    <Pressable accessibilityRole="button" accessibilityLabel="Update treatment stage" onPress={onPress} style={styles.card}>
       <View style={styles.head}>
         <View style={styles.info}>
           <Text style={styles.title}>{program.title}</Text>
@@ -27,7 +27,7 @@ export function ProgramCard({ program }: { program: TreatmentProgram }) {
           );
         })}
       </View>
-    </View>
+    </Pressable>
   );
 }
 

@@ -1,14 +1,19 @@
-import { USE_DUMMY_API } from "@/config/api";
+import { supabaseReportApi } from "./supabase-report-api";
 import type { ReportData, ReportRange, ReportRequest } from "../types";
-import { dummyReportApi } from "./dummy-report-api";
-import { httpReportApi } from "./http-report-api";
+
+/** Thrown by features that aren't built yet, so the screen can say so instead of faking success. */
+export class NotAvailableError extends Error {
+  constructor(feature: string) {
+    super(`${feature} isn't available yet.`);
+    this.name = "NotAvailableError";
+  }
+}
 
 /**
  * What the Doctor report screen needs from the backend.
  *
- *   GET  /report?range=<last-3|last-6|all> -> ReportData
- *   POST /report/export  body: ReportRequest -> { url }   (PDF download link)
- *   POST /report/send    body: ReportRequest -> 204       (emails it to the user's clinic)
+ *   RPC `app_report_preview(range)` -> figures from the user's recorded cycles and profile.
+ *   exportPdf / sendToClinic       -> not built yet (need server-side PDF + clinic delivery).
  */
 export interface ReportApi {
   get(range: ReportRange): Promise<ReportData>;
@@ -16,4 +21,4 @@ export interface ReportApi {
   sendToClinic(request: ReportRequest): Promise<void>;
 }
 
-export const reportApi: ReportApi = USE_DUMMY_API ? dummyReportApi : httpReportApi;
+export const reportApi: ReportApi = supabaseReportApi;

@@ -9,7 +9,7 @@ const MIN_TEMP = 36;
 const MAX_TEMP = 37;
 
 /** One bar per cycle day: before ovulation tinted, ovulation day amber, after ovulation solid. */
-export function BbtChart({ bbt }: { bbt: ReportPreview["bbt"] }) {
+export function BbtChart({ bbt }: { bbt: NonNullable<ReportPreview["bbt"]> }) {
   return (
     <View style={styles.wrap}>
       <View style={styles.head}>

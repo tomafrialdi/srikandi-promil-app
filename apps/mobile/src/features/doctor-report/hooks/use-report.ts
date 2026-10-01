@@ -11,12 +11,17 @@ export function useReport() {
 
   useEffect(() => {
     let cancelled = false;
-    reportApi.get(range).then((d) => {
-      if (cancelled) return;
-      setData(d);
-      // Keep what the user already switched; only the first load sets the defaults.
-      setInclude((cur) => cur ?? d.include);
-    });
+    reportApi
+      .get(range)
+      .then((d) => {
+        if (cancelled) return;
+        setData(d);
+        // Keep what the user already switched; only the first load sets the defaults.
+        setInclude((cur) => cur ?? d.include);
+      })
+      .catch(() => {
+        // Keep showing the previous preview; the next range change retries.
+      });
     return () => {
       cancelled = true;
     };
