@@ -30,6 +30,8 @@ export interface UserRow {
   logs_7d: number
   joined: string
   last_active_at: string | null
+  /** Profile photo from the mobile app (ImageKit URL). */
+  avatar_url: string | null
 }
 
 export interface UsersList {
@@ -68,6 +70,8 @@ export interface UserDetail {
     cycles_tracked: number
     streak_days: number
     partner: string | null
+    /** Profile photo from the mobile app (ImageKit URL). */
+    avatar_url: string | null
   }
   tracking: {
     cycle_day: number | null

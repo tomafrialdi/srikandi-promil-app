@@ -1,6 +1,7 @@
 import { Avatar, Badge, Card } from '../../../../shared/ui'
 import { initials } from '../../../../shared/lib/format'
 import { MODE_LABEL, PLAN_LABEL } from '../../../../shared/lib/labels'
+import { ikUrl } from '../../../../shared/services/imagekit.service'
 import type { UserDetail } from '../../types'
 
 export function ProfileCard({ profile }: { profile: UserDetail['profile'] }) {
@@ -9,7 +10,7 @@ export function ProfileCard({ profile }: { profile: UserDetail['profile'] }) {
 
   return (
     <Card className="flex-row flex-wrap items-center gap-5">
-      <Avatar label={initials(profile.name)} size={72} />
+      <Avatar label={initials(profile.name)} size={72} src={ikUrl(profile.avatar_url, { w: 160, h: 160 })} />
       <div className="flex min-w-65 flex-1 flex-col gap-1.5">
         <div className="flex flex-wrap items-center gap-2">
           <h2 className="text-22 font-extrabold">{profile.name}</h2>

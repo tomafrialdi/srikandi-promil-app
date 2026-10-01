@@ -2,6 +2,7 @@ import { DotsThree } from '@phosphor-icons/react'
 import { useNavigate } from 'react-router-dom'
 import { Avatar, Badge, Card, Checkbox, CountTabs, DataTable, Pagination, type Column } from '../../../../shared/ui'
 import { initials, timeAgo } from '../../../../shared/lib/format'
+import { ikUrl } from '../../../../shared/services/imagekit.service'
 import { MODE_LABEL, PLAN_BADGE } from '../../../../shared/lib/labels'
 import { PAGE_SIZE, STATUS_BADGE } from '../../config/labels'
 import type { UserRow, UsersFilters, UsersList, UsersSummary } from '../../types'
@@ -49,7 +50,7 @@ export function UsersTable(props: UsersTableProps) {
       header: 'USER',
       render: (r) => (
         <span className="inline-flex min-w-0 items-center gap-2.5">
-          <Avatar label={initials(r.name)[0] ?? ''} size={34} />
+          <Avatar label={initials(r.name)[0] ?? ''} size={34} src={ikUrl(r.avatar_url, { w: 80, h: 80 })} />
           <span className="flex min-w-0 flex-col">
             <span className="truncate text-13 font-bold">{r.name}</span>
             <span className="truncate text-12 font-medium text-ink-muted">{r.email}</span>
