@@ -1,13 +1,17 @@
 import { Flower } from "phosphor-react-native";
-import { router } from "expo-router";
+import { Redirect, router } from "expo-router";
 import { StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { ButtonPrimary } from "@/components/button-primary";
 import { colors, fonts } from "@/constants/theme";
+import { useSession } from "@/features/auth/hooks/use-session";
 
 export default function Splash() {
   const insets = useSafeAreaInsets();
+  const { session, loading } = useSession();
+
+  if (session) return <Redirect href="/home" />;
 
   return (
     <View style={styles.container}>
@@ -23,7 +27,12 @@ export default function Splash() {
         </View>
       </View>
 
-      <View style={[styles.footer, { paddingBottom: Math.max(insets.bottom, 44) }]}>
+      <View
+        style={[
+          styles.footer,
+          { paddingBottom: Math.max(insets.bottom, 44), opacity: loading ? 0 : 1 },
+        ]}
+      >
         <ButtonPrimary
           label="Create account"
           backgroundColor={colors.white}

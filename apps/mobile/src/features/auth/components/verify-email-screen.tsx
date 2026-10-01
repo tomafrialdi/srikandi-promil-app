@@ -40,10 +40,15 @@ export function VerifyEmailScreen() {
   };
 
   const handleResend = async () => {
-    await resendVerificationCode(email);
-    setCode("");
-    setCodeError(undefined);
-    restart();
+    try {
+      await resendVerificationCode(email);
+      setCode("");
+      setCodeError(undefined);
+      restart();
+    } catch (e) {
+      if (e instanceof AuthError) setCodeError(e.message);
+      else throw e;
+    }
   };
 
   return (

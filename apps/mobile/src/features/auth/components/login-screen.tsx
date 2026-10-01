@@ -10,7 +10,7 @@ import { TextField } from "@/components/form/text-field";
 import { SocialButtons } from "@/components/social-buttons";
 import { colors, fonts, radius } from "@/constants/theme";
 import { AUTH_COPY } from "../content";
-import { AuthError, signIn, signInWithProvider } from "../services/auth-api";
+import { AuthError, resendVerificationCode, signIn, signInWithProvider } from "../services/auth-api";
 import { goToHome } from "@/utils/navigation";
 import { isValidEmail } from "../utils/validation";
 import { AuthScreen, SwitchLink } from "./auth-screen";
@@ -49,7 +49,10 @@ export function LoginScreen({ biometricUser }: LoginScreenProps) {
       await signIn({ email: email.trim(), password, remember });
       goToHome();
     } catch (e) {
-      if (e instanceof AuthError) setFormError(e.message);
+      if (e instanceof AuthError && e.code === "email_not_confirmed") {
+        await resendVerificationCode(email.trim()).catch(() => undefined);
+        router.push({ pathname: "/onboarding/verify-email", params: { email: email.trim() } });
+      } else if (e instanceof AuthError) setFormError(e.message);
       else throw e;
     } finally {
       setSubmitting(false);

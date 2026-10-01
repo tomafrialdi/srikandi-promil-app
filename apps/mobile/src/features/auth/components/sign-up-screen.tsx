@@ -10,7 +10,7 @@ import { TextField } from "@/components/form/text-field";
 import { SocialButtons } from "@/components/social-buttons";
 import { colors, fonts, radius } from "@/constants/theme";
 import { AUTH_COPY } from "../content";
-import { signInWithProvider, signUp } from "../services/auth-api";
+import { AuthError, signInWithProvider, signUp } from "../services/auth-api";
 import { isValidEmail } from "../utils/validation";
 import { AuthScreen, SwitchLink } from "./auth-screen";
 import { PasswordStrengthMeter } from "./password-strength-meter";
@@ -48,6 +48,9 @@ export function SignUpScreen({ planBanner }: { planBanner?: string }) {
     try {
       await signUp({ email: email.trim(), password });
       router.push({ pathname: "/onboarding/verify-email", params: { email: email.trim() } });
+    } catch (e) {
+      if (e instanceof AuthError) setErrors({ email: e.message });
+      else throw e;
     } finally {
       setSubmitting(false);
     }
