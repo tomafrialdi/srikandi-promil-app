@@ -32,6 +32,7 @@ const COLUMNS = [
   "unit_weight",
   "unit_height",
   "unit_temperature",
+  "avatar_url",
 ].join(",");
 
 function check(error: { message: string } | null) {
@@ -62,6 +63,7 @@ export const supabaseSettingsApi: SettingsApi = {
         birthDate: row.birth_date ?? FALLBACK.birthDate,
         heightCm: row.height_cm ?? FALLBACK.heightCm,
         weightKg: Number(row.weight_kg ?? FALLBACK.weightKg),
+        avatarUrl: row.avatar_url ?? null,
       },
       cycle: {
         cycleLengthDays: row.cycle_length_days ?? FALLBACK.cycleLengthDays,
@@ -80,6 +82,11 @@ export const supabaseSettingsApi: SettingsApi = {
       p_height_cm: profile.heightCm,
       p_weight_kg: profile.weightKg,
     });
+    check(error);
+  },
+
+  async updateAvatar(url: string | null) {
+    const { error } = await supabase.rpc("app_update_avatar", { p_url: url });
     check(error);
   },
 

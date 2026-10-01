@@ -23,6 +23,8 @@ export interface Profile {
   birthDate: string;
   heightCm: number;
   weightKg: number;
+  /** Profile photo URL (ImageKit); initials are shown when null. */
+  avatarUrl: string | null;
 }
 
 export type CycleRegularity = "regular" | "irregular" | "not_sure";

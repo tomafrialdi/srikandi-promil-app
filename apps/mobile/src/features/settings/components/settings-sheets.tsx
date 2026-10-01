@@ -24,6 +24,7 @@ interface SettingsSheetsProps {
   onClose: () => void;
   summary: SettingsSummary;
   onSaveProfile: (profile: Profile) => Promise<void>;
+  onChangeAvatar: (url: string | null) => Promise<void>;
   onSaveCycle: (cycle: CyclePreferences) => Promise<void>;
   onSaveUnits: (units: UnitPreferences) => Promise<void>;
 }
@@ -34,6 +35,7 @@ export function SettingsSheets({
   onClose,
   summary,
   onSaveProfile,
+  onChangeAvatar,
   onSaveCycle,
   onSaveUnits,
 }: SettingsSheetsProps) {
@@ -44,6 +46,7 @@ export function SettingsSheets({
         onClose={onClose}
         profile={summary.profile}
         onSave={onSaveProfile}
+        onChangeAvatar={onChangeAvatar}
       />
       <CyclePreferencesSheet
         visible={active === "cycle"}

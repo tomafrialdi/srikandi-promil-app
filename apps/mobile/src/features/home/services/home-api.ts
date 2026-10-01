@@ -1,4 +1,5 @@
 import { dummyCheckInSummary } from "@/features/check-in/api/dummy-check-in-api";
+import { ikUrl } from "@/lib/imagekit";
 import { fetchOwnProfile } from "@/features/profile/api/profile-api";
 import localDashboard from "../data/home-dashboard.json";
 import type { HomeDashboard } from "../types";
@@ -14,7 +15,7 @@ export async function fetchHomeDashboard(): Promise<HomeDashboard> {
   const profile = await fetchOwnProfile().catch(() => null);
   return {
     ...dashboard,
-    user: { ...dashboard.user, name: profile?.fullName ?? "" },
+    user: { ...dashboard.user, name: profile?.fullName ?? "", avatarUrl: ikUrl(profile?.avatarUrl, { w: 128, h: 128 }) },
     checkIn: { ...dashboard.checkIn, ...dummyCheckInSummary() },
   };
 }

@@ -45,7 +45,14 @@
           }
         }
       ],
-      "expo-secure-store"
+      "expo-secure-store",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Srikandi Promil needs access to your photos so you can choose a profile picture.",
+          "cameraPermission": "Srikandi Promil needs the camera so you can take a profile picture."
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,

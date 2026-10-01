@@ -26,6 +26,7 @@ let summary: SettingsSummary = {
     birthDate: "1994-03-14",
     heightCm: 165,
     weightKg: 58,
+    avatarUrl: null,
   },
   values: {
     units: { text: "Metric" },
@@ -63,6 +64,10 @@ export const dummySettingsApi: SettingsApi = {
   async updateProfile(profile: Profile) {
     await delay(200);
     summary = { ...summary, profile };
+  },
+  async updateAvatar(url: string | null) {
+    await delay(200);
+    summary = { ...summary, profile: { ...summary.profile, avatarUrl: url } };
   },
   async updateCycle(cycle: CyclePreferences) {
     await delay(200);

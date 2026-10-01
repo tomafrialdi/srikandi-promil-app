@@ -18,6 +18,7 @@ import { supabaseSettingsApi } from "./supabase-settings-api";
  *   GET   /settings/summary        -> SettingsSummary
  *   PATCH /settings/notifications  body: { key, enabled } -> 204
  *   PATCH /profile                 body: Profile -> 204
+ *   PATCH /profile/avatar          body: { url: string | null } -> 204
  *   PATCH /settings/cycle          body: CyclePreferences -> 204
  *   PATCH /settings/units          body: UnitPreferences -> 204
  *   GET   /help/faqs?q=<text>      -> { data: Faq[] }
@@ -28,6 +29,8 @@ export interface SettingsApi {
   getSummary(): Promise<SettingsSummary>;
   setNotification(key: NotificationToggleKey, enabled: boolean): Promise<void>;
   updateProfile(profile: Profile): Promise<void>;
+  /** Saves the profile photo URL (null removes it). */
+  updateAvatar(url: string | null): Promise<void>;
   updateCycle(cycle: CyclePreferences): Promise<void>;
   updateUnits(units: UnitPreferences): Promise<void>;
   getFaqs(query?: string): Promise<Faq[]>;

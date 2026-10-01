@@ -422,3 +422,7 @@ enabled = true
 [functions.imagekit-auth]
 enabled = true
 verify_jwt = true
+
+[functions.imagekit-auth-app]
+enabled = true
+verify_jwt = true

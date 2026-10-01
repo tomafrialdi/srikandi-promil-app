@@ -24,7 +24,8 @@ import { ROW_TO_SHEET, SettingsSheets, type SettingsSheetId } from "./settings-s
 
 /** Account tab: profile, settings menus, notification toggles, and log out. */
 export function SettingsScreen() {
-  const { summary, setNotification, updateProfile, updateCycle, updateUnits } = useSettings();
+  const { summary, setNotification, updateProfile, updateAvatar, updateCycle, updateUnits } =
+    useSettings();
   const [sheet, setSheet] = useState<SettingsSheetId | null>(null);
   const bottomClearance = useTabBarClearance();
 
@@ -53,6 +54,7 @@ export function SettingsScreen() {
             <ProfileCard
               name={summary.profile.name}
               email={summary.profile.email}
+              avatarUrl={summary.profile.avatarUrl}
               onPress={() => setSheet("personal")}
             />
 
@@ -90,6 +92,7 @@ export function SettingsScreen() {
           onClose={() => setSheet(null)}
           summary={summary}
           onSaveProfile={updateProfile}
+          onChangeAvatar={updateAvatar}
           onSaveCycle={updateCycle}
           onSaveUnits={updateUnits}
         />

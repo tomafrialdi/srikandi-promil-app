@@ -40,6 +40,12 @@ export function useSettings() {
     setSummary((cur) => (cur ? { ...cur, profile } : cur));
   }, []);
 
+  /** Saves the photo URL and shows it right away on the profile card. */
+  const updateAvatar = useCallback(async (url: string | null) => {
+    await settingsApi.updateAvatar(url);
+    setSummary((cur) => (cur ? { ...cur, profile: { ...cur.profile, avatarUrl: url } } : cur));
+  }, []);
+
   const updateCycle = useCallback(async (cycle: CyclePreferences) => {
     await settingsApi.updateCycle(cycle);
     setSummary((cur) => (cur ? { ...cur, cycle } : cur));
@@ -53,5 +59,5 @@ export function useSettings() {
     );
   }, []);
 
-  return { summary, setNotification, updateProfile, updateCycle, updateUnits };
+  return { summary, setNotification, updateProfile, updateAvatar, updateCycle, updateUnits };
 }

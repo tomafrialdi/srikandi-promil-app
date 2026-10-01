@@ -1,7 +1,8 @@
 import { Cake, Envelope, Ruler, Scales, User } from "phosphor-react-native";
 import { useState } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Alert, Pressable, StyleSheet, Text, View } from "react-native";
 
+import { Avatar } from "@/components/avatar";
 import { BottomSheet } from "@/components/bottom-sheet";
 import { ButtonPrimary } from "@/components/button-primary";
 import { DatePickerSheet } from "@/components/date-picker-sheet";
@@ -11,7 +12,8 @@ import { TextField } from "@/components/form/text-field";
 import { NumberPickerSheet } from "@/components/number-picker-sheet";
 import { colors, fonts, radius } from "@/constants/theme";
 import { MONTH_NAMES, startOfDay } from "@/utils/calendar";
-import { initials } from "@/utils/initials";
+import { uploadImage, ikUrl } from "@/lib/imagekit";
+import { pickAvatar, type AvatarSource } from "@/features/profile/utils/pick-avatar";
 import type { Profile } from "../types";
 
 const MIN_AGE = 18;
@@ -22,13 +24,26 @@ interface PersonalInfoSheetProps {
   onClose: () => void;
   profile: Profile;
   onSave: (profile: Profile) => Promise<void>;
+  /** Saves the new photo URL right away (null removes the photo). */
+  onChangeAvatar: (url: string | null) => Promise<void>;
 }
 
 /** Bottom sheet to edit name, birth date, height and weight (email is shown read-only). */
-export function PersonalInfoSheet({ visible, onClose, profile, onSave }: PersonalInfoSheetProps) {
+export function PersonalInfoSheet({
+  visible,
+  onClose,
+  profile,
+  onSave,
+  onChangeAvatar,
+}: PersonalInfoSheetProps) {
   return (
     <BottomSheet visible={visible} onClose={onClose} title="Personal information" gap={18} scrollable>
-      <PersonalInfoForm profile={profile} onClose={onClose} onSave={onSave} />
+      <PersonalInfoForm
+        profile={profile}
+        onClose={onClose}
+        onSave={onSave}
+        onChangeAvatar={onChangeAvatar}
+      />
     </BottomSheet>
   );
 }
@@ -49,7 +64,8 @@ function PersonalInfoForm({
   profile,
   onClose,
   onSave,
-}: Pick<PersonalInfoSheetProps, "profile" | "onClose" | "onSave">) {
+  onChangeAvatar,
+}: Pick<PersonalInfoSheetProps, "profile" | "onClose" | "onSave" | "onChangeAvatar">) {
   const [name, setName] = useState(profile.name);
   const [birthDate, setBirthDate] = useState(profile.birthDate);
   const [heightCm, setHeightCm] = useState(profile.heightCm);
@@ -62,6 +78,44 @@ function PersonalInfoForm({
   const youngest = new Date(today.getFullYear() - MIN_AGE, today.getMonth(), today.getDate());
   const oldest = new Date(today.getFullYear() - 100, today.getMonth(), today.getDate());
 
+  const [uploading, setUploading] = useState(false);
+
+  const changeAvatar = async (source: AvatarSource) => {
+    setUploading(true);
+    try {
+      const photo = await pickAvatar(source);
+      if (!photo) return;
+      const url = await uploadImage(photo, "/avatars");
+      await onChangeAvatar(url);
+    } catch (e) {
+      Alert.alert("Couldn't update photo", e instanceof Error ? e.message : "Please try again.");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const removeAvatar = async () => {
+    setUploading(true);
+    try {
+      await onChangeAvatar(null);
+    } catch {
+      Alert.alert("Couldn't remove photo", "Please try again.");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleChangePhoto = () => {
+    Alert.alert("Profile photo", undefined, [
+      { text: "Take photo", onPress: () => changeAvatar("camera") },
+      { text: "Choose from library", onPress: () => changeAvatar("library") },
+      ...(profile.avatarUrl
+        ? [{ text: "Remove photo", style: "destructive" as const, onPress: removeAvatar }]
+        : []),
+      { text: "Cancel", style: "cancel" as const },
+    ]);
+  };
+
   const handleSave = async () => {
     const next: typeof errors = {};
     if (!name.trim()) next.name = REQUIRED_MESSAGE;
@@ -70,7 +124,14 @@ function PersonalInfoForm({
 
     setSaving(true);
     try {
-      await onSave({ name: name.trim(), email: profile.email, birthDate, heightCm, weightKg });
+      await onSave({
+        name: name.trim(),
+        email: profile.email,
+        birthDate,
+        heightCm,
+        weightKg,
+        avatarUrl: profile.avatarUrl,
+      });
       onClose();
     } finally {
       setSaving(false);
@@ -80,12 +141,25 @@ function PersonalInfoForm({
   return (
     <View style={styles.form}>
       <View style={styles.avatarRow}>
-        <View style={styles.avatar}>
-          <Text style={styles.initials}>{initials(name || profile.name)}</Text>
+        <View>
+          <Avatar
+            name={name || profile.name}
+            imageUrl={ikUrl(profile.avatarUrl, { w: 160, h: 160 })}
+            size={60}
+          />
+          {uploading ? (
+            <View style={styles.uploading}>
+              <ActivityIndicator color={colors.white} />
+            </View>
+          ) : null}
         </View>
-        {/* TODO: pick / take a photo (needs expo-image-picker). */}
-        <Pressable accessibilityRole="button" style={styles.changePhoto}>
-          <Text style={styles.changePhotoText}>Change photo</Text>
+        <Pressable
+          accessibilityRole="button"
+          disabled={uploading}
+          onPress={handleChangePhoto}
+          style={styles.changePhoto}
+        >
+          <Text style={styles.changePhotoText}>{uploading ? "Uploading…" : "Change photo"}</Text>
         </Pressable>
       </View>
 
@@ -192,15 +266,17 @@ function PersonalInfoForm({
 const styles = StyleSheet.create({
   form: { alignSelf: "stretch", gap: 16 },
   avatarRow: { flexDirection: "row", alignItems: "center", gap: 14 },
-  avatar: {
-    width: 60,
-    height: 60,
+  uploading: {
+    position: "absolute",
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
     borderRadius: radius.pill,
-    backgroundColor: colors.primary,
+    backgroundColor: "rgba(0,0,0,0.35)",
     alignItems: "center",
     justifyContent: "center",
   },
-  initials: { fontFamily: fonts.bold, fontSize: 19, color: colors.white },
   changePhoto: {
     paddingVertical: 8,
     paddingHorizontal: 14,
