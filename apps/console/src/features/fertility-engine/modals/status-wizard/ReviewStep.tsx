@@ -32,33 +32,33 @@ export function ReviewStep({ form, config, cases, draft }: StepProps) {
   return (
     <>
       <div className="grid grid-cols-2 gap-3 min-[701px]:grid-cols-4">
-        <div className={cn('flex flex-col gap-0.5 rounded-xl px-3.5 py-3', TILE.success)}>
+        <div className={cn('flex flex-col gap-0.5 rounded-xl p-3', TILE.success)}>
           <span className="text-11 font-bold">Golden tests</span>
-          <span className="text-16 font-extrabold text-ink">{summary.pass} / {summary.total} pass</span>
+          <span className="text-15 font-extrabold text-ink">{summary.pass} / {summary.total} pass</span>
         </div>
-        <div className={cn('flex flex-col gap-0.5 rounded-xl px-3.5 py-3', TILE.info)}>
+        <div className={cn('flex flex-col gap-0.5 rounded-xl p-3', TILE.info)}>
           <span className="text-11 font-bold">Cases entering it</span>
-          <span className="text-16 font-extrabold text-ink">{impact.casesHit} / {cases.length}</span>
+          <span className="text-15 font-extrabold text-ink">{impact.casesHit} / {cases.length}</span>
         </div>
-        <div className={cn('flex flex-col gap-0.5 rounded-xl px-3.5 py-3', TILE.pink)}>
+        <div className={cn('flex flex-col gap-0.5 rounded-xl p-3', TILE.pink)}>
           <span className="text-11 font-bold">Cycle days affected</span>
-          <span className="text-16 font-extrabold text-ink">{impact.daysHit} days</span>
+          <span className="text-15 font-extrabold text-ink">{impact.daysHit} days</span>
         </div>
-        <div className={cn('flex flex-col gap-0.5 rounded-xl px-3.5 py-3', conflicts === 0 ? TILE.success : 'bg-warning-soft text-warning-ink')}>
+        <div className={cn('flex flex-col gap-0.5 rounded-xl p-3', conflicts === 0 ? TILE.success : 'bg-warning-soft text-warning-ink')}>
           <span className="text-11 font-bold">Conflicts</span>
-          <span className="text-16 font-extrabold text-ink">{conflicts} with {above?.name ?? 'the status above'}</span>
+          <span className="text-15 font-extrabold text-ink">{conflicts} with {above?.name ?? 'the status above'}</span>
         </div>
       </div>
 
       <ModalSection label="Simulator results">
-        <ul className="m-0 flex list-none flex-col rounded-xl border border-border p-0">
+        <ul className="m-0 flex shrink-0 list-none flex-col overflow-hidden rounded-xl border border-border p-0">
           {results.map((r) => {
             const day = impact.firstDay[r.case.key]
             const verdict = r.change === 'regressed' ? { t: 'fail', c: 'bg-error-soft text-error' } : r.change === 'improved' || r.change === 'changed' ? { t: 'review', c: 'bg-warning-soft text-warning-ink' } : { t: 'pass', c: 'bg-success-soft text-success' }
             return (
-              <li key={r.case.key} className="grid grid-cols-[minmax(0,190px)_minmax(0,1fr)_auto] items-center gap-3 border-b border-border px-3.5 py-2.5 last:border-b-0">
-                <span className="truncate font-mono text-12 font-semibold">{r.case.key}</span>
-                <span className="truncate text-12 text-ink-muted">{day != null ? `Enters CD ${day}` : 'Never enters'}{r.change === 'regressed' ? ' · prediction got worse' : ''}</span>
+              <li key={r.case.key} className="grid min-h-10 grid-cols-[minmax(0,200px)_minmax(0,1fr)_auto] items-center gap-3 border-b border-border px-3.5 py-2 last:border-b-0">
+                <span className="truncate text-12 font-semibold">{r.case.key}</span>
+                <span className="truncate text-12 font-medium text-ink-muted">{day != null ? `Enters CD ${day}` : 'Never enters'}{r.change === 'regressed' ? ' · prediction got worse' : ''}</span>
                 <span className={cn('rounded-full px-2.5 py-0.5 text-11 font-bold', verdict.c)}>{verdict.t}</span>
               </li>
             )

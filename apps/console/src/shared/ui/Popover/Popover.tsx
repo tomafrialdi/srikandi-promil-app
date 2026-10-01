@@ -44,8 +44,9 @@ export function Popover({ open, anchor, onClose, children, className, matchWidth
     const flip = height > below && above > below
     el.style.maxHeight = `${Math.min(maxHeight, Math.max(120, flip ? above : below))}px`
     el.style.left = `${Math.max(EDGE, Math.min(r.left, window.innerWidth - el.offsetWidth - EDGE))}px`
-    el.style.top = flip ? '' : `${r.bottom + GAP}px`
-    el.style.bottom = flip ? `${window.innerHeight - r.top + GAP}px` : ''
+    // `auto`, not '': the class `top-0` would come back and stretch the panel from the top of the screen.
+    el.style.top = flip ? 'auto' : `${r.bottom + GAP}px`
+    el.style.bottom = flip ? `${window.innerHeight - r.top + GAP}px` : 'auto'
   }, [open, anchor, matchWidth, maxHeight])
 
   useEffect(() => {

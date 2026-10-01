@@ -1,3 +1,4 @@
+import { Plus } from '@phosphor-icons/react'
 import { useMemo } from 'react'
 import { cn } from '../../../../shared/lib/cn'
 import { ModalSection } from '../../../../shared/ui'
@@ -5,7 +6,7 @@ import { ruleSource, usedSignals } from '../../engine/rules'
 import { statusImpact, withStatus } from '../../engine/overlap'
 import type { EngineConfig, GoldenCase } from '../../types'
 import { GroupsEditor } from './GroupsEditor'
-import { groupsIssues, toStatus, type StatusForm } from './status-form'
+import { BLANK_COND, groupsIssues, toStatus, type StatusForm } from './status-form'
 
 interface StepProps {
   form: StatusForm
@@ -17,6 +18,17 @@ interface StepProps {
 function Chip({ tone, children }: { tone: 'success' | 'warning' | 'info' | 'error'; children: React.ReactNode }) {
   const t = { success: 'bg-success-soft text-success', warning: 'bg-warning-soft text-warning-ink', info: 'bg-secondary-soft text-secondary', error: 'bg-error-soft text-error' }[tone]
   return <span className={cn('rounded-full px-2.5 py-1 text-11 font-bold', t)}>{children}</span>
+}
+
+/** Adds an AND condition to the main group (or starts the first one). */
+const addTo = (groups: StatusForm['entry']): StatusForm['entry'] => (groups.length === 0 ? [[BLANK_COND]] : groups.map((g, i) => (i === 0 ? [...g, BLANK_COND] : g)))
+
+function AddCondition({ onClick }: { onClick: () => void }) {
+  return (
+    <button type="button" className="inline-flex items-center gap-1 text-12 font-bold text-primary" onClick={onClick}>
+      <Plus size={12} weight="bold" /> Add condition
+    </button>
+  )
 }
 
 export function ConditionsStep({ form, update, config, cases }: StepProps) {
@@ -33,15 +45,22 @@ export function ConditionsStep({ form, update, config, cases }: StepProps) {
 
   return (
     <>
-      <ModalSection label="Entry conditions">
+      <ModalSection label="Entry conditions" action={<AddCondition onClick={() => update({ entry: addTo(form.entry) })} />}>
         <GroupsEditor groups={form.entry} onChange={(entry) => update({ entry })} label="entry" />
       </ModalSection>
-      <ModalSection label="Exit conditions">
+      <ModalSection label="Exit conditions" action={<AddCondition onClick={() => update({ exit: addTo(form.exit) })} />}>
         <GroupsEditor groups={form.exit} onChange={(exit) => update({ exit })} label="exit" />
-        {form.exit.length > 0 && next.below && <p className="m-0 text-11 text-ink-muted">→ hands over to “{next.below.name}” or the next matching status</p>}
+        {form.exit.length > 0 && next.below && <p className="m-0 text-11 font-semibold text-ink-muted">→ hands over to “{next.below.name}” or the next matching status</p>}
       </ModalSection>
       <ModalSection label="Rule preview">
-        <pre className="m-0 overflow-x-auto rounded-xl bg-ink p-4 font-mono text-12 leading-relaxed whitespace-pre-wrap text-white/90">{ruleSource(status)}</pre>
+        <pre className="m-0 shrink-0 overflow-x-auto rounded-xl bg-[#1c1416] p-4 font-mono text-12 leading-relaxed font-medium whitespace-pre-wrap text-[#e7e4dc]">
+          {ruleSource(status).split('\n').map((line, i, all) => (
+            <span key={i} className={i === 0 || i === all.length - 1 ? 'text-[#f29bb8]' : undefined}>
+              {line}
+              {i < all.length - 1 ? '\n' : ''}
+            </span>
+          ))}
+        </pre>
         <div className="flex flex-wrap gap-2">
           {issues === 0 ? <Chip tone="success">Syntax valid</Chip> : <Chip tone="error">{`${issues} condition${issues === 1 ? '' : 's'} to fix`}</Chip>}
           {impact && next.above && <Chip tone={impact.overlap(next.above.key) === 0 ? 'success' : 'warning'}>{`${impact.overlap(next.above.key) === 0 ? 'No overlap' : 'Overlaps'} with ${next.above.name} (order ${next.above.order})`}</Chip>}

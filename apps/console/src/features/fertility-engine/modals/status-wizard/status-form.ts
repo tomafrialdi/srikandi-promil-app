@@ -143,3 +143,6 @@ export function conditionsIssue(f: StatusForm): string | null {
   if (groupsIssues(f.entry) + groupsIssues(f.exit) > 0) return 'Fix the highlighted conditions'
   return null
 }
+
+/** A fresh condition row ("lh = peak") used by the "Add condition" actions. */
+export const BLANK_COND: import('../../types').Cond = { field: 'lh', op: '=', value: 'peak' }

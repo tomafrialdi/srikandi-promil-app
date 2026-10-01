@@ -1,4 +1,4 @@
-import { ArrowLeft, ArrowRight, FloppyDisk, GitPullRequest, Trash, Warning } from '@phosphor-icons/react'
+import { ArrowLeft, ArrowRight, FloppyDisk, GitBranch, Trash, Warning } from '@phosphor-icons/react'
 import { useState } from 'react'
 import { Badge, Button, ConfirmDialog, Modal, ModalFooter, Notice, StepTabs, useToast } from '../../../../shared/ui'
 import { useGoldenCases } from '../../hooks/useEngineData'
@@ -71,7 +71,7 @@ export function StatusWizardModal({ open, onClose, config, editing, draft, onSav
         open={open}
         onClose={() => !saving && onClose()}
         size="xl"
-        icon={<GitPullRequest size={20} />}
+        icon={<GitBranch size={20} />}
         title={`${form.editing ? 'Edit' : 'Add'} status · “${form.name.trim() || 'New status'}”`}
         subtitle={`${form.editing ? 'Changes go into' : 'New rule in'} draft ${draft} · needs 2 medical approvals before release`}
         headerActions={<Badge tone="warning">{`Draft ${draft}`}</Badge>}
@@ -84,7 +84,7 @@ export function StatusWizardModal({ open, onClose, config, editing, draft, onSav
                   <Trash size={14} /> Delete status
                 </button>
               ) : (
-                `Step ${step + 1} of 5`
+                <span className="inline-flex items-center gap-1.5"><FloppyDisk size={14} className="text-ink-faint" />{`Step ${step + 1} of 5 · saved to the draft at the end`}</span>
               )
             }
           >
