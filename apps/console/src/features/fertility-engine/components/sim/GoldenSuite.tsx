@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Badge, Button, Card, type BadgeTone } from '../../../../shared/ui'
+import { Badge, Button, Card, CardHeader, type BadgeTone } from '../../../../shared/ui'
 import type { CaseChange, CaseResult } from '../../engine/golden'
 import { suiteSummary } from '../../engine/golden'
 
@@ -24,21 +24,15 @@ export function GoldenSuite({ results }: { results: CaseResult[] }) {
   const shown = all ? sorted : sorted.slice(0, 4)
   return (
     <Card className="gap-3.5">
-      <header className="flex items-start justify-between gap-3">
-        <div className="flex flex-col gap-0.5">
-          <h2 className="text-16 font-bold">Golden test suite</h2>
-          <p className="text-12 font-medium text-ink-muted">{results.length} labelled cycles, replayed against both versions</p>
-        </div>
-        <Badge tone={s.failed > 0 ? 'error' : 'success'}>{`${s.pass} / ${s.total} pass`}</Badge>
-      </header>
-      <div className="h-2 overflow-hidden rounded-full bg-error-soft" role="img" aria-label={`${s.pass} of ${s.total} pass`}>
+      <CardHeader title="Golden test suite" subtitle={`${results.length} labelled cycles, replayed against both versions`} action={<Badge tone={s.failed > 0 ? 'error' : 'success'}>{`${s.pass} / ${s.total} pass`}</Badge>} />
+      <div className="h-2.5 overflow-hidden rounded-full bg-error-soft" role="img" aria-label={`${s.pass} of ${s.total} pass`}>
         <div className="h-full bg-success" style={{ width: `${s.total ? (s.pass / s.total) * 100 : 0}%` }} />
       </div>
       <ul className="m-0 flex list-none flex-col p-0">
         {shown.map((r) => (
-          <li key={r.case.key} className="grid grid-cols-[minmax(0,210px)_minmax(0,1fr)_auto] items-center gap-3 border-t border-border py-2.5">
-            <span className="truncate font-mono text-12 font-semibold">{r.case.key}</span>
-            <span className="truncate text-12 text-ink-muted">{note(r)}</span>
+          <li key={r.case.key} className="grid min-h-9 grid-cols-[minmax(0,200px)_minmax(0,1fr)_auto] items-center gap-3 border-t border-border py-2">
+            <span className="truncate text-12 font-medium">{r.case.key}</span>
+            <span className="truncate text-12 font-medium text-ink-muted">{note(r)}</span>
             <Badge tone={CHANGE[r.change].tone}>{CHANGE[r.change].label}</Badge>
           </li>
         ))}

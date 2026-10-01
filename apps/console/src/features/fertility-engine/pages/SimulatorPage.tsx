@@ -79,7 +79,9 @@ function Simulator({ state, cases, onReload }: { state: EngineState; cases: Gold
   }
 
   const versionOptions = options.map((o) => ({ value: o.id, label: o.label }))
-  const pill = 'flex items-center gap-2 rounded-control border border-border bg-card pl-3.5 text-13'
+  const pill = 'flex h-[34px] items-center gap-1.5 rounded-[10px] border border-border bg-card pr-1 pl-3.5'
+  const inner = 'h-8 border-0 bg-transparent pr-2 pl-0 font-bold'
+  const label = <T extends string>(text: T) => <span className="text-12 font-semibold text-ink-muted">{text}</span>
 
   return (
     <>
@@ -97,13 +99,13 @@ function Simulator({ state, cases, onReload }: { state: EngineState; cases: Gold
       </div>
 
       <div className="flex flex-wrap items-center gap-3">
-        <label className={pill}><span className="text-ink-muted">Profile:</span><SelectField variant="pill" className="[&>select]:border-0 [&>select]:font-bold" aria-label="Profile" value={edited ? '' : caseKey} options={[...(edited ? [{ value: '', label: 'Edited signals' }] : []), ...cases.map((c) => ({ value: c.key, label: c.label }))]} onChange={loadCase} /></label>
-        <label className={pill}><span className="text-ink-muted">Compare:</span>
-          <SelectField variant="pill" className="[&>select]:border-0 [&>select]:font-bold" aria-label="Version A" value={aId} options={versionOptions} onChange={setAId} />
-          <span className="text-ink-muted">vs</span>
-          <SelectField variant="pill" className="[&>select]:border-0 [&>select]:font-bold" aria-label="Version B" value={bId} options={versionOptions} onChange={setBId} />
-        </label>
-        <label className={pill}><span className="text-ink-muted">Mode:</span><SelectField variant="pill" className="[&>select]:border-0 [&>select]:font-bold" aria-label="Mode" value={mode} options={SIM_MODES} onChange={(v) => { setMode(v as ModeKey); setEdited(true) }} /></label>
+        <div className={pill}>{label('Profile:')}<SelectField variant="pill" triggerClassName={inner} aria-label="Profile" value={edited ? '' : caseKey} options={[...(edited ? [{ value: '', label: 'Edited signals' }] : []), ...cases.map((c) => ({ value: c.key, label: c.label }))]} onChange={loadCase} /></div>
+        <div className={pill}>{label('Compare:')}
+          <SelectField variant="pill" triggerClassName={inner} aria-label="Version A" value={aId} options={versionOptions} onChange={setAId} />
+          <span className="text-12 font-semibold text-ink-muted">vs</span>
+          <SelectField variant="pill" triggerClassName={inner} aria-label="Version B" value={bId} options={versionOptions} onChange={setBId} />
+        </div>
+        <div className={pill}>{label('Mode:')}<SelectField variant="pill" triggerClassName={inner} aria-label="Mode" value={mode} options={SIM_MODES} onChange={(v) => { setMode(v as ModeKey); setEdited(true) }} /></div>
       </div>
 
       <SignalGrid signals={signals} note={edited ? undefined : current?.description} onChange={(next) => { setSignals(next); setEdited(true) }} />

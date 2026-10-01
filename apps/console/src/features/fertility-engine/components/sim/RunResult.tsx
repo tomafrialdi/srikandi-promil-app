@@ -1,10 +1,16 @@
-import { Card } from '../../../../shared/ui'
+import { Badge, Card, type BadgeTone } from '../../../../shared/ui'
 import { cn } from '../../../../shared/lib/cn'
 import { COLORS } from '../../engine/fields'
 import type { SimResult } from '../../engine/simulate'
 import { describeSignals } from '../../engine/simulate'
-import { versionChip } from '../../lib'
 import type { EngineVersion, Signals } from '../../types'
+
+const STATUS_BADGE: Record<string, { label: string; tone: BadgeTone }> = {
+  live: { label: 'Live', tone: 'success' },
+  canary: { label: 'Canary', tone: 'warning' },
+  in_review: { label: 'In review', tone: 'info' },
+  draft: { label: 'Draft', tone: 'neutral' },
+}
 
 const VERDICT = {
   correct: { label: '✓ Correct', cls: 'bg-success-soft text-success' },
@@ -38,19 +44,19 @@ export function RunResult({ version, result, signals, truthOv }: RunResultProps)
     <Card className="gap-3.5">
       <header className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-2.5">
-          <h2 className="text-16 font-bold">Rules {version.version}</h2>
-          <span className="rounded-full bg-surface-alt px-2 py-0.5 text-10 font-bold text-ink-muted">{versionChip(version).split(' ')[0]}</span>
+          <h2 className="text-15 font-extrabold">Rules {version.version}</h2>
+          {STATUS_BADGE[version.status] && <Badge tone={STATUS_BADGE[version.status]!.tone}>{STATUS_BADGE[version.status]!.label}</Badge>}
         </div>
         {v.label && <span className={cn('rounded-full px-2.5 py-1 text-11 font-bold', v.cls)}>{v.label}</span>}
       </header>
       <div className="flex gap-1" role="img" aria-label="Status per cycle day">
         {result.days.map((d) => (
-          <span key={d.cd} title={`CD ${d.cd} · ${d.name}`} className="h-6 min-w-0 flex-1 rounded-[4px]" style={{ background: COLORS[d.color].hex, opacity: d.status === 'low_fertility' ? 0.35 : 1 }} />
+          <span key={d.cd} title={`CD ${d.cd} · ${d.name}`} className="h-[22px] min-w-0 flex-1 rounded" style={{ background: COLORS[d.color].hex, opacity: d.status === 'low_fertility' ? 0.35 : 1 }} />
         ))}
       </div>
       <div className="flex flex-wrap items-baseline gap-x-6 gap-y-1">
-        <span className="text-14 font-extrabold">{result.predictedOv != null ? `Ovulation predicted CD ${result.predictedOv}` : 'No ovulation predicted'}</span>
-        <span className="text-13 text-ink-muted">Confidence {result.confidence}%</span>
+        <span className="text-13 font-bold">{result.predictedOv != null ? `Ovulation predicted CD ${result.predictedOv}` : 'No ovulation predicted'}</span>
+        <span className="text-13 font-semibold text-ink-muted">Confidence {result.confidence}%</span>
       </div>
       <p className={cn('m-0 text-12 font-medium', bad ? 'text-error' : 'text-success')}>{message}</p>
     </Card>
