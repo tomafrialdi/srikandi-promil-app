@@ -12,7 +12,6 @@ import { NumberPickerSheet } from "@/components/number-picker-sheet";
 import { colors, fonts, radius } from "@/constants/theme";
 import { MONTH_NAMES, startOfDay } from "@/utils/calendar";
 import { initials } from "@/utils/initials";
-import { isValidEmail } from "@/utils/validation";
 import type { Profile } from "../types";
 
 const MIN_AGE = 18;
@@ -25,7 +24,7 @@ interface PersonalInfoSheetProps {
   onSave: (profile: Profile) => Promise<void>;
 }
 
-/** Bottom sheet to edit name, email, birth date, height and weight. */
+/** Bottom sheet to edit name, birth date, height and weight (email is shown read-only). */
 export function PersonalInfoSheet({ visible, onClose, profile, onSave }: PersonalInfoSheetProps) {
   return (
     <BottomSheet visible={visible} onClose={onClose} title="Personal information" gap={18} scrollable>
@@ -52,11 +51,10 @@ function PersonalInfoForm({
   onSave,
 }: Pick<PersonalInfoSheetProps, "profile" | "onClose" | "onSave">) {
   const [name, setName] = useState(profile.name);
-  const [email, setEmail] = useState(profile.email);
   const [birthDate, setBirthDate] = useState(profile.birthDate);
   const [heightCm, setHeightCm] = useState(profile.heightCm);
   const [weightKg, setWeightKg] = useState(profile.weightKg);
-  const [errors, setErrors] = useState<{ name?: string; email?: string }>({});
+  const [errors, setErrors] = useState<{ name?: string }>({});
   const [saving, setSaving] = useState(false);
   const [picker, setPicker] = useState<"birthDate" | "height" | "weight" | null>(null);
 
@@ -67,14 +65,12 @@ function PersonalInfoForm({
   const handleSave = async () => {
     const next: typeof errors = {};
     if (!name.trim()) next.name = REQUIRED_MESSAGE;
-    if (!email.trim()) next.email = REQUIRED_MESSAGE;
-    else if (!isValidEmail(email)) next.email = "Enter a valid email";
     setErrors(next);
     if (Object.keys(next).length > 0) return;
 
     setSaving(true);
     try {
-      await onSave({ name: name.trim(), email: email.trim(), birthDate, heightCm, weightKg });
+      await onSave({ name: name.trim(), email: profile.email, birthDate, heightCm, weightKg });
       onClose();
     } finally {
       setSaving(false);
@@ -107,12 +103,10 @@ function PersonalInfoForm({
       <TextField
         label="Email"
         icon={Envelope}
-        value={email}
-        onChange={(v) => {
-          setEmail(v);
-          setErrors((e) => ({ ...e, email: undefined }));
-        }}
-        error={errors.email}
+        value={profile.email}
+        onChange={() => {}}
+        // The email is the account identity; changing it needs re-verification (not built yet).
+        editable={false}
         keyboardType="email-address"
         autoCapitalize="none"
         autoComplete="email"

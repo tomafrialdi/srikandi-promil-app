@@ -32,10 +32,9 @@ const SLIDE_MS = 340;
  * step content slides horizontally, and the dots animate with it.
  */
 export function OnboardingScreen() {
-  const { config, validate, submit } = useOnboarding();
+  const { config, validate } = useOnboarding();
   const { width } = useWindowDimensions();
   const [step, setStep] = useState(0);
-  const [submitting, setSubmitting] = useState(false);
   const progress = useSharedValue(0);
 
   const total = config.steps.length;
@@ -69,19 +68,11 @@ export function OnboardingScreen() {
     }, [step, goTo]),
   );
 
-  const handleContinue = async () => {
+  // Answers are saved after sign-up (verify-email screen); there is no session yet here.
+  const handleContinue = () => {
     if (!validate(step)) return;
-    if (!isLast) {
-      goTo(step + 1);
-      return;
-    }
-    setSubmitting(true);
-    try {
-      await submit();
-      router.replace("/onboarding/loading");
-    } finally {
-      setSubmitting(false);
-    }
+    if (isLast) router.replace("/onboarding/loading");
+    else goTo(step + 1);
   };
 
   const trackStyle = useAnimatedStyle(() => ({
@@ -112,7 +103,6 @@ export function OnboardingScreen() {
           <ButtonPrimary
             label={config.steps[step].ctaLabel}
             onPress={handleContinue}
-            disabled={submitting}
           />
           <Text style={styles.stepLabel}>
             Step {step + 1} of {total}

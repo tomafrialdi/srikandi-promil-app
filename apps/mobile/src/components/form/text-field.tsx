@@ -16,6 +16,7 @@ interface TextFieldProps
     | "textContentType"
     | "returnKeyType"
     | "onSubmitEditing"
+    | "editable"
   > {
   label: string;
   value: string;
@@ -44,7 +45,14 @@ export function TextField({
 
   return (
     <FieldShell label={label} error={error}>
-      <View style={[styles.box, focused && styles.boxFocused, error ? styles.boxError : null]}>
+      <View
+        style={[
+          styles.box,
+          focused && styles.boxFocused,
+          error ? styles.boxError : null,
+          inputProps.editable === false && localStyles.readOnly,
+        ]}
+      >
         {LeadingIcon ? <LeadingIcon size={18} color={colors.inkFaint} /> : null}
         <TextInput
           {...inputProps}
@@ -78,5 +86,6 @@ export function TextField({
 }
 
 const localStyles = StyleSheet.create({
+  readOnly: { opacity: 0.6 },
   suffix: { fontFamily: fonts.semibold, fontSize: 13, color: colors.inkMuted },
 });

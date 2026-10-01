@@ -6,6 +6,7 @@ import { colors, fonts, radius } from "@/constants/theme";
 import { formatToday, greetingFor } from "../utils/greeting";
 
 interface GreetingHeaderProps {
+  /** Full name; the greeting uses the first word, the avatar the initials. */
   name: string;
   avatarUrl?: string | null;
   hasUnread: boolean;
@@ -24,6 +25,8 @@ export function GreetingHeader({
   onBellPress,
   now = new Date(),
 }: GreetingHeaderProps) {
+  const firstName = name.trim().split(/\s+/)[0];
+
   return (
     <View style={styles.row}>
       <Pressable accessibilityRole="button" accessibilityLabel="Open profile" onPress={onAvatarPress}>
@@ -32,7 +35,7 @@ export function GreetingHeader({
 
       <View style={styles.text}>
         <Text style={styles.greeting}>
-          {greetingFor(now)}, {name}
+          {firstName ? `${greetingFor(now)}, ${firstName}` : greetingFor(now)}
         </Text>
         <Text style={styles.date}>{formatToday(now)}</Text>
       </View>

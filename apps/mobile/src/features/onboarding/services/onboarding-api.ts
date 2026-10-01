@@ -1,3 +1,4 @@
+import { supabase } from "@/lib/supabase";
 import localConfig from "../data/onboarding-steps.json";
 import type { OnboardingConfig } from "../types";
 import type { OnboardingPayload } from "../utils/payload";
@@ -12,9 +13,10 @@ export async function fetchOnboardingConfig(): Promise<OnboardingConfig> {
 }
 
 /**
- * Sends the completed answers.
- * TODO(backend): replace with a real request.
+ * Saves the completed answers to the signed-in user's profile (RPC `app_complete_onboarding`).
+ * Requires a session, so it runs after the email is verified, not when the questions end.
  */
 export async function submitOnboarding(payload: OnboardingPayload): Promise<void> {
-  console.log("[onboarding] submit", JSON.stringify(payload, null, 2));
+  const { error } = await supabase.rpc("app_complete_onboarding", { p_payload: payload });
+  if (error) throw new Error(error.message);
 }

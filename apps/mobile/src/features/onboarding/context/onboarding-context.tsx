@@ -28,6 +28,10 @@ interface OnboardingContextValue {
   setAnswer: (key: string, value: AnswerValue) => void;
   /** Validates a step, stores its errors, and returns true when it passes. */
   validate: (stepIndex: number) => boolean;
+  /**
+   * Saves the answers to the backend. Call it once the user is signed in; resolves
+   * without doing anything when the questionnaire wasn't completed (e.g. a plain login).
+   */
   submit: () => Promise<void>;
 }
 
@@ -73,10 +77,12 @@ export function OnboardingProvider({
     [config, answers],
   );
 
-  const submit = useCallback(
-    () => submitOnboarding(buildPayload(config, answers)),
-    [config, answers],
-  );
+  const submit = useCallback(async () => {
+    const complete = config.steps.every(
+      (step) => Object.keys(validateStep(step, answers)).length === 0,
+    );
+    if (complete) await submitOnboarding(buildPayload(config, answers));
+  }, [config, answers]);
 
   // TODO(backend): replace the local estimate with the server-side prediction.
   const result = useMemo(() => calculateResult(answers), [answers]);

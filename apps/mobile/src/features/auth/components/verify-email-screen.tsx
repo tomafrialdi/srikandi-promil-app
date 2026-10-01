@@ -8,6 +8,7 @@ import { colors, fonts, radius } from "@/constants/theme";
 import { AUTH_COPY } from "../content";
 import { useCountdown } from "../hooks/use-countdown";
 import { AuthError, resendVerificationCode, verifyEmailCode } from "../services/auth-api";
+import { useOnboarding } from "@/features/onboarding/context/onboarding-context";
 import { goToHome } from "@/utils/navigation";
 import { formatCountdown } from "../utils/validation";
 import { AuthScreen, SwitchLink } from "./auth-screen";
@@ -15,6 +16,7 @@ import { OtpInput } from "./otp-input";
 import { ScreenTitle } from "./screen-title";
 
 const copy = AUTH_COPY.verifyEmail;
+const copyErrors = AUTH_COPY.errors;
 const CODE_LENGTH = 6;
 const RESEND_SECONDS = 60;
 
@@ -23,17 +25,24 @@ export function VerifyEmailScreen() {
   const [code, setCode] = useState("");
   const [codeError, setCodeError] = useState<string>();
   const [submitting, setSubmitting] = useState(false);
+  // The code is single-use, so once it's accepted only the answers upload is retried.
+  const [verified, setVerified] = useState(false);
   const { remaining, restart } = useCountdown(RESEND_SECONDS);
+  const { submit: saveOnboarding } = useOnboarding();
 
   const handleVerify = async () => {
     setSubmitting(true);
     setCodeError(undefined);
     try {
-      await verifyEmailCode({ email, code });
+      if (!verified) {
+        await verifyEmailCode({ email, code });
+        setVerified(true);
+      }
+      await saveOnboarding();
       goToHome();
     } catch (e) {
       if (e instanceof AuthError) setCodeError(e.message);
-      else throw e;
+      else setCodeError(copyErrors.saveFailed);
     } finally {
       setSubmitting(false);
     }
@@ -58,7 +67,7 @@ export function VerifyEmailScreen() {
           <ButtonPrimary
             label={copy.cta}
             onPress={handleVerify}
-            disabled={code.length < CODE_LENGTH || submitting}
+            disabled={(!verified && code.length < CODE_LENGTH) || submitting}
             style={styles.stretch}
           />
           <SwitchLink

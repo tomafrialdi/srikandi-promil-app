@@ -10,7 +10,7 @@ import type {
 } from "../types";
 import { USE_DUMMY_SETTINGS } from "./config";
 import { dummySettingsApi } from "./dummy-settings-api";
-import { httpSettingsApi } from "./http-settings-api";
+import { supabaseSettingsApi } from "./supabase-settings-api";
 
 /**
  * What the Settings screen needs from the backend.
@@ -36,4 +36,4 @@ export interface SettingsApi {
 }
 
 /** The single switch between dummy data and the real backend. */
-export const settingsApi: SettingsApi = USE_DUMMY_SETTINGS ? dummySettingsApi : httpSettingsApi;
+export const settingsApi: SettingsApi = USE_DUMMY_SETTINGS ? dummySettingsApi : supabaseSettingsApi;

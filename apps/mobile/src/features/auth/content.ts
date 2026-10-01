@@ -54,5 +54,6 @@ export const AUTH_COPY = {
     emailTaken: "This email is already registered. Try logging in.",
     tooManyRequests: "Too many attempts. Please wait a moment and try again.",
     generic: "Something went wrong. Please try again.",
+    saveFailed: "Your email is verified, but we couldn't save your answers. Tap to try again.",
   },
 } as const;
