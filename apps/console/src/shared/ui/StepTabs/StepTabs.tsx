@@ -12,10 +12,12 @@ interface StepTabsProps {
   current: number
   /** Called for steps that are already completed. */
   onSelect?: (index: number) => void
+  /** Which steps can be clicked (default: only completed ones). */
+  isEnabled?: (index: number) => boolean
 }
 
 /** Numbered wizard header: completed steps get a check and are clickable. */
-export function StepTabs({ steps, current, onSelect }: StepTabsProps) {
+export function StepTabs({ steps, current, onSelect, isEnabled }: StepTabsProps) {
   return (
     <nav className="flex flex-none gap-6 overflow-x-auto border-b border-border px-6" aria-label="Steps">
       {steps.map((step, index) => {
@@ -30,7 +32,7 @@ export function StepTabs({ steps, current, onSelect }: StepTabsProps) {
               active ? 'border-primary font-bold text-primary' : done ? 'text-ink' : 'text-ink-muted',
             )}
             aria-current={active ? 'step' : undefined}
-            disabled={!done}
+            disabled={isEnabled ? !isEnabled(index) : !done}
             onClick={() => onSelect?.(index)}
           >
             <span

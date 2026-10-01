@@ -15,34 +15,31 @@ export function ServicesStep({ form, set }: StepProps) {
 
   return (
     <>
-      <ModalSection label="Services & price ranges">
-        <div className="-mt-2 flex justify-end">
-          <button type="button" className="inline-flex items-center gap-1 text-12 font-bold text-primary" onClick={() => set({ services: [...form.services, { label: '', icon: 'stethoscope', price_min: 0, price_max: 0, bpjs: false, listed: true }] })}><Plus size={12} weight="bold" /> Add service</button>
-        </div>
-        <div className="overflow-x-auto rounded-xl border border-border">
+      <ModalSection label="Services & price ranges" action={<button type="button" className="inline-flex items-center gap-1 text-12 font-bold text-primary" onClick={() => set({ services: [...form.services, { label: '', icon: 'stethoscope', price_min: 0, price_max: 0, bpjs: false, listed: true }] })}><Plus size={12} weight="bold" /> Add service</button>}>
+        <div className="shrink-0 overflow-x-auto rounded-xl border border-border">
           <div className="min-w-[640px]">
-            <div className="grid grid-cols-[minmax(0,1.5fr)_minmax(0,1.5fr)_56px_56px_28px] items-center gap-3 bg-surface px-3.5 py-2.5 text-11 font-bold text-ink-faint uppercase">
+            <div className="grid grid-cols-[minmax(0,1.5fr)_minmax(0,1.3fr)_56px_56px_28px] items-center gap-3 bg-surface px-3.5 py-3 text-10 font-extrabold text-ink-faint uppercase">
               <span>Service</span><span>Price range (Rp)</span><span>BPJS</span><span>Listed</span><span />
             </div>
             {form.services.map((s, i) => {
               const Glyph = ICON[s.icon] ?? Pulse
               return (
-                <div key={i} className={`grid grid-cols-[minmax(0,1.5fr)_minmax(0,1.5fr)_56px_56px_28px] items-center gap-3 border-t border-border px-3.5 py-2.5 ${s.listed ? '' : 'opacity-60'}`}>
+                <div key={i} className={`grid min-h-[54px] grid-cols-[minmax(0,1.5fr)_minmax(0,1.3fr)_56px_56px_28px] items-center gap-3 border-t border-border px-3.5 py-2.5 ${s.listed ? '' : 'opacity-60'}`}>
                   <span className="flex items-center gap-2.5"><Glyph size={16} className="flex-none text-ink-muted" /><input aria-label="Service name" className="min-w-0 flex-1 border-0 bg-transparent text-13 font-semibold outline-0 placeholder:text-ink-faint" placeholder="Service name" maxLength={80} value={s.label} onChange={(e) => setSvc(i, { label: e.target.value })} /></span>
-                  <span className="flex h-9 items-center gap-1.5 rounded-lg border border-border bg-card px-2.5 text-13 font-semibold focus-within:border-primary">
+                  <span className="flex h-[34px] items-center gap-1.5 rounded-[10px] border border-border bg-card px-2.5 text-13 font-semibold focus-within:border-primary">
                     <input aria-label={`${s.label} minimum price`} inputMode="numeric" placeholder="0" className="min-w-0 flex-1 border-0 bg-transparent text-right outline-0" value={fmt(s.price_min)} onChange={(e) => setSvc(i, { price_min: digits(e.target.value) })} />
                     <span className="text-ink-faint">–</span>
                     <input aria-label={`${s.label} maximum price`} inputMode="numeric" placeholder="0" className="min-w-0 flex-1 border-0 bg-transparent text-right outline-0" value={fmt(s.price_max)} onChange={(e) => setSvc(i, { price_max: digits(e.target.value) })} />
                   </span>
-                  <Toggle label={`${s.label} BPJS`} checked={s.bpjs} disabled={!bpjsOn} onChange={(bpjs) => setSvc(i, { bpjs })} />
-                  <Toggle label={`${s.label} listed`} checked={s.listed} onChange={(listed) => setSvc(i, { listed })} />
+                  <Toggle size="md" label={`${s.label} BPJS`} checked={s.bpjs} disabled={!bpjsOn} onChange={(bpjs) => setSvc(i, { bpjs })} />
+                  <Toggle size="md" label={`${s.label} listed`} checked={s.listed} onChange={(listed) => setSvc(i, { listed })} />
                   <button type="button" aria-label="Remove service" className="inline-flex size-7 items-center justify-center text-ink-faint hover:text-error" onClick={() => set({ services: form.services.filter((_, x) => x !== i) })}><Trash size={14} /></button>
                 </div>
               )
             })}
           </div>
         </div>
-        <div className="flex items-start gap-2.5 rounded-xl bg-warning-soft px-3.5 py-3 text-12 font-medium text-warning-ink"><Info size={16} className="mt-px flex-none" />Prices are shown to users as estimates with “last updated” date. Clinics must refresh them every 6 months.{!bpjsOn && ' Turn on “BPJS Kesehatan” below to mark services as BPJS-covered.'}</div>
+        <div className="flex items-start gap-2.5 rounded-[10px] bg-warning-soft px-3.5 py-3 text-12 font-semibold text-warning-ink"><Info size={16} className="mt-px flex-none" />Prices are shown to users as estimates with “last updated” date. Clinics must refresh them every 6 months.{!bpjsOn && ' Turn on “BPJS Kesehatan” below to mark services as BPJS-covered.'}</div>
       </ModalSection>
 
       <ModalSection label="Payment & insurance">
@@ -52,11 +49,11 @@ export function ServicesStep({ form, set }: StepProps) {
 
       <ModalSection label="Program success rates (optional)">
         <div className="grid gap-3.5 min-[701px]:grid-cols-3">
-          <Field label="IUI clinical pregnancy / cycle" hint="self-reported"><TextField id="cw-iui" label="" hideLabel inputMode="decimal" placeholder="14" trailing={<span className="text-ink-faint">%</span>} value={form.iui_pct} onChange={(e) => pct('iui_pct', e.target.value)} /></Field>
-          <Field label="IVF clinical pregnancy / transfer" hint="self-reported"><TextField id="cw-ivf" label="" hideLabel inputMode="decimal" placeholder="41" trailing={<span className="text-ink-faint">%</span>} value={form.ivf_pct} onChange={(e) => pct('ivf_pct', e.target.value)} /></Field>
-          <Field label="Reporting period"><SelectField aria-label="Reporting period" value={form.period} options={REPORT_PERIODS} onChange={(period) => set({ period })} /></Field>
+          <Field label="IUI clinical pregnancy / cycle" hint="self-reported"><TextField compact id="cw-iui" label="" hideLabel inputMode="decimal" placeholder="14" trailing={<span className="text-ink-faint">%</span>} value={form.iui_pct} onChange={(e) => pct('iui_pct', e.target.value)} /></Field>
+          <Field label="IVF clinical pregnancy / transfer" hint="self-reported"><TextField compact id="cw-ivf" label="" hideLabel inputMode="decimal" placeholder="41" trailing={<span className="text-ink-faint">%</span>} value={form.ivf_pct} onChange={(e) => pct('ivf_pct', e.target.value)} /></Field>
+          <Field label="Reporting period"><SelectField triggerClassName="h-10 rounded-[10px]" aria-label="Reporting period" value={form.period} options={REPORT_PERIODS} onChange={(period) => set({ period })} /></Field>
         </div>
-        <p className="m-0 text-11 text-ink-muted">Shown only after medical team verification. Never used in ads.</p>
+        <p className="m-0 text-11 font-medium text-ink-faint">Shown only after medical team verification. Never used in ads.</p>
       </ModalSection>
     </>
   )

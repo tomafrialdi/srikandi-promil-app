@@ -1,7 +1,6 @@
-import { ArrowLeft, ArrowRight, Buildings, Check, FloppyDisk, PaperPlaneTilt, Warning } from '@phosphor-icons/react'
+import { ArrowLeft, ArrowRight, FloppyDisk, Hospital, PaperPlaneTilt, Warning } from '@phosphor-icons/react'
 import { useRef, useState } from 'react'
-import { cn } from '../../../shared/lib/cn'
-import { Badge, Button, Modal, ModalFooter, Notice, useToast } from '../../../shared/ui'
+import { Badge, Button, Modal, ModalFooter, Notice, StepTabs, useToast } from '../../../shared/ui'
 import { STEP_DEFS } from '../config/labels'
 import { useClinic } from '../hooks/useClinicsData'
 import { blankForm, hoursIssue, toForm, toPayload } from '../lib/clinic-form'
@@ -90,25 +89,11 @@ export function ClinicWizardModal({ open, onClose, clinic: initial, onSaved }: C
       open={open}
       onClose={() => !saving && onClose()}
       size="xl"
-      icon={<Buildings size={20} />}
+      icon={<Hospital size={20} />}
       title={title}
       subtitle="Listing goes live after licence verification (1–3 working days)"
       headerActions={<Badge tone="neutral">{initial ? (initial.status === 'draft' ? 'Draft' : 'Editing') : 'Draft'}</Badge>}
-      tabs={
-        <nav className="flex gap-2 overflow-x-auto border-b border-border px-6 py-3" aria-label="Steps">
-          {STEP_DEFS.map((s, i) => {
-            const done = i < step
-            const active = i === step
-            const enabled = initial !== null || i <= reached
-            return (
-              <button key={s.key} type="button" disabled={!enabled || saving} aria-current={active ? 'step' : undefined} onClick={() => go(i)} className={cn('inline-flex items-center gap-2 rounded-full px-3 py-[7px] text-13 font-semibold whitespace-nowrap disabled:cursor-default', active ? 'bg-primary-soft font-bold text-primary' : done ? 'text-ink' : enabled ? 'text-ink-muted' : 'text-ink-faint')}>
-                <span className={cn('inline-flex size-5 items-center justify-center rounded-full text-10 font-extrabold', active ? 'bg-primary text-white' : done ? 'bg-success text-white' : 'bg-surface-alt text-ink-muted')}>{done ? <Check size={11} weight="bold" /> : i + 1}</span>
-                {s.label}
-              </button>
-            )
-          })}
-        </nav>
-      }
+      tabs={<StepTabs steps={STEP_DEFS} current={step} onSelect={go} isEnabled={(i) => !saving && (initial !== null || i <= reached)} />}
       footer={
         <ModalFooter
           info={
