@@ -70,6 +70,8 @@ export interface UserDetail {
     cycles_tracked: number
     streak_days: number
     partner: string | null
+    /** Partner added in the mobile app but not linked to an account yet. */
+    partner_added: string | null
     /** Profile photo from the mobile app (ImageKit URL). */
     avatar_url: string | null
   }

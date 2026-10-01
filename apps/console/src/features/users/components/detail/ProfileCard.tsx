@@ -31,7 +31,7 @@ export function ProfileCard({ profile }: { profile: UserDetail['profile'] }) {
         <Quick label="Trying for" value={profile.trying_months != null ? `${profile.trying_months} months` : '—'} />
         <Quick label="Cycles tracked" value={String(profile.cycles_tracked)} />
         <Quick label="Streak" value={`${profile.streak_days} days`} />
-        <Quick label="Partner" value={profile.partner ? 'Linked' : 'Not linked'} />
+        <Quick label="Partner" value={profile.partner ? 'Linked' : profile.partner_added ? `Added · ${profile.partner_added}` : 'Not linked'} />
       </div>
     </Card>
   )
