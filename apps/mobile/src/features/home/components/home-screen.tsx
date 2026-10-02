@@ -1,12 +1,15 @@
-import { router } from "expo-router";
-import { useState } from "react";
+import { router, useLocalSearchParams } from "expo-router";
+import { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useTabBarClearance } from "@/components/tab-bar/tab-bar";
 import { colors } from "@/constants/theme";
+import { ContentCardSlot } from "@/features/content/components/content-card-slot";
+import { useOpenLink } from "@/features/content/hooks/use-open-link";
 import { useLogging } from "@/features/logging/context/logging-context";
 import { QUICK_ACTION_TO_KIND, RECOMMENDATION_TO_KIND } from "@/features/logging/log-kinds";
+import type { LogKind } from "@/features/logging/types";
 import { useHomeDashboard } from "../hooks/use-home-dashboard";
 import { CommunityCard } from "./community-card";
 import { ContentLibrarySection } from "./content-library-section";
@@ -23,6 +26,15 @@ export function HomeScreen() {
   const { data } = useHomeDashboard();
   const { openLog, logged } = useLogging();
   const bottomClearance = useTabBarClearance();
+  const openLink = useOpenLink();
+
+  // A link from another screen (e.g. an article button) asks Home to open a log sheet: `/home?open=lh-test`.
+  const { open } = useLocalSearchParams<{ open?: string }>();
+  useEffect(() => {
+    if (!open) return;
+    router.setParams({ open: undefined });
+    openLog(open as LogKind);
+  }, [open, openLog]);
   // The header stays pinned; a hairline appears under it once content scrolls beneath.
   const [scrolled, setScrolled] = useState(false);
 
@@ -49,6 +61,9 @@ export function HomeScreen() {
         {/* TODO: wire the remaining handlers (notes screen). */}
         <View style={styles.padded}>
           <CycleHeroCard cycle={data.cycle} onLogPress={() => openLog("log-today")} />
+        </View>
+        <View style={styles.padded}>
+          <ContentCardSlot screen="home" />
         </View>
         <View style={styles.padded}>
           <QuickActionsGrid
@@ -80,15 +95,17 @@ export function HomeScreen() {
           />
         </View>
         <View style={styles.padded}>
-          <DailyTipCard tip={data.tip} />
+          <DailyTipCard tip={data.tip} onPress={data.tip.deepLink ? () => openLink(data.tip.deepLink!) : undefined} />
         </View>
-        <ContentLibrarySection
-          data={data.library}
-          onViewAllPress={() => router.push("/articles")}
-          onArticlePress={(article) =>
-            router.push({ pathname: "/articles/[id]", params: { id: article.id } })
-          }
-        />
+        {data.library.articles.length > 0 ? (
+          <ContentLibrarySection
+            data={data.library}
+            onViewAllPress={() => router.push("/articles")}
+            onArticlePress={(article) =>
+              router.push({ pathname: "/articles/[id]", params: { id: article.id } })
+            }
+          />
+        ) : null}
         <View style={styles.padded}>
           <CommunityCard community={data.community} onPress={() => router.push("/community")} />
         </View>

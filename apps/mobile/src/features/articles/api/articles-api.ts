@@ -1,15 +1,10 @@
 import type { ArticleDetail, ArticleListResponse, ArticleQuery } from "../types";
-import { USE_DUMMY_ARTICLES } from "./config";
-import { dummyArticlesApi } from "./dummy-articles-api";
-import { httpArticlesApi } from "./http-articles-api";
+import { supabaseArticlesApi } from "./supabase-articles-api";
 
 /**
- * What the article screens need from the backend.
- *
- *   GET    /articles?q=<text>&category=<id|all> -> ArticleListResponse
- *   GET    /articles/:id                        -> ArticleDetail
- *   PUT    /articles/:id/bookmark               -> 204
- *   DELETE /articles/:id/bookmark               -> 204
+ * What the article screens need from the backend: the Content library's published articles that
+ * fit the signed-in user (Supabase RPCs `app_articles_list`, `app_article_get`,
+ * `app_content_set_bookmark`).
  */
 export interface ArticlesApi {
   list(query?: ArticleQuery): Promise<ArticleListResponse>;
@@ -17,5 +12,4 @@ export interface ArticlesApi {
   setBookmarked(id: string, bookmarked: boolean): Promise<void>;
 }
 
-/** The single switch between dummy data and the real backend. */
-export const articlesApi: ArticlesApi = USE_DUMMY_ARTICLES ? dummyArticlesApi : httpArticlesApi;
+export const articlesApi: ArticlesApi = supabaseArticlesApi;

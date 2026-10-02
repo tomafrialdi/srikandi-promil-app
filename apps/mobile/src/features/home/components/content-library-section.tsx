@@ -48,7 +48,7 @@ export function ContentLibrarySection({
 function ArticleCard({ article, onPress }: { article: Article; onPress: () => void }) {
   return (
     <Pressable accessibilityRole="button" onPress={onPress} style={styles.card}>
-      <Image source={{ uri: article.imageUrl }} contentFit="cover" style={styles.image} />
+      <Image source={article.imageUrl ? { uri: article.imageUrl } : undefined} contentFit="cover" style={styles.image} />
       <View style={styles.content}>
         <Chip label={article.category} tone="primary" />
         <Text style={styles.title}>{article.title}</Text>

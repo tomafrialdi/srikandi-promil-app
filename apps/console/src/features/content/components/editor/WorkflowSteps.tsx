@@ -1,12 +1,13 @@
 import { cn } from '../../../../shared/lib/cn'
 import type { ContentStatus } from '../../types'
 
-const STEPS = ['Draft', 'Medical review', 'Scheduled', 'Published']
+const STEPS = ['Draft', 'Medical review', 'Approved', 'Scheduled', 'Published']
 
 function currentStep(status: ContentStatus | null): number {
   if (status === 'medical_review') return 1
-  if (status === 'scheduled') return 2
-  if (status === 'published') return 3
+  if (status === 'approved') return 2
+  if (status === 'scheduled') return 3
+  if (status === 'published') return 4
   return 0
 }
 

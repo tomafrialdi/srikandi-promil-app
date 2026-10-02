@@ -1,6 +1,6 @@
 export type ContentType = 'article' | 'daily_tip' | 'in_app_card' | 'video'
-export type ContentStatus = 'draft' | 'medical_review' | 'changes_requested' | 'scheduled' | 'published' | 'archived'
-export type BulkAction = 'send_to_review' | 'schedule' | 'archive'
+export type ContentStatus = 'draft' | 'medical_review' | 'changes_requested' | 'approved' | 'scheduled' | 'published' | 'archived'
+export type BulkAction = 'send_to_review' | 'schedule' | 'publish_now' | 'republish' | 'archive'
 
 export interface ContentSummary {
   published: number
@@ -13,7 +13,7 @@ export interface ContentSummary {
   stale_drafts: number
   reads_30d: number
   avg_read_seconds: number | null
-  counts: { all: number; draft: number; medical_review: number; scheduled: number; published: number; archived: number }
+  counts: { all: number; draft: number; medical_review: number; approved: number; scheduled: number; published: number; archived: number }
   categories: string[]
   reviewers: string[]
 }
@@ -119,7 +119,8 @@ export interface ContentForm {
   autoplay_muted: boolean
 }
 
-export type ReviewDecision = 'approve' | 'request_changes'
+/** `approve` signs it off; `approve_publish` also takes it live (or schedules it when a time was set). */
+export type ReviewDecision = 'approve' | 'approve_publish' | 'request_changes'
 
 export interface ReviewEntry {
   decision: 'approved' | 'changes_requested'

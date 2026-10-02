@@ -16,6 +16,7 @@ import { emptyForm } from '../config/editor'
 import { STATUS_BADGE } from '../config/labels'
 import { formToPayload, recordToForm } from '../lib/form-mapping'
 import { useCanReview } from '../hooks/useCanReview'
+import { ScheduleModal } from '../modals/ScheduleModal'
 import { bulkContentAction, fetchContent, fetchContentOptions, reviewContent, saveContent } from '../services/content.service'
 import type { ContentForm, ContentRecord, ContentStatus, ContentType } from '../types'
 
@@ -54,7 +55,9 @@ function EditorScreen({ id, record, initialType }: EditorScreenProps) {
   const { canReview, isSuperAdmin } = useCanReview()
   const approve = useDisclosure()
   const requestChanges = useDisclosure()
+  const approvePublish = useDisclosure()
   const publishDraft = useDisclosure()
+  const schedule = useDisclosure()
 
   const set = useCallback(<K extends keyof ContentForm>(key: K, value: ContentForm[K]) => {
     setForm((current) => ({ ...current, [key]: value }))
@@ -119,7 +122,7 @@ function EditorScreen({ id, record, initialType }: EditorScreenProps) {
     }, 'Could not submit')
 
   /** Saves pending edits first, runs the review decision, then reloads the status the server decided on. */
-  const decide = async (decision: 'approve' | 'request_changes', note?: string) => {
+  const decide = async (decision: 'approve' | 'approve_publish' | 'request_changes', note?: string) => {
     if (!id) return
     if (dirty) await persist()
     const changed = await reviewContent([id], decision, note)
@@ -127,11 +130,32 @@ function EditorScreen({ id, record, initialType }: EditorScreenProps) {
     const fresh = await fetchContent(id)
     setStatus(fresh.status)
     toast({
-      title: decision === 'request_changes' ? 'Changes requested' : fresh.status === 'scheduled' ? 'Approved and scheduled' : 'Approved and published',
-      description: decision === 'request_changes' ? 'The author sees your note in the review history.' : undefined,
+      title: decision === 'request_changes' ? 'Changes requested' : fresh.status === 'scheduled' ? 'Approved and scheduled' : fresh.status === 'published' ? 'Approved and published' : 'Approved',
+      
+      description: decision === 'request_changes' ? 'The author sees your note in the review history.' : fresh.status === 'approved' ? 'It can now be scheduled or published.' : undefined,
     })
     navigate('/content-library')
   }
+
+  /** Schedule / publish / re-publish: separate steps after approval (or after archiving). */
+  const moveOn = async (action: 'schedule' | 'publish_now' | 'republish', at?: string) => {
+    if (!id) return
+    const changed = await bulkContentAction([id], action, at)
+    if (changed === 0) throw new Error(action === 'republish' ? 'Only archived items can be re-published.' : 'Only approved items can be scheduled or published.')
+    const fresh = await fetchContent(id)
+    setStatus(fresh.status)
+    toast({ title: action === 'schedule' ? 'Scheduled' : fresh.status === 'draft' ? 'Moved back to Draft for review' : 'Published', description: fresh.status === 'draft' ? 'It was never approved, so it needs a review first.' : undefined })
+    navigate('/content-library')
+  }
+
+  const isCard = form.type === 'in_app_card'
+  const lifecycle = id
+    ? {
+        onSchedule: status === 'approved' || status === 'scheduled' ? schedule.onOpen : undefined,
+        onPublishNow: status === 'approved' ? () => run(() => moveOn('publish_now'), 'Could not publish') : undefined,
+        onRepublish: status === 'archived' ? () => run(() => moveOn('republish'), 'Could not re-publish') : undefined,
+      }
+    : undefined
 
   const inReview = status === 'medical_review'
   const review = canReview && id
@@ -140,6 +164,7 @@ function EditorScreen({ id, record, initialType }: EditorScreenProps) {
         canRequestChanges: inReview,
         canPublishDraft: isSuperAdmin && (status === 'draft' || status === 'changes_requested') && form.type !== 'in_app_card',
         onApprove: approve.onOpen,
+        onApprovePublish: approvePublish.onOpen,
         onRequestChanges: requestChanges.onOpen,
         onPublishDraft: publishDraft.onOpen,
       }
@@ -151,7 +176,7 @@ function EditorScreen({ id, record, initialType }: EditorScreenProps) {
 
   return (
     <>
-      <EditorHeader type={form.type} subtitle={subtitle} busy={busy} onSave={save} onSubmit={submit} canSubmit={status !== 'archived' && status !== 'published' && status !== 'scheduled'} review={review} />
+      <EditorHeader type={form.type} subtitle={subtitle} busy={busy} onSave={save} onSubmit={submit} canSubmit={status !== 'archived' && status !== 'published' && status !== 'scheduled' && status !== 'approved'} lifecycle={isCard ? { onRepublish: lifecycle?.onRepublish } : lifecycle} review={review} />
       <WorkflowSteps status={status} />
       <div className="flex flex-col items-start gap-4 min-[1201px]:flex-row">
         <div className="flex w-full min-w-0 flex-1 flex-col gap-4">
@@ -167,11 +192,20 @@ function EditorScreen({ id, record, initialType }: EditorScreenProps) {
       <ConfirmDialog
         open={approve.open}
         onClose={approve.onClose}
-        title="Approve and publish?"
-        description={form.scheduled_at ? 'It was given a publish time, so it will go live then.' : 'It goes live in the app right away for the audience you picked.'}
+        title="Approve?"
+        description={form.scheduled_at ? 'It already has a publish time, so it will be scheduled for then.' : 'It is marked Approved. Schedule it or publish it next.'}
         confirmLabel="Approve"
         onConfirm={() => decide('approve')}
       />
+      <ConfirmDialog
+        open={approvePublish.open}
+        onClose={approvePublish.onClose}
+        title="Approve and publish?"
+        description={form.scheduled_at ? 'It was given a publish time, so it will go live then.' : 'It goes live in the app right away for the audience you picked.'}
+        confirmLabel="Approve & publish"
+        onConfirm={() => decide('approve_publish')}
+      />
+      <ScheduleModal key={String(schedule.open)} open={schedule.open} count={1} onClose={schedule.onClose} onConfirm={(at) => moveOn('schedule', at)} />
       <ReasonDialog
         open={requestChanges.open}
         onClose={requestChanges.onClose}
@@ -192,7 +226,7 @@ function EditorScreen({ id, record, initialType }: EditorScreenProps) {
         reasonLabel="Why is this published without a review?"
         placeholder="e.g. No reviewer on the team yet; owner sign-off"
         confirmLabel="Publish"
-        onConfirm={(note) => decide('approve', note)}
+        onConfirm={(note) => decide('approve_publish', note)}
       />
     </>
   )

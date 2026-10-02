@@ -5,6 +5,7 @@ import { IconButton } from "@/components/icon-button";
 import { StickyScreen } from "@/components/sticky-screen";
 import { useTabBarClearance } from "@/components/tab-bar/tab-bar";
 import { colors, fonts } from "@/constants/theme";
+import { ContentCardSlot } from "@/features/content/components/content-card-slot";
 import { useCalendar } from "../hooks/use-calendar";
 import { CalendarLegend } from "./calendar-legend";
 import { DayDetailCard } from "./day-detail-card";
@@ -29,6 +30,8 @@ export function CalendarScreen() {
         </View>
       }
     >
+      <ContentCardSlot screen="calendar" />
+
       <MonthNav
         year={calendar.year}
         month={calendar.month}

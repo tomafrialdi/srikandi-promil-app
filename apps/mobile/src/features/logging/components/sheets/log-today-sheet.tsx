@@ -3,6 +3,7 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { ButtonPrimary } from "@/components/button-primary";
 import { colors, fonts, radius, tones } from "@/constants/theme";
+import { ContentCardSlot } from "@/features/content/components/content-card-slot";
 import { LOG_COPY } from "../../content";
 import { useLogging } from "../../context/logging-context";
 import { TRACKER_TILES } from "../../log-kinds";
@@ -66,6 +67,8 @@ export function LogTodaySheet({ overview }: { overview: LoggingData["overview"] 
           </View>
         ))}
       </View>
+
+      <ContentCardSlot screen="log_today" />
 
       <View style={styles.hint}>
         <Info size={13} color={colors.inkFaint} />

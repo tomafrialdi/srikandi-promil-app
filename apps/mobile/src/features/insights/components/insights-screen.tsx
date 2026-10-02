@@ -3,6 +3,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useTabBarClearance } from "@/components/tab-bar/tab-bar";
 import { colors, fonts } from "@/constants/theme";
+import { ContentCardSlot } from "@/features/content/components/content-card-slot";
 import { useInsights } from "../hooks/use-insights";
 import { CycleTrendCard } from "./cycle-trend-card";
 import { StatRow } from "./stat-row";
@@ -27,6 +28,8 @@ export function InsightsScreen() {
               : "Your cycle patterns"}
           </Text>
         </View>
+
+        <ContentCardSlot screen="insights" />
 
         {data ? (
           <>

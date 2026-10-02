@@ -8,6 +8,7 @@ import { SearchField } from "@/components/form/search-field";
 import { IconButton } from "@/components/icon-button";
 import { StickyBleed, StickyScreen } from "@/components/sticky-screen";
 import { colors, fonts } from "@/constants/theme";
+import { VideoSection } from "@/features/content/components/video-section";
 import { useArticles } from "../hooks/use-articles";
 import { ArticleRow } from "./article-row";
 import { FeaturedArticleCard } from "./featured-article-card";
@@ -48,11 +49,21 @@ export function ArticlesScreen() {
         </View>
       ) : null}
 
+      {response && !query.trim() && category === "all" ? (
+        <View style={styles.padded}>
+          <VideoSection placement="feed" title="Videos" />
+        </View>
+      ) : null}
+
       <View style={[styles.padded, styles.list]}>
         {response?.articles.map((a) => (
           <ArticleRow key={a.id} article={a} onPress={() => openArticle(a.id)} />
         ))}
-        {isEmpty ? <Text style={styles.empty}>No articles match your search.</Text> : null}
+        {isEmpty ? (
+          <Text style={styles.empty}>
+            {query.trim() || category !== "all" ? "No articles match your search." : "No articles yet. Check back soon."}
+          </Text>
+        ) : null}
       </View>
     </StickyScreen>
   );

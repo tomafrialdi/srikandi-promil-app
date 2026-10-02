@@ -9,7 +9,7 @@ import { ArticleMetaLine } from "./article-meta-line";
 export function FeaturedArticleCard({ article, onPress }: { article: ArticleSummary; onPress: () => void }) {
   return (
     <Pressable accessibilityRole="button" onPress={onPress} style={styles.card}>
-      <Image source={{ uri: article.imageUrl }} contentFit="cover" style={styles.image} />
+      <Image source={article.imageUrl ? { uri: article.imageUrl } : undefined} contentFit="cover" style={styles.image} />
       <View style={styles.content}>
         <Chip label={article.category.label} tone="primary" />
         <Text style={styles.title}>{article.title}</Text>

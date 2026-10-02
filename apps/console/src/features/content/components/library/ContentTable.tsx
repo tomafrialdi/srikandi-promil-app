@@ -34,6 +34,8 @@ interface ContentTableProps {
   onClearSelection: () => void
   onSendToReview: () => void
   onApprove?: () => void
+  onPublishNow: () => void
+  onRepublish: () => void
   onSchedule: () => void
   onArchive: () => void
   onRetry: () => void
@@ -134,11 +136,16 @@ export function ContentTable(props: ContentTableProps) {
     { key: 'menu', header: '', width: 24, render: () => <DotsThree size={18} weight="bold" color="var(--ink-muted)" /> },
   ]
 
+  // Scheduling and publishing only apply to approved items (in-app cards skip medical review).
+  const canSchedule = rows.some((r) => selected.has(r.id) && (r.status === 'approved' || r.status === 'scheduled' || (r.type === 'in_app_card' && r.status === 'draft')))
+  const canPublishNow = rows.some((r) => selected.has(r.id) && (r.status === 'approved' || (r.type === 'in_app_card' && (r.status === 'draft' || r.status === 'scheduled'))))
+
   const c = summary?.counts
   const tabs = [
     { key: 'all', label: 'All', count: c?.all },
     { key: 'draft', label: 'Drafts', count: c?.draft },
     { key: 'medical_review', label: 'Medical review', count: c?.medical_review },
+    { key: 'approved', label: 'Approved', count: c?.approved },
     { key: 'scheduled', label: 'Scheduled', count: c?.scheduled },
     { key: 'published', label: 'Published', count: c?.published },
     { key: 'archived', label: 'Archived', count: c?.archived },
@@ -154,8 +161,10 @@ export function ContentTable(props: ContentTableProps) {
           count={selected.size}
           busy={props.busy}
           onSendToReview={props.onSendToReview}
-          onApprove={props.onApprove}
-          onSchedule={props.onSchedule}
+          onApprove={props.onApprove && rows.some((r) => selected.has(r.id) && r.status === 'medical_review') ? props.onApprove : undefined}
+          onSchedule={canSchedule ? props.onSchedule : undefined}
+          onPublishNow={canPublishNow ? props.onPublishNow : undefined}
+          onRepublish={rows.some((r) => selected.has(r.id) && r.status === 'archived') ? props.onRepublish : undefined}
           onArchive={props.onArchive}
           onClear={props.onClearSelection}
         />

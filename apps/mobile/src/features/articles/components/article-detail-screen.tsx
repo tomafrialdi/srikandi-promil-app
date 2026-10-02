@@ -52,7 +52,7 @@ export function ArticleDetailScreen({ id }: { id: string }) {
       }
     >
         <View style={styles.heroWrap}>
-          <Image source={{ uri: article.imageUrl }} contentFit="cover" style={styles.hero} />
+          {article.imageUrl ? <Image source={{ uri: article.imageUrl }} contentFit="cover" style={styles.hero} /> : null}
         </View>
 
         <View style={[styles.padded, styles.body]}>

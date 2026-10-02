@@ -14,7 +14,7 @@ import type { BulkAction, ContentFilters } from '../types'
 
 const KEYS = { tab: 'tab', search: 'q', type: 'type', category: 'category', reviewer: 'reviewer', lang: 'lang' }
 
-const DONE: Record<BulkAction, string> = { send_to_review: 'sent to review', schedule: 'scheduled', archive: 'archived' }
+const DONE: Record<BulkAction, string> = { send_to_review: 'sent to review', schedule: 'scheduled', publish_now: 'published', republish: 're-published', archive: 'archived' }
 
 export function ContentLibraryPage() {
   const toast = useToast()
@@ -28,6 +28,8 @@ export function ContentLibraryPage() {
   const { canReview } = useCanReview()
   const schedule = useDisclosure()
   const approve = useDisclosure()
+  const publishNow = useDisclosure()
+  const republish = useDisclosure()
   const archive = useDisclosure()
 
   const clearSelection = useCallback(() => setSelected(new Set()), [])
@@ -69,12 +71,15 @@ export function ContentLibraryPage() {
     toast({
       tone: changed === 0 ? 'info' : 'success',
       title: changed === 0 ? 'Nothing changed' : `${changed} item${changed === 1 ? '' : 's'} ${DONE[action]}`,
-      description: skipped > 0 ? `${skipped} skipped: not in a state that allows this${action === 'send_to_review' ? ', or no reviewer assigned' : ''}.` : undefined,
+      description:
+        skipped > 0
+          ? `${skipped} skipped: ${action === 'schedule' || action === 'publish_now' ? 'only approved items can be scheduled or published' : action === 'republish' ? 'only archived items can be re-published' : 'not in a state that allows this'}${action === 'send_to_review' ? ', or no reviewer assigned' : ''}.`
+          : undefined,
     })
     refresh()
   }
 
-  /** Bulk approval only covers items already in medical review; drafts are published one by one, with a reason. */
+  /** Bulk approval only covers items already in medical review; drafts are approved one by one, with a reason. */
   const approveSelected = async () => {
     const ids = [...selected]
     const changed = await reviewContent(ids, 'approve')
@@ -82,7 +87,7 @@ export function ContentLibraryPage() {
     toast({
       tone: changed === 0 ? 'info' : 'success',
       title: changed === 0 ? 'Nothing approved' : `${changed} item${changed === 1 ? '' : 's'} approved`,
-      description: skipped > 0 ? `${skipped} skipped: only items in medical review are approved in bulk. Open a draft to publish it with a reason.` : undefined,
+      description: skipped > 0 ? `${skipped} skipped: only items in medical review are approved in bulk. Open a draft to publish it with a reason.` : 'Approved items can now be scheduled or published.',
     })
     refresh()
   }
@@ -117,6 +122,8 @@ export function ContentLibraryPage() {
         onClearSelection={clearSelection}
         onSendToReview={sendToReview}
         onApprove={canReview ? approve.onOpen : undefined}
+        onPublishNow={publishNow.onOpen}
+        onRepublish={republish.onOpen}
         onSchedule={schedule.onOpen}
         onArchive={archive.onOpen}
         onRetry={list.reload}
@@ -131,9 +138,25 @@ export function ContentLibraryPage() {
         open={approve.open}
         onClose={approve.onClose}
         title={`Approve ${selected.size} item${selected.size === 1 ? '' : 's'}?`}
-        description="Items in medical review go live now, or at their scheduled time. Others in the selection are skipped."
+        description="Items in medical review are marked Approved (or Scheduled, when a publish time was already set). Schedule or publish them next. Others in the selection are skipped."
         confirmLabel="Approve"
         onConfirm={approveSelected}
+      />
+      <ConfirmDialog
+        open={publishNow.open}
+        onClose={publishNow.onClose}
+        title={`Publish ${selected.size} item${selected.size === 1 ? '' : 's'} now?`}
+        description="Approved items go live in the app right away. Others in the selection are skipped."
+        confirmLabel="Publish now"
+        onConfirm={() => run('publish_now')}
+      />
+      <ConfirmDialog
+        open={republish.open}
+        onClose={republish.onClose}
+        title={`Re-publish ${selected.size} item${selected.size === 1 ? '' : 's'}?`}
+        description="Archived content that was approved before goes live again. Anything that was never approved returns to Draft for review."
+        confirmLabel="Re-publish"
+        onConfirm={() => run('republish')}
       />
       <ConfirmDialog
         open={archive.open}

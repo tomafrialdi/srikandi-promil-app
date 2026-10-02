@@ -21,7 +21,7 @@ export function ArticleRow({ article, onPress, compact }: ArticleRowProps) {
   return (
     <Pressable accessibilityRole="button" onPress={onPress} style={styles.row}>
       <Image
-        source={{ uri: article.imageUrl }}
+        source={article.imageUrl ? { uri: article.imageUrl } : undefined}
         contentFit="cover"
         style={compact ? styles.thumbCompact : styles.thumb}
       />

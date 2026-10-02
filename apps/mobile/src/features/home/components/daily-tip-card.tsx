@@ -1,12 +1,12 @@
 import { Lightbulb } from "phosphor-react-native";
-import { StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { colors, fonts, radius } from "@/constants/theme";
 import type { HomeDashboard } from "../types";
 
-export function DailyTipCard({ tip }: { tip: HomeDashboard["tip"] }) {
+export function DailyTipCard({ tip, onPress }: { tip: HomeDashboard["tip"]; onPress?: () => void }) {
   return (
-    <View style={styles.card}>
+    <Pressable accessibilityRole={onPress ? "button" : undefined} disabled={!onPress} onPress={onPress} style={styles.card}>
       <View style={styles.iconWrap}>
         <Lightbulb size={18} color={colors.info} />
       </View>
@@ -14,7 +14,7 @@ export function DailyTipCard({ tip }: { tip: HomeDashboard["tip"] }) {
         <Text style={styles.title}>{tip.title}</Text>
         <Text style={styles.body}>{tip.body}</Text>
       </View>
-    </View>
+    </Pressable>
   );
 }
 

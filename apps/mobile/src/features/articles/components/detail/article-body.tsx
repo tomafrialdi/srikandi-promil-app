@@ -1,7 +1,9 @@
-import { Check, Quotes } from "phosphor-react-native";
-import { StyleSheet, Text, View } from "react-native";
+import { ArrowRight, Check, Quotes } from "phosphor-react-native";
+import { Image } from "expo-image";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { colors, fonts, radius } from "@/constants/theme";
+import { useOpenLink } from "@/features/content/hooks/use-open-link";
 import type { ArticleBlock } from "../../types";
 
 /** Renders the ordered content blocks of an article. Add a new block type in `Block` below. */
@@ -16,6 +18,8 @@ export function ArticleBody({ blocks }: { blocks: ArticleBlock[] }) {
 }
 
 function Block({ block }: { block: ArticleBlock }) {
+  const openLink = useOpenLink();
+
   switch (block.type) {
     case "paragraph":
       return <Text style={styles.paragraph}>{block.text}</Text>;
@@ -37,6 +41,17 @@ function Block({ block }: { block: ArticleBlock }) {
         </View>
       );
 
+    case "image":
+      return <Image source={{ uri: block.url }} accessibilityLabel={block.alt} contentFit="cover" style={styles.image} />;
+
+    case "cta":
+      return (
+        <Pressable accessibilityRole="button" onPress={() => openLink(block.link)} style={styles.cta}>
+          <Text style={styles.ctaText}>{block.label}</Text>
+          <ArrowRight size={14} color={colors.white} />
+        </Pressable>
+      );
+
     case "quote":
       return (
         <View style={styles.quote}>
@@ -49,6 +64,18 @@ function Block({ block }: { block: ArticleBlock }) {
 
 const styles = StyleSheet.create({
   body: { gap: 18 },
+  image: { width: "100%", aspectRatio: 16 / 9, borderRadius: radius.md, backgroundColor: colors.surfaceAlt },
+  cta: {
+    alignSelf: "flex-start",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: radius.pill,
+    backgroundColor: colors.primary,
+  },
+  ctaText: { fontFamily: fonts.bold, fontSize: 13, color: colors.white },
   paragraph: { fontFamily: fonts.medium, fontSize: 14, lineHeight: 21, color: colors.ink },
   heading: { fontFamily: fonts.bold, fontSize: 17, color: colors.ink },
   bullets: { gap: 10 },

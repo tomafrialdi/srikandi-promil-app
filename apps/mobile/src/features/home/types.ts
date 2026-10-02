@@ -86,7 +86,8 @@ export interface HomeDashboard {
     moods: Mood[];
   };
   recommendations: { title: string; subtitle: string; items: Recommendation[] };
-  tip: { title: string; body: string };
+  /** `deepLink` makes the tip tappable (set in the console). */
+  tip: { title: string; body: string; deepLink?: string | null };
   library: { title: string; subtitle: string; actionLabel: string; articles: Article[] };
   notes: { title: string; actionLabel: string; items: Note[] };
   community: CommunityPreview;

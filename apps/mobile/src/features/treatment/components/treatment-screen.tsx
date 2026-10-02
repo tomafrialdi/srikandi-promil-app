@@ -12,6 +12,7 @@ import { StickyScreen } from "@/components/sticky-screen";
 import { SectionHeader } from "@/components/section-header";
 import { colors, fonts, radius } from "@/constants/theme";
 import { MONTH_NAMES } from "@/utils/calendar";
+import { VideoSection } from "@/features/content/components/video-section";
 import { treatmentApi } from "../api/treatment-api";
 import { useTreatment } from "../hooks/use-treatment";
 import type { Appointment, LabResult, ScheduleItem } from "../types";
@@ -112,6 +113,8 @@ export function TreatmentScreen() {
             ) : (
               <Text style={styles.hint}>No lab results yet.</Text>
             )}
+
+            <VideoSection placement="treatment" title="Learn more" />
           </>
         ) : null}
       </StickyScreen>

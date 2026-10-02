@@ -20,6 +20,7 @@ export const STATUS_BADGE: Record<ContentStatus, { label: string; tone: BadgeTon
   draft: { label: 'Draft', tone: 'neutral', dot: 'var(--ink-faint)' },
   medical_review: { label: 'Medical review', tone: 'warning', dot: 'var(--warning)' },
   changes_requested: { label: 'Changes requested', tone: 'error', dot: 'var(--error)' },
+  approved: { label: 'Approved', tone: 'primary', dot: 'var(--primary)' },
   scheduled: { label: 'Scheduled', tone: 'info', dot: 'var(--secondary)' },
   published: { label: 'Published', tone: 'success', dot: 'var(--success)' },
   archived: { label: 'Archived', tone: 'neutral', dot: 'var(--ink-faint)' },

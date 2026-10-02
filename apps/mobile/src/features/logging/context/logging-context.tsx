@@ -137,6 +137,11 @@ export function LoggingProvider({ children }: { children: ReactNode }) {
   return <LoggingContext.Provider value={value}>{children}</LoggingContext.Provider>;
 }
 
+/** Same as `useLogging`, but null outside `<LoggingProvider>` (screens that live outside the signed-in tabs). */
+export function useOptionalLogging(): LoggingContextValue | null {
+  return useContext(LoggingContext);
+}
+
 export function useLogging(): LoggingContextValue {
   const ctx = useContext(LoggingContext);
   if (!ctx) throw new Error("useLogging must be used inside <LoggingProvider>");

@@ -20,7 +20,11 @@ export type ArticleBlock =
   | { type: "paragraph"; text: string }
   | { type: "heading"; text: string }
   | { type: "bullets"; items: string[] }
-  | { type: "quote"; text: string };
+  | { type: "quote"; text: string }
+  /** A button that opens an app link, e.g. `srikandi://log/lh`. */
+  | { type: "cta"; label: string; link: string }
+  /** A picture inside the article body (`![alt](url)` in the console editor). */
+  | { type: "image"; url: string; alt: string };
 
 export interface ArticleDetail extends Omit<ArticleSummary, "excerpt"> {
   /** ISO date, e.g. "2026-05-18". */

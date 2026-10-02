@@ -14,9 +14,14 @@ export function useArticles() {
   useEffect(() => {
     let cancelled = false;
     const timer = setTimeout(() => {
-      articlesApi.list({ query, category }).then((r) => {
-        if (!cancelled) setResponse(r);
-      });
+      articlesApi
+        .list({ query, category })
+        .then((r) => {
+          if (!cancelled) setResponse(r);
+        })
+        .catch(() => {
+          // Keep the previous list on screen; the next search retries.
+        });
     }, SEARCH_DEBOUNCE_MS);
     return () => {
       cancelled = true;

@@ -1,6 +1,8 @@
 import { fetchCycleSummary } from "@/features/cycle/api/cycle-api";
 import { cycleCaption, phaseLabel } from "@/features/cycle/utils/describe";
+import { articlesApi } from "@/features/articles/api/articles-api";
 import { checkInApi } from "@/features/check-in/api/check-in-api";
+import { fetchDailyTip } from "@/features/content/api/content-api";
 import { toIsoDate } from "@/features/calendar/utils/dates";
 import { fetchOwnProfile } from "@/features/profile/api/profile-api";
 import { ikUrl } from "@/lib/imagekit";
@@ -49,11 +51,13 @@ export async function fetchHomeDashboard(): Promise<HomeDashboard> {
   const base = localDashboard as unknown as HomeDashboard;
   const today = new Date();
 
-  const [profile, cycle, checkIn, feed] = await Promise.all([
+  const [profile, cycle, checkIn, feed, tip, articles] = await Promise.all([
     settle(fetchOwnProfile()),
     settle(fetchCycleSummary()),
     settle(checkInApi.getToday()),
     settle(fetchFeed(toIsoDate(today))),
+    settle(fetchDailyTip()),
+    settle(articlesApi.list()),
   ]);
 
   const cycleCard: HomeDashboard["cycle"] =
@@ -72,6 +76,17 @@ export async function fetchHomeDashboard(): Promise<HomeDashboard> {
           caption: "Log your period to start predictions",
           ctaLabel: base.cycle.ctaLabel,
         };
+
+  // The newest few articles from the Content library (the section hides when there are none).
+  const libraryArticles = articles
+    ? [...(articles.featured ? [articles.featured] : []), ...articles.articles].slice(0, 5).map((a) => ({
+        id: a.id,
+        category: a.category.label,
+        title: a.title,
+        readMinutes: a.readMinutes,
+        imageUrl: a.imageUrl,
+      }))
+    : [];
 
   const notes: Note[] = (feed?.recentNotes ?? []).map((n) => ({
     id: n.id,
@@ -97,7 +112,11 @@ export async function fetchHomeDashboard(): Promise<HomeDashboard> {
       ...base.recommendations,
       items: feed ? chooseRecommendations(base.recommendations.items, feed.signals) : base.recommendations.items,
     },
-    tip: tipFor(today),
+    // Today's tip from the Content library; the built-in tips cover days with none published.
+    tip: tip
+      ? { title: tip.headline ?? "Today's tip", body: tip.text, deepLink: tip.tapAction === "Nothing" ? null : tip.deepLink }
+      : tipFor(today),
+    library: { ...base.library, articles: libraryArticles },
     notes: { ...base.notes, items: notes },
   };
 }
