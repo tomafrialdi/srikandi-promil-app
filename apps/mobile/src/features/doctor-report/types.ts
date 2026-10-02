@@ -23,15 +23,29 @@ export interface ReportPreview {
     biphasic: boolean;
     /** Cycle day of ovulation (highlighted bar). */
     ovulationDay: number;
-    /** Basal temperature per cycle day, in °C, starting at day 1. */
-    temps: number[];
+    /** Basal temperature per cycle day, in °C, starting at day 1; null for days without a reading. */
+    temps: (number | null)[];
   };
   /** Points to discuss with the doctor; null hides the box. */
   flag: string | null;
 }
 
+/** Everything the report can contain; the PDF only includes the sections switched on. */
+export interface ReportDetails {
+  cycles: { cycle_no: number; start_date: string; length_days: number | null; ovulation_day: number | null; luteal_days: number | null }[];
+  tests: {
+    lh: { date: string; result: string }[];
+    pregnancy: { date: string; result: string; type: string | null }[];
+  };
+  fluid: { date: string; type: string }[];
+  symptoms: { label: string; days: number }[];
+  intimacy: string[];
+  notes: { date: string; text: string }[];
+}
+
 export interface ReportData {
   preview: ReportPreview;
+  details: ReportDetails;
   /** Which sections start switched on. */
   include: Record<ReportSection, boolean>;
 }

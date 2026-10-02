@@ -9,6 +9,7 @@ import {
   Thermometer,
   type Icon,
 } from "phosphor-react-native";
+import * as Sharing from "expo-sharing";
 import { useState } from "react";
 import { Alert, Share, StyleSheet, Text, View } from "react-native";
 
@@ -62,9 +63,16 @@ export function DoctorReportScreen() {
     if (!include) return;
     setBusy("export");
     try {
-      await reportApi.exportPdf({ range, include });
-      // TODO: open / share the PDF at the returned `url`.
-      Alert.alert("Report ready", "Your PDF is ready to share with your doctor.");
+      const { uri } = await reportApi.exportPdf({ range, include });
+      if (!(await Sharing.isAvailableAsync())) {
+        Alert.alert("Report ready", "Sharing isn't available on this device.");
+        return;
+      }
+      await Sharing.shareAsync(uri, {
+        mimeType: "application/pdf",
+        UTI: "com.adobe.pdf",
+        dialogTitle: "Share your doctor report",
+      });
     } catch (e) {
       notify(e, "Couldn't create the PDF");
     } finally {
@@ -119,7 +127,11 @@ export function DoctorReportScreen() {
         ) : null}
 
         <View style={styles.actions}>
-          <ButtonPrimary label="Export PDF" onPress={handleExport} disabled={!include || busy !== null} />
+          <ButtonPrimary
+            label={busy === "export" ? "Preparing PDF…" : "Export PDF"}
+            onPress={handleExport}
+            disabled={!include || busy !== null}
+          />
           <ButtonOutline label="Send to my clinic" onPress={handleSend} disabled={!include || busy !== null} />
         </View>
     </StickyScreen>

@@ -20,6 +20,8 @@ export function BbtChart({ bbt }: { bbt: NonNullable<ReportPreview["bbt"]> }) {
       <View style={styles.bars}>
         {bbt.temps.map((temp, i) => {
           const day = i + 1;
+          // A day without a reading leaves an empty slot, so cycle days stay aligned.
+          if (temp === null) return <View key={day} style={styles.bar} />;
           const ratio = Math.min(1, Math.max(0.1, (temp - MIN_TEMP) / (MAX_TEMP - MIN_TEMP)));
           const color =
             day === bbt.ovulationDay ? colors.warning : day > bbt.ovulationDay ? colors.primary : colors.primaryTintStrong;

@@ -12,12 +12,14 @@ export class NotAvailableError extends Error {
 /**
  * What the Doctor report screen needs from the backend.
  *
- *   RPC `app_report_preview(range)` -> figures from the user's recorded cycles and profile.
- *   exportPdf / sendToClinic       -> not built yet (need server-side PDF + clinic delivery).
+ *   RPC `app_report(range)`  -> the report content from the user's cycles and logs.
+ *   exportPdf                -> builds the PDF on the phone (expo-print) and returns the local file.
+ *   sendToClinic             -> not built yet (needs a clinic to send to).
  */
 export interface ReportApi {
   get(range: ReportRange): Promise<ReportData>;
-  exportPdf(request: ReportRequest): Promise<{ url: string }>;
+  /** Local file URI of the generated PDF, ready to share. */
+  exportPdf(request: ReportRequest): Promise<{ uri: string }>;
   sendToClinic(request: ReportRequest): Promise<void>;
 }
 
