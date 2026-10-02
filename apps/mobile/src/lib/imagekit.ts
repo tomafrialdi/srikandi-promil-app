@@ -1,11 +1,16 @@
 import { File } from "expo-file-system";
 import { fetch } from "expo/fetch";
 
+import { buildMediaUrl } from "./media-url";
 import { supabase } from "./supabase";
 
 const UPLOAD_URL = "https://upload.imagekit.io/api/v1/files/upload";
 const endpoint = (process.env.EXPO_PUBLIC_IMAGEKIT_URL_ENDPOINT ?? "").replace(/\/$/, "");
 const publicKey = process.env.EXPO_PUBLIC_IMAGEKIT_PUBLIC_KEY ?? "";
+
+const supabaseUrl = (process.env.EXPO_PUBLIC_SUPABASE_URL ?? "").replace(/\/$/, "");
+/** Only the cloud project has the deployed proxy; a local Supabase (http) would need `supabase functions serve`. */
+const proxy = supabaseUrl.startsWith("https://") ? `${supabaseUrl}/functions/v1/img` : null;
 
 interface UploadAuth {
   token: string;
@@ -44,14 +49,10 @@ export async function uploadImage(file: { uri: string; mimeType: string }, folde
 }
 
 /**
- * Adds ImageKit transformations to a stored URL (resized, compressed). Other URLs pass through.
- * No `f-auto`: it can answer with AVIF, which the image view may not decode on every device.
+ * The URL to load a stored ImageKit image from (resized and compressed). On the cloud project it goes
+ * through the `img` Edge Function because some ISPs block ik.imagekit.io; against a local Supabase it
+ * talks to ImageKit directly. No `f-auto`: it can answer with AVIF, which not every device decodes.
  */
 export function ikUrl(url: string | null | undefined, opts: { w?: number; h?: number } = {}): string | null {
-  if (!url) return null;
-  if (!endpoint || !url.startsWith(endpoint)) return url;
-  const parts = ["q-80"];
-  if (opts.w) parts.push(`w-${opts.w}`);
-  if (opts.h) parts.push(`h-${opts.h}`);
-  return `${url}${url.includes("?") ? "&" : "?"}tr=${parts.join(",")}`;
+  return buildMediaUrl(url, opts, { endpoint, proxy });
 }

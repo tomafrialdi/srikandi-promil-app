@@ -426,3 +426,8 @@ verify_jwt = true
 [functions.imagekit-auth-app]
 enabled = true
 verify_jwt = true
+
+# Public image proxy (ImageKit is blocked by some Indonesian ISPs); it only fetches our own endpoint.
+[functions.img]
+enabled = true
+verify_jwt = false
