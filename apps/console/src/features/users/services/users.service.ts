@@ -10,6 +10,7 @@ import type {
   UserDetail,
   UsersFilters,
   UsersList,
+  UserLogs,
   UsersSummary,
 } from '../types'
 
@@ -38,6 +39,9 @@ export const fetchUserDetail = (userId: string) => rpc<UserDetail>('admin_user_d
 
 export const fetchEngineLog = (userId: string, reason: string) =>
   rpc<EngineLog>('admin_user_engine_log', { p_user: userId, p_reason: reason })
+
+export const fetchUserLogs = (userId: string, reason: string) =>
+  rpc<UserLogs>('admin_user_logs', { p_user: userId, p_reason: reason })
 
 export const fetchMedication = (id: string, reason: string) =>
   rpc<MedicationDetail>('admin_user_medication', { p_medication: id, p_reason: reason })

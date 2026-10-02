@@ -174,6 +174,31 @@ export interface EngineLog {
   reason: string
 }
 
+export interface UserLogRow {
+  date: string
+  temperature: number | null
+  time_of_day: string | null
+  mood: string | null
+  mood_note: string | null
+  symptoms: string[] | null
+  fluid: string | null
+  lh: string | null
+  intimacy: 'yes' | 'no' | null
+  pregnancy_test: string | null
+  pregnancy_test_type: string | null
+  flow: string | null
+  note: string | null
+}
+
+/** A user's daily logs from the mobile app (health data: opened with a reason, audited). */
+export interface UserLogs {
+  name: string
+  days: number
+  rows: UserLogRow[]
+  logged_by: string | null
+  reason: string
+}
+
 export interface MedicationDetail {
   user_name: string
   id: string

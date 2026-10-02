@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom'
 import { Button, PageState, ReasonDialog, useDisclosure, useToast } from '../../../shared/ui'
 import { ActivityCard } from '../components/detail/ActivityCard'
 import { ClinicsCard } from '../components/detail/ClinicsCard'
+import { DailyLogsCard } from '../components/detail/DailyLogsCard'
 import { DetailHeader } from '../components/detail/DetailHeader'
 import { DevicesCard } from '../components/detail/DevicesCard'
 import { DoctorsCard } from '../components/detail/DoctorsCard'
@@ -17,10 +18,11 @@ import { useUnmaskGate } from '../hooks/useUnmaskGate'
 import { useUserDetail } from '../hooks/useUsersData'
 import { ChangePlanModal } from '../modals/change-plan/ChangePlanModal'
 import { ClinicJourneyModal } from '../modals/ClinicJourneyModal'
+import { DailyLogsModal } from '../modals/DailyLogsModal'
 import { DoctorCareModal } from '../modals/DoctorCareModal'
 import { EngineLogModal } from '../modals/EngineLogModal'
 import { MedicationModal } from '../modals/MedicationModal'
-import { fetchClinicJourney, fetchDoctorCare, fetchEngineLog, fetchMedication, setUsersStatus } from '../services/users.service'
+import { fetchClinicJourney, fetchDoctorCare, fetchEngineLog, fetchMedication, fetchUserLogs, setUsersStatus } from '../services/users.service'
 
 export function UserDetailPage() {
   const { userId = '' } = useParams()
@@ -30,6 +32,7 @@ export function UserDetailPage() {
   const status = useDisclosure()
 
   const engine = useUnmaskGate((_arg: string, reason: string) => fetchEngineLog(userId, reason))
+  const logs = useUnmaskGate((_arg: string, reason: string) => fetchUserLogs(userId, reason))
   const medication = useUnmaskGate((id: string, reason: string) => fetchMedication(id, reason))
   const doctor = useModalData(fetchDoctorCare)
   const clinics = useModalData(fetchClinicJourney)
@@ -56,6 +59,7 @@ export function UserDetailPage() {
         <div className="flex w-full min-w-0 flex-1 flex-col gap-4">
           <TrackingSummaryCard data={data.tracking} />
           {data.engine && <EngineStatusCard engine={data.engine} cycles={data.cycles} onViewLog={() => engine.ask(userId)} />}
+          <DailyLogsCard onOpen={() => logs.ask(userId)} />
           <MedicationsCard data={data.medications} onOpen={medication.ask} />
           <DoctorsCard data={data.doctors} onOpen={doctor.openWith} />
           <ActivityCard data={data.activity} />
@@ -76,6 +80,13 @@ export function UserDetailPage() {
         confirmLabel="Unmask & open"
       />
       <ReasonDialog
+        {...logs.dialog}
+        icon={<ProhibitInset size={20} />}
+        title="Unmask daily logs"
+        description="Daily logs are health data. Opening them is logged with your name and this reason, and reviewed weekly."
+        confirmLabel="Unmask & open"
+      />
+      <ReasonDialog
         {...medication.dialog}
         icon={<ProhibitInset size={20} />}
         title="Unmask medication details"
@@ -83,6 +94,7 @@ export function UserDetailPage() {
         confirmLabel="Unmask & open"
       />
       <EngineLogModal data={engine.data} onClose={engine.closeModal} />
+      <DailyLogsModal data={logs.data} onClose={logs.closeModal} />
       <MedicationModal data={medication.data} onClose={medication.closeModal} />
       <DoctorCareModal data={doctor.data} loading={doctor.loading} error={doctor.error} onClose={doctor.close} />
       <ClinicJourneyModal data={clinics.data} loading={clinics.loading} error={clinics.error} onClose={clinics.close} />
