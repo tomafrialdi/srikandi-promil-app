@@ -1,5 +1,5 @@
 /** Filter tabs on the screen. "all" is client-side only. */
-export type NotificationCategory = "cycle" | "reminders" | "partner" | "community";
+export type NotificationCategory = "cycle" | "reminders" | "partner" | "community" | "updates";
 export type NotificationFilter = "all" | NotificationCategory;
 
 /** Notification as the backend sends it (snake_case, ISO dates). Keep in sync with the API. */

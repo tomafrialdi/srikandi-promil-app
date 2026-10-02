@@ -436,3 +436,8 @@ verify_jwt = false
 [functions.vid]
 enabled = true
 verify_jwt = false
+
+# Notification dispatcher: called by Supabase Cron with its own shared secret (x-dispatch-secret).
+[functions.notify-dispatch]
+enabled = true
+verify_jwt = false

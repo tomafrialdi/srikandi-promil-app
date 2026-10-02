@@ -1,25 +1,17 @@
 import type { AppNotification, NotificationSettings } from "../types";
-import { USE_DUMMY_NOTIFICATIONS } from "./config";
-import { dummyNotificationsApi } from "./dummy-notifications-api";
-import { httpNotificationsApi } from "./http-notifications-api";
+import { supabaseNotificationsApi } from "./supabase-notifications-api";
 
 /**
- * What the app needs from the backend for notifications.
- *
- * Endpoints (see http-notifications-api.ts):
- *   GET  /notifications          -> { data: NotificationDto[] }   newest first
- *   POST /notifications/:id/read -> 204
- *   POST /notifications/read-all -> 204
- *   GET  /notification-settings  -> NotificationSettingsDto
+ * What the app needs from the backend for notifications (Supabase RPCs `app_notifications_*`).
+ * The inbox holds what campaigns from the console delivered to this user; text is already in the
+ * user's discreet wording when discreet mode is on.
  */
 export interface NotificationsApi {
-  list(): Promise<AppNotification[]>;
+  /** Newest first, only what has already gone out. */
+  get(): Promise<{ items: AppNotification[]; settings: NotificationSettings }>;
   markRead(id: string): Promise<void>;
   markAllRead(): Promise<void>;
-  getSettings(): Promise<NotificationSettings>;
+  unreadCount(): Promise<number>;
 }
 
-/** The single switch between dummy data and the real backend. */
-export const notificationsApi: NotificationsApi = USE_DUMMY_NOTIFICATIONS
-  ? dummyNotificationsApi
-  : httpNotificationsApi;
+export const notificationsApi: NotificationsApi = supabaseNotificationsApi;

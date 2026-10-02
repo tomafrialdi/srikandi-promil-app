@@ -14,5 +14,7 @@ export async function reportDevice(): Promise<void> {
     p_platform: platform,
     p_app_version: Constants.expoConfig?.version ?? null,
     p_device_model: Device.modelName ?? null,
+    // Campaigns go out at the user's local time.
+    p_timezone: Intl.DateTimeFormat().resolvedOptions().timeZone ?? null,
   });
 }

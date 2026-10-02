@@ -3,6 +3,7 @@ import { useEffect } from "react";
 
 import { useSession } from "@/features/auth/hooks/use-session";
 
+import { NotificationEffects } from "@/features/notifications/push/notification-effects";
 import { reportDevice } from "@/lib/report-device";
 import { LogSheetHost } from "@/features/logging/components/log-sheet-host";
 import { LoggingProvider } from "@/features/logging/context/logging-context";
@@ -27,6 +28,7 @@ export default function AppLayout() {
         <Stack.Screen name="new-note" options={{ presentation: "modal" }} />
       </Stack>
       <LogSheetHost />
+      <NotificationEffects />
     </LoggingProvider>
   );
 }

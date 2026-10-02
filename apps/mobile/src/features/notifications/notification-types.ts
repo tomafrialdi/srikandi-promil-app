@@ -26,6 +26,11 @@ export const NOTIFICATION_TYPES: Record<string, NotificationTypeStyle> = {
   appointment_reminder: { icon: "calendar-check", tone: "info" },
   cycle_report_ready: { icon: "file-text", tone: "neutral" },
   new_article: { icon: "book-open", tone: "neutral" },
+  two_week_wait: { icon: "calendar-check", tone: "info" },
+  cycle_started: { icon: "calendar-check", tone: "primary" },
+  partner_invite: { icon: "users", tone: "info" },
+  trial_ending: { icon: "bell", tone: "warning" },
+  promo: { icon: "sparkle", tone: "warning" },
 };
 
 /** Used for any type not listed above, so a new backend type never breaks the screen. */

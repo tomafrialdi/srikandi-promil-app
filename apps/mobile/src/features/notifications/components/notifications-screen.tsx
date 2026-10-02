@@ -1,3 +1,4 @@
+import { router } from "expo-router";
 import { SlidersHorizontal } from "phosphor-react-native";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
@@ -5,9 +6,11 @@ import { BackButton } from "@/components/back-button";
 import { FilterChips } from "@/components/filter-chips";
 import { StickyBleed, StickyScreen } from "@/components/sticky-screen";
 import { colors, fonts, radius } from "@/constants/theme";
+import { useOpenLink } from "@/features/content/hooks/use-open-link";
 import { useNotifications } from "../hooks/use-notifications";
 import type { NotificationFilter } from "../types";
 import { DiscreetBanner } from "./discreet-banner";
+import { EnablePushBanner } from "./enable-push-banner";
 import { NotificationGroup } from "./notification-group";
 
 const FILTERS: { id: NotificationFilter; label: string }[] = [
@@ -16,11 +19,13 @@ const FILTERS: { id: NotificationFilter; label: string }[] = [
   { id: "reminders", label: "Reminders" },
   { id: "partner", label: "Partner" },
   { id: "community", label: "Community" },
+  { id: "updates", label: "Updates" },
 ];
 
 export function NotificationsScreen() {
   const { loading, groups, settings, filter, setFilter, hasUnread, markRead, markAllRead } =
     useNotifications();
+  const openLink = useOpenLink();
 
   return (
     <StickyScreen
@@ -31,8 +36,13 @@ export function NotificationsScreen() {
           <View style={styles.headRow}>
             <BackButton />
             <Text style={styles.title}>Notifications</Text>
-            {/* TODO: open notification settings once that screen exists. */}
-            <Pressable accessibilityRole="button" accessibilityLabel="Settings" style={styles.settings}>
+            {/* The reminder toggles live in Account › Notifications. */}
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="Notification settings"
+              onPress={() => router.navigate("/account")}
+              style={styles.settings}
+            >
               <SlidersHorizontal size={18} color={colors.ink} />
             </Pressable>
           </View>
@@ -41,6 +51,7 @@ export function NotificationsScreen() {
             <FilterChips options={FILTERS} value={filter} onChange={setFilter} />
           </StickyBleed>
 
+          <EnablePushBanner />
           {settings?.discreetMode ? <DiscreetBanner /> : null}
         </>
       }
@@ -60,9 +71,8 @@ export function NotificationsScreen() {
             onMarkAllRead={index === 0 && hasUnread ? markAllRead : undefined}
             onItemPress={(n) => {
               if (!n.read) markRead(n.id);
-              // TODO: open the related screen for this notification (`n.cta?.route`).
             }}
-            // TODO: navigate to `cta.route` once those screens exist.
+            onCtaPress={(cta) => openLink(cta.route)}
           />
         </View>
       ))}

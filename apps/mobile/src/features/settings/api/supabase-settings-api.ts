@@ -1,6 +1,16 @@
+import { syncReminders } from "@/features/notifications/push/reminders";
+import { syncPush } from "@/features/notifications/push/push-token";
 import { trackingModeLabel } from "@/features/tracking-mode/api/supabase-tracking-mode-api";
 import { supabase } from "@/lib/supabase";
-import type { CyclePreferences, Profile, SettingsSummary, SettingsValue, SettingsValueKey, UnitPreferences } from "../types";
+import type {
+  CyclePreferences,
+  NotificationToggleKey,
+  Profile,
+  SettingsSummary,
+  SettingsValue,
+  SettingsValueKey,
+  UnitPreferences,
+} from "../types";
 import { unitsLabel } from "../utils/units";
 import { dummySettingsApi } from "./dummy-settings-api";
 import type { SettingsApi } from "./settings-api";
@@ -36,6 +46,9 @@ const COLUMNS = [
   "unit_temperature",
   "avatar_url",
   "tracking_mode",
+  "notif_period_reminder",
+  "notif_ovulation_reminder",
+  "notif_daily_log_reminder",
 ].join(",");
 
 /** The phone's local date as "YYYY-MM-DD" (the server doesn't know the user's time zone). */
@@ -114,6 +127,11 @@ export const supabaseSettingsApi: SettingsApi = {
         regularity: row.cycle_regularity ?? FALLBACK.cycleRegularity,
       },
       units,
+      notifications: {
+        periodReminder: row.notif_period_reminder,
+        ovulationReminder: row.notif_ovulation_reminder,
+        dailyLogReminder: row.notif_daily_log_reminder,
+      },
     };
   },
 
@@ -125,6 +143,19 @@ export const supabaseSettingsApi: SettingsApi = {
       p_weight_kg: profile.weightKg,
     });
     check(error);
+  },
+
+  /** Saves the toggle, then makes the phone follow it: turning one on is the moment to ask for the permission. */
+  async setNotification(key: NotificationToggleKey, enabled: boolean) {
+    const { error } = await supabase.rpc("app_set_notification_pref", { p_key: key, p_enabled: enabled });
+    check(error);
+    // The setting is saved; a problem on the phone (permission, scheduling) must not undo the toggle.
+    try {
+      if (enabled) await syncPush({ ask: true });
+      await syncReminders();
+    } catch (e) {
+      if (__DEV__) console.warn("[notifications] couldn't update the phone:", e instanceof Error ? e.message : e);
+    }
   },
 
   async updateAvatar(url: string | null) {

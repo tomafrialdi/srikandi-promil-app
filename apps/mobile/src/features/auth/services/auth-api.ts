@@ -1,6 +1,8 @@
 import type { AuthError as SupabaseAuthError } from "@supabase/supabase-js";
 
 import type { SocialProvider } from "@/components/social-buttons";
+import { cancelReminders } from "@/features/notifications/push/reminders";
+import { unregisterPushToken } from "@/features/notifications/push/push-token";
 import { supabase } from "@/lib/supabase";
 import { AUTH_COPY } from "../content";
 
@@ -89,6 +91,8 @@ export async function resendVerificationCode(email: string): Promise<void> {
 }
 
 export async function signOut(): Promise<void> {
+  // While still signed in: this phone stops getting this account's pushes and reminders.
+  await Promise.allSettled([unregisterPushToken(), cancelReminders()]);
   const { error } = await supabase.auth.signOut();
   if (error) throw toAuthError(error);
 }

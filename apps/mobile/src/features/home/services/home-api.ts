@@ -1,6 +1,7 @@
 import { fetchCycleSummary } from "@/features/cycle/api/cycle-api";
 import { cycleCaption, phaseLabel } from "@/features/cycle/utils/describe";
 import { articlesApi } from "@/features/articles/api/articles-api";
+import { notificationsApi } from "@/features/notifications/api/notifications-api";
 import { checkInApi } from "@/features/check-in/api/check-in-api";
 import { fetchDailyTip } from "@/features/content/api/content-api";
 import { toIsoDate } from "@/features/calendar/utils/dates";
@@ -51,13 +52,14 @@ export async function fetchHomeDashboard(): Promise<HomeDashboard> {
   const base = localDashboard as unknown as HomeDashboard;
   const today = new Date();
 
-  const [profile, cycle, checkIn, feed, tip, articles] = await Promise.all([
+  const [profile, cycle, checkIn, feed, tip, articles, unread] = await Promise.all([
     settle(fetchOwnProfile()),
     settle(fetchCycleSummary()),
     settle(checkInApi.getToday()),
     settle(fetchFeed(toIsoDate(today))),
     settle(fetchDailyTip()),
     settle(articlesApi.list()),
+    settle(notificationsApi.unreadCount()),
   ]);
 
   const cycleCard: HomeDashboard["cycle"] =
@@ -99,8 +101,7 @@ export async function fetchHomeDashboard(): Promise<HomeDashboard> {
     ...base,
     // A failed profile request falls back to a nameless greeting.
     user: { name: profile?.fullName ?? "", avatarUrl: ikUrl(profile?.avatarUrl, { w: 128, h: 128 }) },
-    // No notification inbox exists yet, so there is nothing unread to point at.
-    hasUnreadNotifications: false,
+    hasUnreadNotifications: (unread ?? 0) > 0,
     cycle: cycleCard,
     checkIn: {
       ...base.checkIn,

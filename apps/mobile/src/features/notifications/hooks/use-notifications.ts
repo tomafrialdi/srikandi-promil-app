@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useFocusEffect } from "expo-router";
+import { useCallback, useMemo, useState } from "react";
 
 import { notificationsApi } from "../api/notifications-api";
 import type {
@@ -17,17 +18,26 @@ export function useNotifications() {
   const [settings, setSettings] = useState<NotificationSettings | null>(null);
   const [filter, setFilter] = useState<NotificationFilter>("all");
 
-  useEffect(() => {
-    let cancelled = false;
-    Promise.all([notificationsApi.list(), notificationsApi.getSettings()]).then(([list, s]) => {
-      if (cancelled) return;
-      setItems(list);
-      setSettings(s);
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+  // Reload every time the screen comes into view, so what arrived meanwhile shows up.
+  useFocusEffect(
+    useCallback(() => {
+      let cancelled = false;
+      notificationsApi
+        .get()
+        .then(({ items: list, settings: s }) => {
+          if (cancelled) return;
+          setItems(list);
+          setSettings(s);
+        })
+        .catch(() => {
+          // Keep what is on screen; the next visit retries.
+          if (!cancelled) setItems((cur) => cur ?? []);
+        });
+      return () => {
+        cancelled = true;
+      };
+    }, []),
+  );
 
   const groups = useMemo(() => {
     if (!items) return [];
