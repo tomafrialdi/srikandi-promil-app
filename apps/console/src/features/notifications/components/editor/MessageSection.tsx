@@ -63,7 +63,7 @@ export function MessageSection({ form, set, disabled }: MessageSectionProps) {
         <Field label="Deep link" htmlFor="msg-link" muted>
           <TextField compact filled hideLabel id="msg-link" label="Deep link" disabled={disabled} placeholder="srikandi://log/lh" value={form.deep_link} onChange={(e) => set('deep_link', e.target.value)} />
         </Field>
-        <Field label="Category" htmlFor="msg-category" muted>
+        <Field label="Category" htmlFor="msg-category" muted hint="Shows under this tab in the app: Cycle · …, Partner (own tabs) · Care (Reminders) · Content, Promo, Product (Updates)">
           <SelectField
             id="msg-category"
             triggerClassName={SELECT}

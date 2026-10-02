@@ -28,6 +28,8 @@ export const FAILURE_LABEL: Record<FailureReason, string> = {
   app_uninstalled: 'App uninstalled',
   fcm_throttled: 'FCM quota / throttled',
   invalid_deep_link: 'Invalid deep link',
+  missing_push_credentials: 'Push credentials not set up',
+  provider_error: 'Push provider error',
 }
 
 /** Quiet hours are 21:00–07:00: pushes are held until 07:00. */

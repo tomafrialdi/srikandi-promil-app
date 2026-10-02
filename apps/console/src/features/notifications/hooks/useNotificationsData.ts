@@ -1,10 +1,11 @@
 import { useCallback } from 'react'
 import { useAsyncData } from '../../../shared/hooks/useAsyncData'
 import { PAGE_SIZE } from '../config/labels'
-import { fetchCampaigns, fetchFailures, fetchHourlyOpens, fetchNotificationsSummary } from '../services/notifications.service'
+import { fetchCampaigns, fetchDispatcherStatus, fetchFailures, fetchHourlyOpens, fetchNotificationsSummary } from '../services/notifications.service'
 
 export const useNotificationsSummary = () => useAsyncData('notif-summary', fetchNotificationsSummary)
 export const useHourlyOpens = () => useAsyncData('notif-hourly', fetchHourlyOpens)
+export const useDispatcherStatus = () => useAsyncData('notif-dispatcher', fetchDispatcherStatus)
 export const useFailures = () => useAsyncData('notif-failures', fetchFailures)
 
 export function useCampaigns(tab: string, page: number) {

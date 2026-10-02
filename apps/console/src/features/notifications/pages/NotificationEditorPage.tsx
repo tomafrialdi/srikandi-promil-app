@@ -80,7 +80,7 @@ function EditorScreen({ id, record }: { id: string | null; record: CampaignRecor
     run(async () => {
       const itemId = await persist()
       const next = await campaignAction(itemId, status === 'failed' ? 'resend' : 'schedule')
-      toast({ title: next === 'active' ? 'Trigger activated' : 'Campaign queued', description: 'The sender service delivers it at the chosen time.' })
+      toast({ title: next === 'active' ? 'Trigger activated' : 'Campaign queued', description: next === 'active' ? "It is checked at each user's local send time." : 'Delivered at the next dispatcher run (about every 5 minutes).' })
       navigate('/notifications')
     }, 'Could not schedule')
 

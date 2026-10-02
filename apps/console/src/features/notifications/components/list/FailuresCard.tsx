@@ -11,6 +11,8 @@ const REASON_COLOR: Record<FailureReason, string> = {
   app_uninstalled: '#e07a9b',
   fcm_throttled: '#e0a030',
   invalid_deep_link: 'var(--ink-faint)',
+  missing_push_credentials: '#c13d68',
+  provider_error: '#a6a49b',
 }
 
 export function FailuresCard({ data }: { data?: FailureSummary }) {

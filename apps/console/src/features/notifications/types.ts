@@ -1,7 +1,13 @@
 export type NotificationChannel = 'push' | 'in_app' | 'email'
 export type NotificationKind = 'trigger' | 'scheduled' | 'one_off'
 export type NotificationStatus = 'draft' | 'active' | 'paused' | 'scheduled' | 'sending' | 'sent' | 'failed'
-export type FailureReason = 'expired_apns_token' | 'app_uninstalled' | 'fcm_throttled' | 'invalid_deep_link'
+export type FailureReason =
+  | 'expired_apns_token'
+  | 'app_uninstalled'
+  | 'fcm_throttled'
+  | 'invalid_deep_link'
+  | 'missing_push_credentials'
+  | 'provider_error'
 
 export interface NotificationsSummary {
   sent_30d: number
@@ -93,4 +99,15 @@ export interface CampaignRecord {
   ab_test: boolean
   updated_at: string
   updated_by: string | null
+}
+
+/** Health of the job that delivers campaigns (Supabase Cron -> Edge Function `notify-dispatch`). */
+export interface DispatcherStatus {
+  last_run_at: string | null
+  minutes_ago: number | null
+  /** Scheduled campaigns plus active triggers waiting to be delivered. */
+  queued: number
+  pending_push: number
+  /** Phones registered for push. */
+  devices: number
 }

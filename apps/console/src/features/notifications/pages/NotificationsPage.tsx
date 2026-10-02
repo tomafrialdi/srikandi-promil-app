@@ -4,7 +4,8 @@ import { FailuresCard } from '../components/list/FailuresCard'
 import { NotificationsHeader } from '../components/list/NotificationsHeader'
 import { NotificationStats } from '../components/list/NotificationStats'
 import { OpensByHourCard } from '../components/list/OpensByHourCard'
-import { useCampaigns, useFailures, useHourlyOpens, useNotificationsSummary } from '../hooks/useNotificationsData'
+import { DispatcherNotice } from '../components/list/DispatcherNotice'
+import { useCampaigns, useDispatcherStatus, useFailures, useHourlyOpens, useNotificationsSummary } from '../hooks/useNotificationsData'
 
 export function NotificationsPage() {
   const { values, page, setFilter, setPage } = useUrlFilters({ tab: 'tab' }, { tab: 'all' })
@@ -12,10 +13,12 @@ export function NotificationsPage() {
   const list = useCampaigns(values.tab, page)
   const hourly = useHourlyOpens()
   const failures = useFailures()
+  const dispatcher = useDispatcherStatus()
 
   return (
     <>
       <NotificationsHeader />
+      <DispatcherNotice status={dispatcher.data ?? undefined} />
       <NotificationStats data={summary.data} />
       <CampaignTable
         summary={summary.data}

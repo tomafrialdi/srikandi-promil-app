@@ -1,5 +1,6 @@
 import { supabase } from '../../../lib/supabase'
-import type { CampaignList, CampaignRecord, FailureSummary, HourlyOpens, NotificationStatus, NotificationsSummary } from '../types'
+import type {
+  DispatcherStatus, CampaignList, CampaignRecord, FailureSummary, HourlyOpens, NotificationStatus, NotificationsSummary } from '../types'
 
 async function rpc<T>(name: string, args?: Record<string, unknown>): Promise<T> {
   const { data, error } = await supabase.rpc(name, args)
@@ -13,6 +14,7 @@ export const fetchCampaigns = (tab: string, page: number, pageSize: number) =>
 export const fetchHourlyOpens = () => rpc<HourlyOpens>('admin_notifications_hourly')
 export const fetchFailures = () => rpc<FailureSummary>('admin_notifications_failures')
 
+export const fetchDispatcherStatus = () => rpc<DispatcherStatus>('admin_notifications_dispatcher_status')
 export const fetchCampaign = (id: string) => rpc<CampaignRecord>('admin_notification_get', { p_id: id })
 export const saveCampaign = (id: string | null, payload: Record<string, unknown>) =>
   rpc<{ id: string; status: NotificationStatus }>('admin_notification_save', { p_id: id, p_payload: payload })
