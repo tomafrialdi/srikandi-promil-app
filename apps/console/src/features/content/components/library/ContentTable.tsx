@@ -174,7 +174,7 @@ export function ContentTable(props: ContentTableProps) {
         ) : rows.length === 0 && !loading ? (
           <p className="py-8 text-center text-13 text-ink-muted">No content matches these filters.</p>
         ) : (
-          <DataTable columns={columns} rows={rows} rowKey={(r) => r.id} rowHeight={64} isRowSelected={(r) => selected.has(r.id)} onRowClick={(r) => navigate(`/articles/${r.id}`)} />
+          <DataTable columns={columns} rows={rows} rowKey={(r) => r.id} rowHeight={64} isRowSelected={(r) => selected.has(r.id)} onRowClick={(r) => navigate(`/content-library/${r.id}`)} />
         )}
       </div>
 

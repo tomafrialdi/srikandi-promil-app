@@ -42,7 +42,7 @@ export const NAV_SECTIONS: NavSection[] = [
   {
     label: 'CONTENT',
     items: [
-      { label: 'Articles', path: '/articles', icon: FileText },
+      { label: 'Content library', path: '/content-library', icon: FileText },
       { label: 'Notifications', path: '/notifications', icon: BellRinging },
       { label: 'Community', path: '/community', icon: ChatsCircle },
     ],

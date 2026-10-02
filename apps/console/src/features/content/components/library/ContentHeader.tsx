@@ -17,7 +17,7 @@ export function ContentHeader() {
         <Tooltip placement="bottom" align="end" content={<TooltipBody title="Calendar view is coming soon" />}>
           <Button variant="outline" disabled leadingIcon={<CalendarDots size={16} />}>Calendar view</Button>
         </Tooltip>
-        <Link to="/articles/new">
+        <Link to="/content-library/new">
           <Button leadingIcon={<Plus size={16} color="#fff" />}>Create content</Button>
         </Link>
       </div>

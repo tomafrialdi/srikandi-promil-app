@@ -74,7 +74,7 @@ function EditorScreen({ id, record, initialType }: EditorScreenProps) {
     setStatus(saved.status)
     setSavedAt(new Date().toISOString())
     setDirty(false)
-    if (!id) navigate(`/articles/${saved.id}`, { replace: true })
+    if (!id) navigate(`/content-library/${saved.id}`, { replace: true })
     return saved.id
   }
 
@@ -109,7 +109,7 @@ function EditorScreen({ id, record, initialType }: EditorScreenProps) {
       if (changed === 0) throw new Error('This item is already past that step.')
       setStatus(form.type === 'in_app_card' ? 'scheduled' : 'medical_review')
       toast({ title: form.type === 'in_app_card' ? 'Card scheduled' : 'Submitted for medical review' })
-      navigate('/articles')
+      navigate('/content-library')
     }, 'Could not submit')
 
   const subtitle = status

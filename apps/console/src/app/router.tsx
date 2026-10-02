@@ -1,4 +1,4 @@
-import { createBrowserRouter, Navigate } from 'react-router-dom'
+import { createBrowserRouter, Navigate, useParams } from 'react-router-dom'
 import { GuestOnly, RequireConsoleAccess, RequirePasswordStep } from '../features/auth/guards/RouteGuards'
 import { SignInPage } from '../features/auth/pages/SignInPage'
 import { TwoFactorPage } from '../features/auth/pages/TwoFactorPage'
@@ -34,7 +34,12 @@ import { PlaceholderPage } from '../shared/layout/PlaceholderPage'
 import { LandingGate } from './LandingGate'
 import { AppProviders } from './providers/AppProviders'
 
-const placeholderRoutes = NAV_ITEMS.filter((item) => item.path !== '/' && item.path !== '/analytics' && item.path !== '/users' && item.path !== '/subscriptions' && item.path !== '/articles' && item.path !== '/notifications' && item.path !== '/community' && item.path !== '/roles' && item.path !== '/support-tickets' && item.path !== '/audit-log' && item.path !== '/clinics' && item.path !== '/doctors' && item.path !== '/medications' && item.path !== '/fertility-engine' && item.path !== '/account-settings').map((item) => ({
+function LegacyArticleRedirect() {
+  const { id } = useParams()
+  return <Navigate to={`/content-library/${id ?? ''}`} replace />
+}
+
+const placeholderRoutes = NAV_ITEMS.filter((item) => item.path !== '/' && item.path !== '/analytics' && item.path !== '/users' && item.path !== '/subscriptions' && item.path !== '/content-library' && item.path !== '/notifications' && item.path !== '/community' && item.path !== '/roles' && item.path !== '/support-tickets' && item.path !== '/audit-log' && item.path !== '/clinics' && item.path !== '/doctors' && item.path !== '/medications' && item.path !== '/fertility-engine' && item.path !== '/account-settings').map((item) => ({
   path: item.path,
   element: <PlaceholderPage />,
 }))
@@ -67,9 +72,13 @@ export const router = createBrowserRouter([
               { path: '/subscriptions', element: <SubscriptionsPage /> },
               { path: '/subscriptions/promo-codes', element: <PromoCodesPage /> },
               { path: '/subscriptions/transactions', element: <TransactionsPage /> },
-              { path: '/articles', element: <ContentLibraryPage /> },
-              { path: '/articles/new', element: <ContentEditorPage /> },
-              { path: '/articles/:id', element: <ContentEditorPage /> },
+              { path: '/content-library', element: <ContentLibraryPage /> },
+              { path: '/content-library/new', element: <ContentEditorPage /> },
+              { path: '/content-library/:id', element: <ContentEditorPage /> },
+              // The library used to live under /articles: keep old bookmarks and saved start pages working.
+              { path: '/articles', element: <Navigate to="/content-library" replace /> },
+              { path: '/articles/new', element: <Navigate to="/content-library/new" replace /> },
+              { path: '/articles/:id', element: <LegacyArticleRedirect /> },
               { path: '/community', element: <CommunityPage /> },
               { path: '/fertility-engine', element: <EnginePage /> },
               { path: '/fertility-engine/simulator', element: <SimulatorPage /> },

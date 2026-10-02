@@ -19,7 +19,7 @@ export const LANDING_OPTIONS = [
   { value: '/analytics', label: 'Analytics' },
   { value: '/users', label: 'Users' },
   { value: '/subscriptions', label: 'Subscriptions' },
-  { value: '/articles', label: 'Content library' },
+  { value: '/content-library', label: 'Content library' },
   { value: '/notifications', label: 'Notifications' },
   { value: '/community', label: 'Community' },
 ]
