@@ -1,6 +1,13 @@
 import type { Icon } from "phosphor-react-native";
 import { Pressable, StyleSheet, View } from "react-native";
-import Animated, { FadeIn, FadeOut, LinearTransition } from "react-native-reanimated";
+import Animated, {
+  FadeIn,
+  FadeOut,
+  LinearTransition,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { colors, fonts } from "@/constants/theme";
@@ -25,6 +32,28 @@ const TRANSITION = LinearTransition.duration(260);
 export function useTabBarClearance(): number {
   const insets = useSafeAreaInsets();
   return TAB_BAR_HEIGHT + insets.bottom + BOTTOM_MARGIN + 16;
+}
+
+/** The round "+" button: its icon spins a quarter turn each press. */
+function ActionButton({ label, icon: ItemIcon, onPress }: Pick<TabBarItem, "label" | "icon" | "onPress">) {
+  const turns = useSharedValue(0);
+  const iconStyle = useAnimatedStyle(() => ({ transform: [{ rotate: `${turns.value * 90}deg` }] }));
+
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      onPress={() => {
+        turns.value = withTiming(turns.value + 1, { duration: 300 });
+        onPress();
+      }}
+      style={styles.action}
+    >
+      <Animated.View style={iconStyle}>
+        <ItemIcon size={20} color="#FAF9F5" />
+      </Animated.View>
+    </Pressable>
+  );
 }
 
 /** Floating tab bar: a white pill of tabs (the active one expands to icon + label) and a separate round action button. */
@@ -63,16 +92,8 @@ export function TabBar({ items }: { items: TabBarItem[] }) {
           </Animated.View>
         ))}
       </View>
-      {actions.map(({ key, label, icon: ItemIcon, onPress }) => (
-        <Pressable
-          key={key}
-          accessibilityRole="button"
-          accessibilityLabel={label}
-          onPress={onPress}
-          style={styles.action}
-        >
-          <ItemIcon size={20} color="#FAF9F5" />
-        </Pressable>
+      {actions.map(({ key, label, icon, onPress }) => (
+        <ActionButton key={key} label={label} icon={icon} onPress={onPress} />
       ))}
     </View>
   );

@@ -25,7 +25,6 @@ export default function AppLayout() {
     <LoggingProvider>
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="(tabs)" options={{ gestureEnabled: false }} />
-        <Stack.Screen name="new-note" options={{ presentation: "modal" }} />
       </Stack>
       <LogSheetHost />
       <NotificationEffects />

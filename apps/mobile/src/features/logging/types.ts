@@ -14,7 +14,7 @@ export type TrackerKind =
 /** Supplement pickers opened from the Home recommendations. */
 export type SupplementKind = "prenatal-vitamin" | "folic-acid";
 
-export type LogKind = "log-today" | TrackerKind | SupplementKind | "basal-temperature-guide";
+export type LogKind = "log-today" | "new-note" | TrackerKind | SupplementKind | "basal-temperature-guide";
 
 export type MoodIconName = "wink" | "smile" | "meh" | "sad" | "angry";
 

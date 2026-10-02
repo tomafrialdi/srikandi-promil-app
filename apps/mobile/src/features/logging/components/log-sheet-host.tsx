@@ -13,6 +13,7 @@ import { IntimacySheet } from "./sheets/intimacy-sheet";
 import { LhTestSheet } from "./sheets/lh-test-sheet";
 import { LogTodaySheet } from "./sheets/log-today-sheet";
 import { MedicationsSheet } from "./sheets/medications-sheet";
+import { NoteSheet } from "./sheets/note-sheet";
 import { MoodSheet } from "./sheets/mood-sheet";
 import { PregnancyTestSheet } from "./sheets/pregnancy-test-sheet";
 import { SupplementSheet } from "./sheets/supplement-sheet";
@@ -44,7 +45,7 @@ export function LogSheetHost() {
 function headerFor(
   kind: LogKind,
   data: LoggingData,
-): { title?: string; subtitle?: string; headerLeft?: ReactNode; gap?: number } {
+): { title?: string; subtitle?: string; headerLeft?: ReactNode; gap?: number; scrollable?: boolean } {
   switch (kind) {
     case "prenatal-vitamin":
     case "folic-acid": {
@@ -60,6 +61,8 @@ function headerFor(
           </View>
         ),
       };
+    case "new-note":
+      return { title: LOG_COPY.titles[kind], scrollable: true };
     default:
       return { title: LOG_COPY.titles[kind] };
   }
@@ -69,6 +72,8 @@ function renderSheet(kind: LogKind, data: LoggingData) {
   switch (kind) {
     case "log-today":
       return <LogTodaySheet overview={data.overview} />;
+    case "new-note":
+      return <NoteSheet data={data} />;
     case "temperature":
       return <TemperatureSheet config={data.temperature} />;
     case "mood":

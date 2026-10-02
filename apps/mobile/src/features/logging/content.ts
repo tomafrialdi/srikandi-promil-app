@@ -2,6 +2,7 @@
 export const LOG_COPY = {
   titles: {
     "log-today": "Log today",
+    "new-note": "New note",
     temperature: "Log temperature",
     mood: "Log mood",
     symptom: "Log symptoms",
