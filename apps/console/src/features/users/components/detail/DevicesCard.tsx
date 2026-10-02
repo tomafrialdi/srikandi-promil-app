@@ -13,7 +13,7 @@ export function DevicesCard({ data }: { data: UserDetail['devices'] }) {
           <div key={item.kind} className="flex min-h-10 items-center justify-between gap-3 border-b border-border py-2 text-13 last:border-b-0">
             <dt className="font-medium text-ink-muted">{item.label}</dt>
             <dd style={{ margin: 0 }}>
-              <Badge tone={item.kind === 'partner' ? 'info' : 'success'}>{item.note ? `${item.status} · ${item.note}` : item.status}</Badge>
+              <Badge tone={item.status === 'Disconnected' ? 'neutral' : item.kind === 'partner' ? 'info' : 'success'}>{item.note ? `${item.status} · ${item.note}` : item.status}</Badge>
             </dd>
           </div>
         ))}
