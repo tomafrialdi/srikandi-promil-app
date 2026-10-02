@@ -33,6 +33,7 @@ interface ContentTableProps {
   onSelect: (ids: string[], checked: boolean) => void
   onClearSelection: () => void
   onSendToReview: () => void
+  onApprove?: () => void
   onSchedule: () => void
   onArchive: () => void
   onRetry: () => void
@@ -153,6 +154,7 @@ export function ContentTable(props: ContentTableProps) {
           count={selected.size}
           busy={props.busy}
           onSendToReview={props.onSendToReview}
+          onApprove={props.onApprove}
           onSchedule={props.onSchedule}
           onArchive={props.onArchive}
           onClear={props.onClearSelection}

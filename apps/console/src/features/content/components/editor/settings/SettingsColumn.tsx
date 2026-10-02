@@ -5,16 +5,19 @@ import { ChipInput, Field, SelectField, TextAreaField, Badge, CheckRow, DateFiel
 import { formatCompact } from '../../../../../shared/lib/format'
 import { CHECKLIST_ITEMS, DEFAULT_CATEGORIES, MODES, PHASES, PLANS, VISIBILITY_OPTIONS } from '../../../config/editor'
 import { fetchAudience } from '../../../services/content.service'
-import type { ContentForm, ContentOptions } from '../../../types'
+import { timeAgo } from '../../../../../shared/lib/format'
+import type { ContentForm, ContentOptions, ReviewEntry } from '../../../types'
 import { ChipToggleGroup, EditorCard, INPUT } from '../fields'
 
 interface SettingsColumnProps {
   form: ContentForm
   options?: ContentOptions
   set: <K extends keyof ContentForm>(key: K, value: ContentForm[K]) => void
+  /** Review decisions so far, newest first. */
+  reviews?: ReviewEntry[]
 }
 
-export function SettingsColumn({ form, options, set }: SettingsColumnProps) {
+export function SettingsColumn({ form, options, set, reviews = [] }: SettingsColumnProps) {
   const categories = Array.from(new Set([...DEFAULT_CATEGORIES, ...(options?.categories ?? []), form.category])).filter(Boolean)
   const audienceFetcher = useCallback(() => fetchAudience(form.target_modes, form.target_plan), [form.target_modes, form.target_plan])
   const audience = useAsyncData(`audience-${form.target_modes.join()}-${form.target_plan}`, audienceFetcher)
@@ -68,6 +71,20 @@ export function SettingsColumn({ form, options, set }: SettingsColumnProps) {
               <SelectField id="reviewer" value={form.reviewer_name} options={[{ value: '', label: 'Choose a reviewer' }, ...reviewers.map((r) => ({ value: r, label: r }))]} onChange={(v) => set('reviewer_name', v)} />
             </Field>
             <p className="text-11 text-ink-faint">SLA 48h once submitted.</p>
+            {reviews.length > 0 && (
+              <ul className="m-0 flex list-none flex-col gap-2 p-0" aria-label="Review history">
+                {reviews.map((entry) => (
+                  <li key={entry.at} className="flex flex-col gap-1 rounded-lg bg-surface-alt px-3 py-2">
+                    <span className="flex flex-wrap items-center gap-2 text-12 font-bold">
+                      <Badge tone={entry.decision === 'approved' ? 'success' : 'error'}>{entry.decision === 'approved' ? 'Approved' : 'Changes requested'}</Badge>
+                      {entry.skipped_review && <Badge tone="warning">Published without review</Badge>}
+                      <span className="font-medium text-ink-muted">{entry.by} · {timeAgo(entry.at)}</span>
+                    </span>
+                    {entry.note && <span className="text-12 font-medium text-ink-muted">{entry.note}</span>}
+                  </li>
+                ))}
+              </ul>
+            )}
             <div className="flex flex-col gap-2">
               {CHECKLIST_ITEMS.map((item) => (
                 <CheckRow key={item.key} checked={form.checklist[item.key]} onChange={(v) => set('checklist', { ...form.checklist, [item.key]: v })} title={item.label} />

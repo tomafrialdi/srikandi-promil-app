@@ -1,5 +1,5 @@
 import { supabase } from '../../../lib/supabase'
-import type { BulkAction, ContentFilters, ContentHighlights, ContentList, ContentOptions, ContentRecord, ContentStatus, ContentSummary, TipPoolItem } from '../types'
+import type { BulkAction, ReviewDecision, ContentFilters, ContentHighlights, ContentList, ContentOptions, ContentRecord, ContentStatus, ContentSummary, TipPoolItem } from '../types'
 
 async function rpc<T>(name: string, args?: Record<string, unknown>): Promise<T> {
   const { data, error } = await supabase.rpc(name, args)
@@ -26,6 +26,10 @@ export function fetchContentList(filters: ContentFilters, page: number, pageSize
 /** Returns how many items were actually changed (items in the wrong state are skipped). */
 export const bulkContentAction = (ids: string[], action: BulkAction, at?: string) =>
   rpc<number>('admin_content_bulk_action', { p_ids: ids, p_action: action, p_at: at ?? null })
+
+/** Approve (publish or schedule) or ask for changes. Returns how many items changed. Super admin / medical reviewer only. */
+export const reviewContent = (ids: string[], decision: ReviewDecision, note?: string) =>
+  rpc<number>('admin_content_review', { p_ids: ids, p_decision: decision, p_note: note ?? null })
 
 /* ── Editor ─────────────────────────────────────────── */
 export const fetchContentOptions = () => rpc<ContentOptions>('admin_content_options')

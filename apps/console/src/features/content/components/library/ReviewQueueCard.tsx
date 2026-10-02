@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { Badge, Card } from '../../../../shared/ui'
 import type { ContentHighlights } from '../../types'
 
@@ -11,7 +12,7 @@ export function ReviewQueueCard({ items }: { items?: ContentHighlights['review_q
       {items && items.length === 0 && <p className="py-3 text-13 text-ink-muted">Nothing waiting for review.</p>}
       {(items ?? []).map((item) => (
         <div key={item.id} className="flex items-center gap-3 py-1.5">
-          <span className="min-w-0 flex-1 truncate text-13 font-semibold">{item.title}</span>
+          <Link to={`/content-library/${item.id}`} className="min-w-0 flex-1 truncate text-13 font-semibold hover:text-primary">{item.title}</Link>
           <span className="text-12 font-medium text-ink-muted">{item.reviewer ?? '—'}</span>
           {item.status === 'changes_requested' ? (
             <Badge tone="error">Changes requested</Badge>

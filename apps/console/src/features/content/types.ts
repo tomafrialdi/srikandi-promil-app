@@ -119,6 +119,17 @@ export interface ContentForm {
   autoplay_muted: boolean
 }
 
+export type ReviewDecision = 'approve' | 'request_changes'
+
+export interface ReviewEntry {
+  decision: 'approved' | 'changes_requested'
+  by: string
+  note: string | null
+  at: string
+  /** A Super admin published a draft without a medical review. */
+  skipped_review: boolean
+}
+
 export interface ContentRecord {
   id: string
   type: ContentType
@@ -145,6 +156,10 @@ export interface ContentRecord {
   details: Record<string, unknown>
   updated_at: string
   updated_by: string | null
+  approved_at: string | null
+  approved_by: string | null
+  /** Newest first. */
+  reviews: ReviewEntry[]
 }
 
 export interface ContentOptions {

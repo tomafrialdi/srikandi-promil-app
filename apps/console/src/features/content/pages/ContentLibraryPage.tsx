@@ -8,7 +8,8 @@ import { ReviewQueueCard } from '../components/library/ReviewQueueCard'
 import { TopPerformingCard } from '../components/library/TopPerformingCard'
 import { useContentHighlights, useContentList, useContentSummary } from '../hooks/useContentData'
 import { ScheduleModal } from '../modals/ScheduleModal'
-import { bulkContentAction } from '../services/content.service'
+import { useCanReview } from '../hooks/useCanReview'
+import { bulkContentAction, reviewContent } from '../services/content.service'
 import type { BulkAction, ContentFilters } from '../types'
 
 const KEYS = { tab: 'tab', search: 'q', type: 'type', category: 'category', reviewer: 'reviewer', lang: 'lang' }
@@ -24,7 +25,9 @@ export function ContentLibraryPage() {
   const list = useContentList(filters, page)
   const [selected, setSelected] = useState<Set<string>>(new Set())
   const [busy, setBusy] = useState(false)
+  const { canReview } = useCanReview()
   const schedule = useDisclosure()
+  const approve = useDisclosure()
   const archive = useDisclosure()
 
   const clearSelection = useCallback(() => setSelected(new Set()), [])
@@ -71,6 +74,19 @@ export function ContentLibraryPage() {
     refresh()
   }
 
+  /** Bulk approval only covers items already in medical review; drafts are published one by one, with a reason. */
+  const approveSelected = async () => {
+    const ids = [...selected]
+    const changed = await reviewContent(ids, 'approve')
+    const skipped = ids.length - changed
+    toast({
+      tone: changed === 0 ? 'info' : 'success',
+      title: changed === 0 ? 'Nothing approved' : `${changed} item${changed === 1 ? '' : 's'} approved`,
+      description: skipped > 0 ? `${skipped} skipped: only items in medical review are approved in bulk. Open a draft to publish it with a reason.` : undefined,
+    })
+    refresh()
+  }
+
   const sendToReview = async () => {
     setBusy(true)
     try {
@@ -100,6 +116,7 @@ export function ContentLibraryPage() {
         onSelect={onSelect}
         onClearSelection={clearSelection}
         onSendToReview={sendToReview}
+        onApprove={canReview ? approve.onOpen : undefined}
         onSchedule={schedule.onOpen}
         onArchive={archive.onOpen}
         onRetry={list.reload}
@@ -110,6 +127,14 @@ export function ContentLibraryPage() {
       </div>
 
       <ScheduleModal key={String(schedule.open)} open={schedule.open} count={selected.size} onClose={schedule.onClose} onConfirm={(at) => run('schedule', at)} />
+      <ConfirmDialog
+        open={approve.open}
+        onClose={approve.onClose}
+        title={`Approve ${selected.size} item${selected.size === 1 ? '' : 's'}?`}
+        description="Items in medical review go live now, or at their scheduled time. Others in the selection are skipped."
+        confirmLabel="Approve"
+        onConfirm={approveSelected}
+      />
       <ConfirmDialog
         open={archive.open}
         onClose={archive.onClose}

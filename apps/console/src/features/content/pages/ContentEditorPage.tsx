@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { useAsyncData } from '../../../shared/hooks/useAsyncData'
-import { Button, PageState, useToast } from '../../../shared/ui'
+import { ProhibitInset } from '@phosphor-icons/react'
+import { Button, ConfirmDialog, PageState, ReasonDialog, useDisclosure, useToast } from '../../../shared/ui'
 import { timeAgo } from '../../../shared/lib/format'
 import { EditorHeader } from '../components/editor/EditorHeader'
 import { ArticleForm } from '../components/editor/forms/ArticleForm'
@@ -14,7 +15,8 @@ import { WorkflowSteps } from '../components/editor/WorkflowSteps'
 import { emptyForm } from '../config/editor'
 import { STATUS_BADGE } from '../config/labels'
 import { formToPayload, recordToForm } from '../lib/form-mapping'
-import { bulkContentAction, fetchContent, fetchContentOptions, saveContent } from '../services/content.service'
+import { useCanReview } from '../hooks/useCanReview'
+import { bulkContentAction, fetchContent, fetchContentOptions, reviewContent, saveContent } from '../services/content.service'
 import type { ContentForm, ContentRecord, ContentStatus, ContentType } from '../types'
 
 const TYPES: ContentType[] = ['article', 'daily_tip', 'in_app_card', 'video']
@@ -49,6 +51,10 @@ function EditorScreen({ id, record, initialType }: EditorScreenProps) {
   const [savedAt, setSavedAt] = useState<string | null>(record?.updated_at ?? null)
   const [dirty, setDirty] = useState(false)
   const [busy, setBusy] = useState(false)
+  const { canReview, isSuperAdmin } = useCanReview()
+  const approve = useDisclosure()
+  const requestChanges = useDisclosure()
+  const publishDraft = useDisclosure()
 
   const set = useCallback(<K extends keyof ContentForm>(key: K, value: ContentForm[K]) => {
     setForm((current) => ({ ...current, [key]: value }))
@@ -112,13 +118,40 @@ function EditorScreen({ id, record, initialType }: EditorScreenProps) {
       navigate('/content-library')
     }, 'Could not submit')
 
+  /** Saves pending edits first, runs the review decision, then reloads the status the server decided on. */
+  const decide = async (decision: 'approve' | 'request_changes', note?: string) => {
+    if (!id) return
+    if (dirty) await persist()
+    const changed = await reviewContent([id], decision, note)
+    if (changed === 0) throw new Error('This item is not waiting for review any more.')
+    const fresh = await fetchContent(id)
+    setStatus(fresh.status)
+    toast({
+      title: decision === 'request_changes' ? 'Changes requested' : fresh.status === 'scheduled' ? 'Approved and scheduled' : 'Approved and published',
+      description: decision === 'request_changes' ? 'The author sees your note in the review history.' : undefined,
+    })
+    navigate('/content-library')
+  }
+
+  const inReview = status === 'medical_review'
+  const review = canReview && id
+    ? {
+        canApprove: inReview,
+        canRequestChanges: inReview,
+        canPublishDraft: isSuperAdmin && (status === 'draft' || status === 'changes_requested') && form.type !== 'in_app_card',
+        onApprove: approve.onOpen,
+        onRequestChanges: requestChanges.onOpen,
+        onPublishDraft: publishDraft.onOpen,
+      }
+    : undefined
+
   const subtitle = status
     ? `${STATUS_BADGE[status].label}${savedAt ? ` · saved ${timeAgo(savedAt)}` : ''}${record?.updated_by ? ` by ${record.updated_by}` : ''}`
     : undefined
 
   return (
     <>
-      <EditorHeader type={form.type} subtitle={subtitle} busy={busy} onSave={save} onSubmit={submit} canSubmit={status !== 'archived' && status !== 'published' && status !== 'scheduled'} />
+      <EditorHeader type={form.type} subtitle={subtitle} busy={busy} onSave={save} onSubmit={submit} canSubmit={status !== 'archived' && status !== 'published' && status !== 'scheduled'} review={review} />
       <WorkflowSteps status={status} />
       <div className="flex flex-col items-start gap-4 min-[1201px]:flex-row">
         <div className="flex w-full min-w-0 flex-1 flex-col gap-4">
@@ -128,8 +161,39 @@ function EditorScreen({ id, record, initialType }: EditorScreenProps) {
           {form.type === 'in_app_card' && <CardForm form={form} set={set} />}
           {form.type === 'video' && <VideoForm form={form} set={set} />}
         </div>
-        <SettingsColumn form={form} options={options.data} set={set} />
+        <SettingsColumn form={form} options={options.data} set={set} reviews={record?.reviews} />
       </div>
+
+      <ConfirmDialog
+        open={approve.open}
+        onClose={approve.onClose}
+        title="Approve and publish?"
+        description={form.scheduled_at ? 'It was given a publish time, so it will go live then.' : 'It goes live in the app right away for the audience you picked.'}
+        confirmLabel="Approve"
+        onConfirm={() => decide('approve')}
+      />
+      <ReasonDialog
+        open={requestChanges.open}
+        onClose={requestChanges.onClose}
+        title="Request changes"
+        description="The item goes back to the author with your note."
+        reasonLabel="What should change?"
+        placeholder="e.g. Add two references for the dosage claim"
+        confirmLabel="Send back"
+        onConfirm={(note) => decide('request_changes', note)}
+      />
+      <ReasonDialog
+        open={publishDraft.open}
+        onClose={publishDraft.onClose}
+        icon={<ProhibitInset size={20} />}
+        tone="danger"
+        title="Publish without a medical review?"
+        description="Health content normally needs a medical reviewer. Publishing it yourself is logged with your name and this reason."
+        reasonLabel="Why is this published without a review?"
+        placeholder="e.g. No reviewer on the team yet; owner sign-off"
+        confirmLabel="Publish"
+        onConfirm={(note) => decide('approve', note)}
+      />
     </>
   )
 }
