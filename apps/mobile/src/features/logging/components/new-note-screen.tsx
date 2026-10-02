@@ -2,6 +2,7 @@ import { router } from "expo-router";
 import { CalendarBlank, CaretDown, Drop, Thermometer, X } from "phosphor-react-native";
 import { useState } from "react";
 import {
+  Alert,
   KeyboardAvoidingView,
   Platform,
   Pressable,
@@ -87,6 +88,8 @@ function NoteForm({ data }: { data: LoggingData }) {
         text: text.trim() || undefined,
       });
       router.back();
+    } catch (e) {
+      Alert.alert("Couldn't save note", e instanceof Error ? e.message : "Please try again.");
     } finally {
       setSaving(false);
     }

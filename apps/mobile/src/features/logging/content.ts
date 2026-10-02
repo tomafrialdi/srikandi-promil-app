@@ -47,8 +47,8 @@ export const LOG_COPY = {
   intimacy: {
     yes: "Yes, today",
     no: "Not today",
-    timingTitle: "Fertile window timing",
-    score: "{done} of {total}",
+    timingTitle: "Last 7 days",
+    score: "{done} of {total} days",
     legendLogged: "Logged",
     legendBest: "Best days",
     save: "Save",

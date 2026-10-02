@@ -1,18 +1,13 @@
 import type { LoggingData, SaveLogInput } from "../types";
-import { USE_DUMMY_LOGGING } from "./config";
-import { dummyLoggingApi } from "./dummy-logging-api";
-import { httpLoggingApi } from "./http-logging-api";
+import { supabaseLoggingApi } from "./supabase-logging-api";
 
 /**
- * What the log sheets need from the backend.
- *
- *   GET  /logs/today  -> LoggingData   (options, today's status, meds, timing ...)
- *   POST /logs        -> 204           body: SaveLogInput (discriminated by `kind`)
+ * What the log sheets need from the backend (Supabase RPCs `app_logs_today` / `app_log_save`).
+ * Each save is for one kind and one day; saving the same kind again that day replaces it.
  */
 export interface LoggingApi {
   getData(): Promise<LoggingData>;
   save(input: SaveLogInput): Promise<void>;
 }
 
-/** The single switch between dummy data and the real backend. */
-export const loggingApi: LoggingApi = USE_DUMMY_LOGGING ? dummyLoggingApi : httpLoggingApi;
+export const loggingApi: LoggingApi = supabaseLoggingApi;

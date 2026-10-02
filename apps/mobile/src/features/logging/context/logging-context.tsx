@@ -8,6 +8,8 @@ import {
   type ReactNode,
 } from "react";
 
+import { Alert } from "react-native";
+
 import { toIsoDate } from "@/features/calendar/utils/dates";
 import { loggingApi } from "../api/logging-api";
 import type { LogKind, LoggingData, SaveLogInput, TodayEntries, TrackerKind } from "../types";
@@ -74,7 +76,13 @@ export function LoggingProvider({ children }: { children: ReactNode }) {
 
   const save = useCallback(
     async (input: SaveLogInput) => {
-      await loggingApi.save(input);
+      try {
+        await loggingApi.save(input);
+      } catch (e) {
+        // Keep the sheet open so nothing the user entered is lost.
+        Alert.alert("Couldn't save", e instanceof Error ? e.message : "Please try again.");
+        return;
+      }
       const { kind } = input;
       if (kind !== "supplement" && kind !== "note") {
         setLogged((cur) => (cur.includes(kind) ? cur : [...cur, kind]));
