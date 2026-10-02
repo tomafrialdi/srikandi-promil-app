@@ -6,6 +6,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useTabBarClearance } from "@/components/tab-bar/tab-bar";
 import { colors } from "@/constants/theme";
 import { ContentCardSlot } from "@/features/content/components/content-card-slot";
+import { VideoSection } from "@/features/content/components/video-section";
 import { useOpenLink } from "@/features/content/hooks/use-open-link";
 import { useLogging } from "@/features/logging/context/logging-context";
 import { QUICK_ACTION_TO_KIND, RECOMMENDATION_TO_KIND } from "@/features/logging/log-kinds";
@@ -97,6 +98,7 @@ export function HomeScreen() {
         <View style={styles.padded}>
           <DailyTipCard tip={data.tip} onPress={data.tip.deepLink ? () => openLink(data.tip.deepLink!) : undefined} />
         </View>
+        <VideoSection placement="home" title="Videos for you" inset={20} />
         {data.library.articles.length > 0 ? (
           <ContentLibrarySection
             data={data.library}

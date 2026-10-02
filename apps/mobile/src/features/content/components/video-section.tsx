@@ -14,7 +14,16 @@ const formatDuration = (seconds: number | null) =>
   seconds ? `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}` : null;
 
 /** Videos from the Content library for one place in the app. Renders nothing when there are none. */
-export function VideoSection({ placement, title = "Videos" }: { placement: VideoPlacement; title?: string }) {
+export function VideoSection({
+  placement,
+  title = "Videos",
+  inset = 0,
+}: {
+  placement: VideoPlacement;
+  title?: string;
+  /** Side padding for a section placed full-width: the cards scroll edge to edge, starting inset. */
+  inset?: number;
+}) {
   const [videos, setVideos] = useState<VideoItem[]>([]);
 
   useEffect(() => {
@@ -35,8 +44,14 @@ export function VideoSection({ placement, title = "Videos" }: { placement: Video
 
   return (
     <View style={styles.section}>
-      <SectionHeader title={title} />
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.row}>
+      <View style={{ paddingHorizontal: inset }}>
+        <SectionHeader title={title} />
+      </View>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={[styles.row, { paddingHorizontal: inset }]}
+      >
         {videos.map((video) => (
           <VideoCard key={video.id} video={video} />
         ))}

@@ -34,7 +34,7 @@ export const CARD_LAYOUTS = [
 ]
 export const CARD_SCREENS = ['Home · below cycle card', 'Calendar', 'Two-week wait', 'Log today sheet', 'Insights']
 
-export const VIDEO_PLACEMENTS = ['Treatment program screen', 'Articles & videos feed', 'Two-week wait', 'Website /blog']
+export const VIDEO_PLACEMENTS = ['Home', 'Treatment program screen', 'Articles & videos feed', 'Two-week wait', 'Website /blog']
 export const CAPTION_LANGS = ['Bahasa Indonesia', 'English']
 
 export const CHECKLIST_ITEMS: Array<{ key: keyof ContentForm['checklist']; label: string }> = [

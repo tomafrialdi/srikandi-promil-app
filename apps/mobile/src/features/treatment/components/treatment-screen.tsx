@@ -114,9 +114,11 @@ export function TreatmentScreen() {
               <Text style={styles.hint}>No lab results yet.</Text>
             )}
 
-            <VideoSection placement="treatment" title="Learn more" />
           </>
         ) : null}
+
+        {/* Educational videos help before a program is started too. */}
+        {data ? <VideoSection placement="treatment" title="Learn more" /> : null}
       </StickyScreen>
 
       <StartProgramSheet

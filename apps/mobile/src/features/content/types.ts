@@ -27,7 +27,7 @@ export interface DailyTip {
 }
 
 /** Where videos are shown (matches `app_videos`). */
-export type VideoPlacement = "feed" | "treatment" | "two_week_wait";
+export type VideoPlacement = "home" | "feed" | "treatment" | "two_week_wait";
 
 export interface VideoItem {
   id: string;
