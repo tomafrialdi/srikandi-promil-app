@@ -20,7 +20,7 @@ export default function TabsLayout() {
   return (
     <Tabs
       tabBar={(props) => <AppTabBar {...props} onAddPress={() => router.push("/new-note")} />}
-      screenOptions={{ headerShown: false }}
+      screenOptions={{ headerShown: false, animation: "fade" }}
     >
       <Tabs.Screen name="home" />
       <Tabs.Screen name="calendar" />

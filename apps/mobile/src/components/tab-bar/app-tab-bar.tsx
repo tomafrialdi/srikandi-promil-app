@@ -42,7 +42,7 @@ export function AppTabBar({
       if (!active && !event.defaultPrevented) navigation.navigate(route.name);
     };
 
-    return [{ key: route.key, label: config.label, icon: config.icon, active, onPress }];
+    return [{ key: route.key, label: config.label, icon: config.icon, active, action: config.action, onPress }];
   });
 
   return <TabBar items={items} />;
