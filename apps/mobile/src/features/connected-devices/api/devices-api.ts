@@ -1,19 +1,16 @@
-import { USE_DUMMY_API } from "@/config/api";
-import type { DevicePreferenceKey, DevicesData } from "../types";
-import { dummyDevicesApi } from "./dummy-devices-api";
-import { httpDevicesApi } from "./http-devices-api";
+import { supabaseDevicesApi } from "./supabase-devices-api";
+import type { DeviceKind, DevicePreferenceKey, DevicesData } from "../types";
 
 /**
- * What the Connected devices screen needs from the backend.
- *
- *   GET   /devices                -> DevicesData
- *   POST  /devices/:id/connect    -> 204   (the backend / OS handles pairing or OAuth)
- *   PATCH /devices/preferences    body: { key, enabled } -> 204
+ * What the Connected devices screen needs from the backend (Supabase RPCs `app_device*`).
+ * The device catalog lives in the app; the database stores what is connected and the preferences.
  */
 export interface DevicesApi {
   get(): Promise<DevicesData>;
-  connect(deviceId: string): Promise<void>;
+  /** Asks the OS for access first, and records the connection only if that succeeded. */
+  connect(deviceId: DeviceKind): Promise<void>;
+  disconnect(deviceId: DeviceKind): Promise<void>;
   setPreference(key: DevicePreferenceKey, enabled: boolean): Promise<void>;
 }
 
-export const devicesApi: DevicesApi = USE_DUMMY_API ? dummyDevicesApi : httpDevicesApi;
+export const devicesApi: DevicesApi = supabaseDevicesApi;

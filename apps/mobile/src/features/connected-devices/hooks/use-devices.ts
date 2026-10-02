@@ -1,40 +1,45 @@
 import { useCallback, useEffect, useState } from "react";
 
 import { devicesApi } from "../api/devices-api";
-import type { DevicePreferenceKey, DevicesData } from "../types";
+import type { DeviceKind, DevicePreferenceKey, DevicesData } from "../types";
 
-/** Loads devices; connecting moves a device to "Connected", preference toggles are optimistic. */
+/**
+ * Loads devices. Connect / disconnect reload the list afterwards (the OS may refuse access,
+ * so the screen never assumes success); preference toggles are optimistic.
+ */
 export function useDevices() {
   const [data, setData] = useState<DevicesData | null>(null);
-  const [connectingId, setConnectingId] = useState<string | null>(null);
+  const [error, setError] = useState(false);
+  const [busyId, setBusyId] = useState<DeviceKind | null>(null);
 
   useEffect(() => {
     let cancelled = false;
-    devicesApi.get().then((d) => {
-      if (!cancelled) setData(d);
-    });
+    devicesApi
+      .get()
+      .then((d) => {
+        if (!cancelled) setData(d);
+      })
+      .catch(() => {
+        if (!cancelled) setError(true);
+      });
     return () => {
       cancelled = true;
     };
   }, []);
 
-  const connect = useCallback(async (deviceId: string) => {
-    setConnectingId(deviceId);
+  /** Runs a change for one device. Rejects with the reason so the screen can show it. */
+  const change = useCallback(async (deviceId: DeviceKind, action: () => Promise<void>) => {
+    setBusyId(deviceId);
     try {
-      await devicesApi.connect(deviceId);
-      setData((cur) => {
-        const device = cur?.available.find((d) => d.id === deviceId);
-        if (!cur || !device) return cur;
-        return {
-          ...cur,
-          connected: [...cur.connected, device],
-          available: cur.available.filter((d) => d.id !== deviceId),
-        };
-      });
+      await action();
+      setData(await devicesApi.get());
     } finally {
-      setConnectingId(null);
+      setBusyId(null);
     }
   }, []);
+
+  const connect = useCallback((id: DeviceKind) => change(id, () => devicesApi.connect(id)), [change]);
+  const disconnect = useCallback((id: DeviceKind) => change(id, () => devicesApi.disconnect(id)), [change]);
 
   const setPreference = useCallback(async (key: DevicePreferenceKey, enabled: boolean) => {
     const apply = (value: boolean) =>
@@ -47,5 +52,5 @@ export function useDevices() {
     }
   }, []);
 
-  return { data, connectingId, connect, setPreference };
+  return { data, error, busyId, connect, disconnect, setPreference };
 }

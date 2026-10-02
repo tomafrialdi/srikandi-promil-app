@@ -1,4 +1,3 @@
-import { dummyConnectedCount } from "@/features/connected-devices/api/dummy-devices-api";
 import { dummyAppLockLabel } from "@/features/privacy-security/api/dummy-privacy-api";
 import { dummySelectedModeLabel } from "@/features/tracking-mode/api/dummy-tracking-mode-api";
 import { unitsLabel } from "../utils/units";
@@ -50,7 +49,6 @@ export const dummySettingsApi: SettingsApi = {
         ...summary.values,
         units: { text: unitsLabel(summary.units) },
         trackingMode: { text: dummySelectedModeLabel() },
-        connectedDevices: { text: `${dummyConnectedCount()} active` },
         privacy: { text: dummyAppLockLabel() },
       },
     };

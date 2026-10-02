@@ -19,7 +19,11 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.gridlova.srikandipromil"
+      "package": "com.gridlova.srikandipromil",
+      "permissions": [
+        "android.permission.health.READ_BASAL_BODY_TEMPERATURE",
+        "android.permission.health.READ_MENSTRUATION"
+      ]
     },
     "web": {
       "output": "static",
@@ -41,7 +45,8 @@
           "android": {
             "buildArchs": [
               "arm64-v8a"
-            ]
+            ],
+            "minSdkVersion": 26
           }
         }
       ],
@@ -51,6 +56,15 @@
         {
           "photosPermission": "Srikandi Promil needs access to your photos so you can choose a profile picture.",
           "cameraPermission": "Srikandi Promil needs the camera so you can take a profile picture."
+        }
+      ],
+      "react-native-health-connect",
+      [
+        "@kingstinct/react-native-healthkit",
+        {
+          "NSHealthShareUsageDescription": "Srikandi Promil reads your basal body temperature and cycle data from Apple Health to keep your fertility predictions up to date.",
+          "NSHealthUpdateUsageDescription": false,
+          "background": false
         }
       ]
     ],

@@ -47,9 +47,10 @@ function localToday(): string {
 
 /** Live values for the fertility-journey rows; a failed lookup just leaves that row without a value. */
 async function fertilityJourneyValues(): Promise<Partial<Record<SettingsValueKey, SettingsValue>>> {
-  const [treatment, partner] = await Promise.all([
+  const [treatment, partner, devices] = await Promise.all([
     supabase.rpc("app_treatment_get", { p_today: localToday() }),
     supabase.rpc("app_partner_get"),
+    supabase.rpc("app_devices_get"),
   ]);
 
   const values: Partial<Record<SettingsValueKey, SettingsValue>> = {};
@@ -57,6 +58,8 @@ async function fertilityJourneyValues(): Promise<Partial<Record<SettingsValueKey
   if (program) values.treatment = { text: `${program.title.split(" · ")[0]} · ${program.dayLabel}` };
   const name = (partner.data?.partner as { name: string } | null | undefined)?.name;
   values.partner = name ? { text: name } : { text: "Not added" };
+  const connected = (devices.data?.connected as unknown[] | undefined)?.length ?? 0;
+  values.connectedDevices = { text: connected > 0 ? `${connected} active` : "None" };
   return values;
 }
 
@@ -82,7 +85,12 @@ export const supabaseSettingsApi: SettingsApi = {
       temperature: row.unit_temperature,
     };
     // Rows that now come from Supabase replace the dummy ones; no program/partner means no value.
-    const { treatment: _dummyTreatment, partner: _dummyPartner, ...dummyValues } = dummy.values;
+    const {
+      treatment: _dummyTreatment,
+      partner: _dummyPartner,
+      connectedDevices: _dummyDevices,
+      ...dummyValues
+    } = dummy.values;
     return {
       ...dummy,
       values: {

@@ -1,5 +1,5 @@
 import { ArrowsClockwise } from "phosphor-react-native";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
 
 import { Chip } from "@/components/chip";
 import { IconCircle } from "@/components/icon-circle";
@@ -13,11 +13,29 @@ import { useDevices } from "../hooks/use-devices";
 import { DEVICE_ICONS } from "../icons";
 import type { Device } from "../types";
 
+const failureMessage = (e: unknown) =>
+  e instanceof Error ? e.message : "Something went wrong. Please try again.";
+
 export function ConnectedDevicesScreen() {
-  const { data, connectingId, connect, setPreference } = useDevices();
+  const { data, error, busyId, connect, disconnect, setPreference } = useDevices();
+
+  const handleConnect = (device: Device) =>
+    connect(device.id).catch((e) => Alert.alert(`Couldn't connect ${device.name}`, failureMessage(e)));
+
+  const handleDisconnect = (device: Device) =>
+    Alert.alert(`Disconnect ${device.name}?`, "We'll stop using it. You can reconnect any time.", [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Disconnect",
+        style: "destructive",
+        onPress: () =>
+          disconnect(device.id).catch((e) => Alert.alert(`Couldn't disconnect ${device.name}`, failureMessage(e))),
+      },
+    ]);
 
   return (
     <StickyScreen header={<ScreenHeader title="Connected devices" />}>
+        {error && !data ? <Text style={styles.hint}>{"Couldn't load your devices. Go back and try again."}</Text> : null}
 
         {data ? (
           <>
@@ -33,12 +51,25 @@ export function ConnectedDevicesScreen() {
               </View>
             ) : null}
 
-            <SectionHeader title="Connected" />
-            <InsetList>
-              {data.connected.map((device) => (
-                <DeviceRow key={device.id} device={device} trailing={<Chip label="Connected" tone="success" />} />
-              ))}
-            </InsetList>
+            {data.connected.length > 0 ? (
+              <>
+                <SectionHeader title="Connected" />
+                <InsetList>
+                  {data.connected.map((device) => (
+                    <DeviceRow
+                      key={device.id}
+                      device={device}
+                      onPress={() => handleDisconnect(device)}
+                      trailing={<Chip label={busyId === device.id ? "Working…" : "Connected"} tone="success" />}
+                    />
+                  ))}
+                </InsetList>
+                <Text style={styles.hint}>
+                  Access is saved. Importing readings automatically arrives with temperature logging in an
+                  upcoming update. Tap a device to disconnect it.
+                </Text>
+              </>
+            ) : null}
 
             {data.available.length > 0 ? (
               <>
@@ -49,7 +80,11 @@ export function ConnectedDevicesScreen() {
                       key={device.id}
                       device={device}
                       trailing={
-                        <ConnectButton busy={connectingId === device.id} onPress={() => connect(device.id)} />
+                        device.comingSoon ? (
+                          <Chip label="Soon" tone="neutral" />
+                        ) : (
+                          <ConnectButton busy={busyId === device.id} onPress={() => handleConnect(device)} />
+                        )
                       }
                     />
                   ))}
@@ -76,16 +111,29 @@ export function ConnectedDevicesScreen() {
   );
 }
 
-function DeviceRow({ device, trailing }: { device: Device; trailing: React.ReactNode }) {
+function DeviceRow({
+  device,
+  trailing,
+  onPress,
+}: {
+  device: Device;
+  trailing: React.ReactNode;
+  onPress?: () => void;
+}) {
   return (
-    <View style={styles.device}>
+    <Pressable
+      accessibilityRole={onPress ? "button" : undefined}
+      disabled={!onPress}
+      onPress={onPress}
+      style={styles.device}
+    >
       <IconCircle icon={DEVICE_ICONS[device.icon]} size={38} />
       <View style={styles.deviceText}>
         <Text style={styles.deviceName}>{device.name}</Text>
         <Text style={styles.deviceDescription}>{device.description}</Text>
       </View>
       {trailing}
-    </View>
+    </Pressable>
   );
 }
 
@@ -103,6 +151,7 @@ function ConnectButton({ busy, onPress }: { busy: boolean; onPress: () => void }
 }
 
 const styles = StyleSheet.create({
+  hint: { fontFamily: fonts.medium, fontSize: 12, lineHeight: 17, color: colors.inkMuted },
   sync: {
     flexDirection: "row",
     alignItems: "center",
