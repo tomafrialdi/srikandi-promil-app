@@ -1,12 +1,17 @@
+import { Check } from "phosphor-react-native";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { colors, fonts, radius, tones } from "@/constants/theme";
 import { HOME_ICONS } from "../icons";
+import { QUICK_ACTION_TO_KIND } from "@/features/logging/log-kinds";
+import type { TrackerKind } from "@/features/logging/types";
 import type { HomeDashboard, QuickAction } from "../types";
 
 interface QuickActionsGridProps {
   config: HomeDashboard["quickActions"];
   onActionPress?: (action: QuickAction) => void;
+  /** Trackers already logged today; they get a small check. */
+  loggedKinds?: TrackerKind[];
 }
 
 function chunk<T>(items: T[], size: number): T[][] {
@@ -15,7 +20,7 @@ function chunk<T>(items: T[], size: number): T[][] {
   return rows;
 }
 
-export function QuickActionsGrid({ config, onActionPress }: QuickActionsGridProps) {
+export function QuickActionsGrid({ config, onActionPress, loggedKinds = [] }: QuickActionsGridProps) {
   return (
     <View style={styles.grid}>
       {chunk(config.items, config.columns).map((row, r) => (
@@ -23,6 +28,8 @@ export function QuickActionsGrid({ config, onActionPress }: QuickActionsGridProp
           {row.map((action) => {
             const ActionIcon = HOME_ICONS[action.icon];
             const tone = tones[action.tone];
+            const kind = QUICK_ACTION_TO_KIND[action.id];
+            const done = !!kind && loggedKinds.includes(kind);
             return (
               <Pressable
                 key={action.id}
@@ -33,6 +40,11 @@ export function QuickActionsGrid({ config, onActionPress }: QuickActionsGridProp
               >
                 <View style={[styles.iconWrap, { backgroundColor: tone.bg }]}>
                   <ActionIcon size={18} color={tone.fg} />
+                  {done ? (
+                    <View style={styles.check}>
+                      <Check size={9} weight="bold" color={colors.white} />
+                    </View>
+                  ) : null}
                 </View>
                 <Text style={styles.label} numberOfLines={1}>
                   {action.label}
@@ -50,6 +62,19 @@ export function QuickActionsGrid({ config, onActionPress }: QuickActionsGridProp
 }
 
 const styles = StyleSheet.create({
+  check: {
+    position: "absolute",
+    top: -4,
+    right: -4,
+    width: 15,
+    height: 15,
+    borderRadius: radius.pill,
+    borderWidth: 1.5,
+    borderColor: colors.card,
+    backgroundColor: colors.success,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   grid: { gap: 10 },
   row: { flexDirection: "row", gap: 10 },
   card: {

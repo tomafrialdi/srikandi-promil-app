@@ -14,11 +14,15 @@ export function RecentNotesSection({ data, onSeeAllPress }: RecentNotesSectionPr
   return (
     <View style={styles.section}>
       <SectionHeader title={data.title} actionLabel={data.actionLabel} onActionPress={onSeeAllPress} />
-      <View style={styles.list}>
-        {data.items.map((note) => (
-          <NoteItem key={note.id} note={note} />
-        ))}
-      </View>
+      {data.items.length > 0 ? (
+        <View style={styles.list}>
+          {data.items.map((note) => (
+            <NoteItem key={note.id} note={note} />
+          ))}
+        </View>
+      ) : (
+        <Text style={styles.empty}>Your notes and logs will show up here.</Text>
+      )}
     </View>
   );
 }
@@ -39,6 +43,7 @@ function NoteItem({ note }: { note: Note }) {
 }
 
 const styles = StyleSheet.create({
+  empty: { fontFamily: fonts.medium, fontSize: 12, lineHeight: 17, color: colors.inkMuted },
   section: { gap: 14 },
   list: { gap: 10 },
   card: {

@@ -1,16 +1,12 @@
 import type { CalendarMonth } from "../types";
-import { USE_DUMMY_CALENDAR } from "./config";
-import { dummyCalendarApi } from "./dummy-calendar-api";
-import { httpCalendarApi } from "./http-calendar-api";
+import { supabaseCalendarApi } from "./supabase-calendar-api";
 
 /**
- * What the calendar needs from the backend.
- *
- *   GET /calendar?month=YYYY-MM -> CalendarMonth   (predictions + logged summaries for that month)
+ * What the calendar needs from the backend (Supabase RPC `app_calendar_month`).
+ * Past days come from the user's real cycles, today onwards from the prediction engine.
  */
 export interface CalendarApi {
   getMonth(month: string): Promise<CalendarMonth>;
 }
 
-/** The single switch between dummy data and the real backend. */
-export const calendarApi: CalendarApi = USE_DUMMY_CALENDAR ? dummyCalendarApi : httpCalendarApi;
+export const calendarApi: CalendarApi = supabaseCalendarApi;

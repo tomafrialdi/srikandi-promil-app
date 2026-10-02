@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
+import { useLogging } from "@/features/logging/context/logging-context";
 import { calendarApi } from "../api/calendar-api";
 import type { CalendarDayData, CalendarMonth } from "../types";
 import { toIsoDate, toMonthKey } from "../utils/dates";
@@ -12,18 +13,25 @@ export function useCalendar() {
   const [cursor, setCursor] = useState({ year: today.getFullYear(), month: today.getMonth() });
   const [selectedDate, setSelectedDate] = useState(todayIso);
   const [data, setData] = useState<CalendarMonth | null>(null);
+  // Reload after the user logs something, so the new entry and any shifted prediction show up.
+  const { version } = useLogging();
 
   const monthKey = toMonthKey(cursor.year, cursor.month);
 
   useEffect(() => {
     let cancelled = false;
-    calendarApi.getMonth(monthKey).then((m) => {
-      if (!cancelled) setData(m);
-    });
+    calendarApi
+      .getMonth(monthKey)
+      .then((m) => {
+        if (!cancelled) setData(m);
+      })
+      .catch(() => {
+        // Keep showing the last month we have; the next change retries.
+      });
     return () => {
       cancelled = true;
     };
-  }, [monthKey]);
+  }, [monthKey, version]);
 
   const shiftMonth = useCallback(
     (delta: number) => {

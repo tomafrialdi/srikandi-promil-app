@@ -21,7 +21,7 @@ import { RecommendationsSection } from "./recommendations-section";
 /** Home dashboard: sections top to bottom, each fed by one slice of `HomeDashboard`. */
 export function HomeScreen() {
   const { data } = useHomeDashboard();
-  const { openLog } = useLogging();
+  const { openLog, logged } = useLogging();
   const bottomClearance = useTabBarClearance();
   // The header stays pinned; a hairline appears under it once content scrolls beneath.
   const [scrolled, setScrolled] = useState(false);
@@ -53,6 +53,7 @@ export function HomeScreen() {
         <View style={styles.padded}>
           <QuickActionsGrid
             config={data.quickActions}
+            loggedKinds={logged}
             onActionPress={(action) => {
               const kind = QUICK_ACTION_TO_KIND[action.id];
               if (kind) openLog(kind);

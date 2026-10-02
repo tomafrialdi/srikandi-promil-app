@@ -9,9 +9,14 @@ export function useCheckIn() {
 
   useEffect(() => {
     let cancelled = false;
-    checkInApi.getToday().then((d) => {
-      if (!cancelled) setData(d);
-    });
+    checkInApi
+      .getToday()
+      .then((d) => {
+        if (!cancelled) setData(d);
+      })
+      .catch(() => {
+        // The screen stays empty; going back and reopening retries.
+      });
     return () => {
       cancelled = true;
     };

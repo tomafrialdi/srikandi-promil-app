@@ -17,7 +17,7 @@ export function CycleHeroCard({ cycle, onLogPress }: CycleHeroCardProps) {
 
   useEffect(() => {
     progress.set(
-      withTiming(cycle.day / cycle.length, { duration: 700, easing: Easing.out(Easing.cubic) }),
+      withTiming(Math.min(cycle.day / cycle.length, 1), { duration: 700, easing: Easing.out(Easing.cubic) }),
     );
   }, [cycle.day, cycle.length, progress]);
 
@@ -30,7 +30,7 @@ export function CycleHeroCard({ cycle, onLogPress }: CycleHeroCardProps) {
         </View>
 
         <View>
-          <Text style={styles.day}>Cycle Day {cycle.day}</Text>
+          <Text style={styles.day}>{cycle.day > 0 ? `Cycle Day ${cycle.day}` : "Welcome"}</Text>
           <Text style={styles.caption}>{cycle.caption}</Text>
         </View>
 
@@ -47,9 +47,7 @@ export function CycleHeroCard({ cycle, onLogPress }: CycleHeroCardProps) {
         color={colors.white}
         trackColor="#FFFFFF33"
       >
-        <Text style={styles.ringText}>
-          {cycle.day}/{cycle.length}
-        </Text>
+        <Text style={styles.ringText}>{cycle.day > 0 ? `${cycle.day}/${cycle.length}` : "–"}</Text>
       </ProgressRing>
     </View>
   );

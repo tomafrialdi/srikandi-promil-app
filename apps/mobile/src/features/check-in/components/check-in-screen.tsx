@@ -1,7 +1,7 @@
 import { router, useLocalSearchParams } from "expo-router";
 import { CaretRight, ChatCircleDots, ClockCounterClockwise, Lock } from "phosphor-react-native";
 import { useState } from "react";
-import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { Alert, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 
 import { ButtonPrimary } from "@/components/button-primary";
 import { IconButton } from "@/components/icon-button";
@@ -51,6 +51,8 @@ function CheckInForm({ data, initialMoodId }: { data: CheckInData; initialMoodId
     try {
       await checkInApi.save({ moodId, stressorIds, journal: journal.trim() });
       router.back();
+    } catch (e) {
+      Alert.alert("Couldn't save your check-in", e instanceof Error ? e.message : "Please try again.");
     } finally {
       setSaving(false);
     }

@@ -1,20 +1,14 @@
-import { USE_DUMMY_API } from "@/config/api";
 import type { CheckInData, CheckInInput } from "../types";
-import { dummyCheckInApi } from "./dummy-check-in-api";
-import { httpCheckInApi } from "./http-check-in-api";
+import { supabaseCheckInApi } from "./supabase-check-in-api";
 
 /**
- * What the Daily check-in screen needs from the backend.
- *
- *   GET  /check-in/today -> CheckInData
- *   POST /check-in       body: CheckInInput -> 204   (saves or updates today's check-in)
- *
- * The Home card ("How are you feeling today?") reads the same data through
- * `GET /home` (its `checkIn.selectedMoodId` and `streakDays`).
+ * What the Daily check-in screen needs from the backend (Supabase RPCs `app_check_in_get` and
+ * `app_log_save`). A check-in is the day's mood log; saving again that day replaces it.
+ * The Home card reads the same data (`checkIn.selectedMoodId` and `streakDays`).
  */
 export interface CheckInApi {
   getToday(): Promise<CheckInData>;
   save(input: CheckInInput): Promise<void>;
 }
 
-export const checkInApi: CheckInApi = USE_DUMMY_API ? dummyCheckInApi : httpCheckInApi;
+export const checkInApi: CheckInApi = supabaseCheckInApi;

@@ -19,6 +19,8 @@ interface LoggingContextValue {
   data: LoggingData | null;
   /** Sheet currently shown, or null when closed. */
   active: LogKind | null;
+  /** Goes up after every successful save; screens that show logged data reload when it changes. */
+  version: number;
   /** Trackers logged today. */
   logged: TrackerKind[];
   /** Values logged today, shared by every sheet and "New note". */
@@ -44,6 +46,7 @@ export function LoggingProvider({ children }: { children: ReactNode }) {
   const [logged, setLogged] = useState<TrackerKind[]>([]);
   const [entries, setEntries] = useState<TodayEntries>(EMPTY_ENTRIES);
   const [active, setActive] = useState<LogKind | null>(null);
+  const [version, setVersion] = useState(0);
   const [returnTo, setReturnTo] = useState<LogKind | null>(null);
 
   useEffect(() => {
@@ -83,6 +86,7 @@ export function LoggingProvider({ children }: { children: ReactNode }) {
         Alert.alert("Couldn't save", e instanceof Error ? e.message : "Please try again.");
         return;
       }
+      setVersion((v) => v + 1);
       const { kind } = input;
       if (kind !== "supplement" && kind !== "note") {
         setLogged((cur) => (cur.includes(kind) ? cur : [...cur, kind]));
@@ -107,6 +111,7 @@ export function LoggingProvider({ children }: { children: ReactNode }) {
 
   const saveNote = useCallback(async (input: Extract<SaveLogInput, { kind: "note" }>) => {
     await loggingApi.save(input);
+    setVersion((v) => v + 1);
     if (input.date !== toIsoDate(new Date())) return; // Only today's note feeds today's logs.
 
     const synced: TrackerKind[] = [];
@@ -125,8 +130,8 @@ export function LoggingProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const value = useMemo(
-    () => ({ data, active, logged, entries, openLog, openFromHub, closeLog, save, saveNote }),
-    [data, active, logged, entries, openLog, openFromHub, closeLog, save, saveNote],
+    () => ({ data, version, active, logged, entries, openLog, openFromHub, closeLog, save, saveNote }),
+    [data, version, active, logged, entries, openLog, openFromHub, closeLog, save, saveNote],
   );
 
   return <LoggingContext.Provider value={value}>{children}</LoggingContext.Provider>;
