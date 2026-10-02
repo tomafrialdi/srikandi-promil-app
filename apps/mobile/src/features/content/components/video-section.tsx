@@ -6,9 +6,11 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 
 import { SectionHeader } from "@/components/section-header";
 import { colors, fonts, radius } from "@/constants/theme";
-import { ikUrl } from "@/lib/imagekit";
+import { canPlayInApp, ikUrl } from "@/lib/imagekit";
 import { fetchVideos, recordContentEvent } from "../api/content-api";
 import type { VideoItem, VideoPlacement } from "../types";
+import { isPortrait, videoRatio } from "../utils/video-shape";
+import { VideoPlayerSheet } from "./video-player-sheet";
 
 const formatDuration = (seconds: number | null) =>
   seconds ? `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}` : null;
@@ -25,6 +27,9 @@ export function VideoSection({
   inset?: number;
 }) {
   const [videos, setVideos] = useState<VideoItem[]>([]);
+  // `selected` stays after closing so the sheet keeps its content while it slides down.
+  const [selected, setSelected] = useState<VideoItem | null>(null);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -53,26 +58,40 @@ export function VideoSection({
         contentContainerStyle={[styles.row, { paddingHorizontal: inset }]}
       >
         {videos.map((video) => (
-          <VideoCard key={video.id} video={video} />
+          <VideoCard
+            key={video.id}
+            video={video}
+            onPlay={() => {
+              recordContentEvent(video.id, "click");
+              // Our own mp4s play right here in a bottom sheet; other links (e.g. YouTube) open in the browser.
+              if (canPlayInApp(video.videoUrl)) {
+                setSelected(video);
+                setOpen(true);
+              } else {
+                WebBrowser.openBrowserAsync(video.videoUrl);
+              }
+            }}
+          />
         ))}
       </ScrollView>
+      <VideoPlayerSheet video={selected} visible={open} onClose={() => setOpen(false)} />
     </View>
   );
 }
 
-function VideoCard({ video }: { video: VideoItem }) {
-  const thumb = ikUrl(video.thumbnailUrl, { w: 560 });
+function VideoCard({ video, onPlay }: { video: VideoItem; onPlay: () => void }) {
+  const portrait = isPortrait(video);
+  const thumb = ikUrl(video.thumbnailUrl, { w: portrait ? 360 : 560 });
   const duration = formatDuration(video.durationSeconds);
 
-  // No in-app player yet: the video opens in the system browser sheet.
-  const open = () => {
-    recordContentEvent(video.id, "click");
-    WebBrowser.openBrowserAsync(video.videoUrl);
-  };
-
   return (
-    <Pressable accessibilityRole="button" accessibilityLabel={`Play ${video.title}`} onPress={open} style={styles.card}>
-      <View style={styles.thumb}>
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={`Play ${video.title}`}
+      onPress={onPlay}
+      style={[styles.card, portrait && styles.cardPortrait]}
+    >
+      <View style={[styles.thumb, { aspectRatio: videoRatio(video) }]}>
         {thumb ? <Image source={{ uri: thumb }} contentFit="cover" style={StyleSheet.absoluteFill} /> : null}
         <View style={styles.play}>
           <Play size={16} weight="fill" color={colors.white} />
@@ -93,10 +112,12 @@ function VideoCard({ video }: { video: VideoItem }) {
 
 const styles = StyleSheet.create({
   section: { gap: 12 },
-  row: { gap: 12 },
+  row: { gap: 12, alignItems: "flex-start" },
   card: { width: 220, gap: 6 },
+  // Vertical videos get a narrower, taller card so they keep their shape.
+  cardPortrait: { width: 140 },
   thumb: {
-    height: 124,
+    width: "100%",
     borderRadius: 16,
     overflow: "hidden",
     backgroundColor: colors.surfaceAlt,

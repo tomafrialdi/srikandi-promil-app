@@ -59,6 +59,8 @@ export function recordToForm(record: ContentRecord): ContentForm {
     transcript: str(d.transcript),
     placement: arr<string>(d.placement),
     autoplay_muted: d.autoplay_muted !== false,
+    orientation: d.orientation === 'portrait' ? 'portrait' : 'landscape',
+    aspect_ratio: typeof d.aspect_ratio === 'number' && d.aspect_ratio > 0 ? d.aspect_ratio : null,
   }
 }
 
@@ -81,7 +83,7 @@ export function formToPayload(f: ContentForm): Record<string, unknown> {
             run_from: f.run_from, run_to: f.run_to, dismissible: f.dismissible, hide_after_conversion: f.hide_after_conversion, discreet_mode: f.discreet_mode,
           }
         : f.type === 'video'
-          ? { presenter: f.presenter, chapters: f.chapters, captions: f.captions, transcript: f.transcript, placement: f.placement, autoplay_muted: f.autoplay_muted }
+          ? { presenter: f.presenter, chapters: f.chapters, captions: f.captions, transcript: f.transcript, placement: f.placement, autoplay_muted: f.autoplay_muted, orientation: f.orientation, aspect_ratio: f.aspect_ratio }
           : {}
 
   const scheduled = f.type === 'in_app_card' && f.run_from ? new Date(`${f.run_from}T00:00`).toISOString() : f.scheduled_at ? new Date(f.scheduled_at).toISOString() : null

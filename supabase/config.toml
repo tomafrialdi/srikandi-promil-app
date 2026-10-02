@@ -431,3 +431,8 @@ verify_jwt = true
 [functions.img]
 enabled = true
 verify_jwt = false
+
+# Public video proxy for the in-app player (ImageKit is blocked by some Indonesian ISPs).
+[functions.vid]
+enabled = true
+verify_jwt = false

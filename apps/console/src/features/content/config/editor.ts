@@ -96,5 +96,7 @@ export function emptyForm(type: ContentType): ContentForm {
     transcript: '',
     placement: [],
     autoplay_muted: true,
+    orientation: 'landscape',
+    aspect_ratio: null,
   }
 }

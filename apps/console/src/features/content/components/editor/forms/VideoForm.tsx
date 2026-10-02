@@ -1,6 +1,6 @@
 import { Plus, Trash, UploadSimple } from '@phosphor-icons/react'
 import { useRef, useState } from 'react'
-import { Field, TextAreaField, TextField, ToggleRow, useToast, SelectField } from '../../../../../shared/ui'
+import { Field, Segmented, TextAreaField, TextField, ToggleRow, useToast, SelectField } from '../../../../../shared/ui'
 import { cn } from '../../../../../shared/lib/cn'
 import { formatMinutes } from '../../../../../shared/lib/format'
 import { uploadFile, videoThumbnail } from '../../../../../shared/services/imagekit.service'
@@ -15,21 +15,36 @@ interface VideoFormProps {
 
 const MAX_BYTES = 200 * 1024 * 1024
 
-/** Reads the duration from the file itself before uploading. */
-function readDuration(file: File): Promise<number | null> {
+interface VideoMeta {
+  duration: number | null
+  /** Width / height as shown (phone videos recorded upright are already reported the right way round). */
+  ratio: number | null
+}
+
+/** Reads the duration and shape from the file itself before uploading. */
+function readMeta(file: File): Promise<VideoMeta> {
   return new Promise((resolve) => {
     const video = document.createElement('video')
     const url = URL.createObjectURL(file)
-    const done = (value: number | null) => {
+    const done = (value: VideoMeta) => {
       URL.revokeObjectURL(url)
       resolve(value)
     }
     video.preload = 'metadata'
-    video.onloadedmetadata = () => done(Number.isFinite(video.duration) ? Math.round(video.duration) : null)
-    video.onerror = () => done(null)
+    video.onloadedmetadata = () =>
+      done({
+        duration: Number.isFinite(video.duration) ? Math.round(video.duration) : null,
+        ratio: video.videoWidth > 0 && video.videoHeight > 0 ? Math.round((video.videoWidth / video.videoHeight) * 10000) / 10000 : null,
+      })
+    video.onerror = () => done({ duration: null, ratio: null })
     video.src = url
   })
 }
+
+const ORIENTATIONS = [
+  { value: 'landscape' as const, label: 'Horizontal · 16:9' },
+  { value: 'portrait' as const, label: 'Vertical · 9:16' },
+]
 
 export function VideoForm({ form, set }: VideoFormProps) {
   const toast = useToast()
@@ -42,9 +57,12 @@ export function VideoForm({ form, set }: VideoFormProps) {
     if (file.size > MAX_BYTES) return toast({ tone: 'error', title: 'Video must be 200 MB or smaller.' })
     setUploading(true)
     try {
-      const [duration, uploaded] = await Promise.all([readDuration(file), uploadFile(file, '/videos')])
+      const [meta, uploaded] = await Promise.all([readMeta(file), uploadFile(file, '/videos')])
       set('video_url', uploaded.url)
-      set('duration_seconds', duration)
+      set('duration_seconds', meta.duration)
+      // The shape comes from the file; the editor can still change it below.
+      set('aspect_ratio', meta.ratio)
+      if (meta.ratio) set('orientation', meta.ratio < 1 ? 'portrait' : 'landscape')
       set('image_url', '')
     } catch (err) {
       toast({ tone: 'error', title: 'Video upload failed', description: err instanceof Error ? err.message : undefined })
@@ -54,13 +72,14 @@ export function VideoForm({ form, set }: VideoFormProps) {
     }
   }
 
+  const portrait = form.orientation === 'portrait'
   const thumbs = form.video_url && form.duration_seconds ? [0.1, 0.3, 0.5, 0.7].map((p) => videoThumbnail(form.video_url, form.duration_seconds! * p)) : []
   const setChapter = (i: number, patch: Partial<ContentForm['chapters'][number]>) => set('chapters', form.chapters.map((c, j) => (j === i ? { ...c, ...patch } : c)))
 
   return (
     <>
       <EditorCard className="gap-4">
-        <div className="relative flex aspect-video items-center justify-center overflow-hidden rounded-xl bg-ink">
+        <div className={cn('relative flex items-center justify-center overflow-hidden rounded-xl bg-ink', portrait ? 'mx-auto aspect-[9/16] w-full max-w-[280px]' : 'aspect-video')}>
           {form.video_url ? (
             <video className="size-full" src={form.video_url} controls preload="metadata" poster={form.image_url || undefined} />
           ) : (
@@ -80,6 +99,10 @@ export function VideoForm({ form, set }: VideoFormProps) {
           )}
           <input ref={fileRef} type="file" accept="video/*" hidden onChange={(e) => void upload(e.target.files?.[0])} />
         </div>
+
+        <Field label="Orientation" hint={form.aspect_ratio ? `Detected from the file (${form.aspect_ratio.toFixed(2)}:1)` : 'Shapes the card and player in the app'}>
+          <Segmented label="Video orientation" size="lg" options={ORIENTATIONS} value={form.orientation} onChange={(v) => set('orientation', v)} />
+        </Field>
 
         <TextField id="video-title" label="Title" maxLength={120} placeholder="What happens during IUI? A 4-minute walkthrough" value={form.title} onChange={(e) => set('title', e.target.value)} />
         <Field label="Description">
@@ -128,10 +151,10 @@ export function VideoForm({ form, set }: VideoFormProps) {
         {thumbs.length === 0 ? (
           <p className="text-12 text-ink-muted">Upload a video to choose a thumbnail from its frames.</p>
         ) : (
-          <div className="grid grid-cols-2 gap-2.5 min-[700px]:grid-cols-4" role="radiogroup" aria-label="Thumbnail">
+          <div className={cn('grid gap-2.5', portrait ? 'grid-cols-4 min-[700px]:grid-cols-4' : 'grid-cols-2 min-[700px]:grid-cols-4')} role="radiogroup" aria-label="Thumbnail">
             {thumbs.map((src) => (
               <button key={src} type="button" role="radio" aria-checked={form.image_url === src} className={cn('overflow-hidden rounded-xl border-2', form.image_url === src ? 'border-primary' : 'border-transparent')} onClick={() => set('image_url', src)}>
-                <img src={src} alt="" className="aspect-video w-full bg-surface-alt object-cover" loading="lazy" />
+                <img src={src} alt="" className={cn('w-full bg-surface-alt object-cover', portrait ? 'aspect-[9/16]' : 'aspect-video')} loading="lazy" />
               </button>
             ))}
           </div>

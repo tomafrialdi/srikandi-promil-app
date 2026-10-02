@@ -1,7 +1,7 @@
 import { File } from "expo-file-system";
 import { fetch } from "expo/fetch";
 
-import { buildMediaUrl } from "./media-url";
+import { buildMediaUrl, buildVideoUrl, isPlayableVideo } from "./media-url";
 import { supabase } from "./supabase";
 
 const UPLOAD_URL = "https://upload.imagekit.io/api/v1/files/upload";
@@ -11,6 +11,7 @@ const publicKey = process.env.EXPO_PUBLIC_IMAGEKIT_PUBLIC_KEY ?? "";
 const supabaseUrl = (process.env.EXPO_PUBLIC_SUPABASE_URL ?? "").replace(/\/$/, "");
 /** Only the cloud project has the deployed proxy; a local Supabase (http) would need `supabase functions serve`. */
 const proxy = supabaseUrl.startsWith("https://") ? `${supabaseUrl}/functions/v1/img` : null;
+const videoProxy = supabaseUrl.startsWith("https://") ? `${supabaseUrl}/functions/v1/vid` : null;
 
 interface UploadAuth {
   token: string;
@@ -56,3 +57,9 @@ export async function uploadImage(file: { uri: string; mimeType: string }, folde
 export function ikUrl(url: string | null | undefined, opts: { w?: number; h?: number } = {}): string | null {
   return buildMediaUrl(url, opts, { endpoint, proxy });
 }
+
+/** True when the in-app player can stream this video (our ImageKit mp4/mov/webm); other links open in the browser. */
+export const canPlayInApp = (url: string | null | undefined): boolean => isPlayableVideo(url, endpoint);
+
+/** The URL the player streams from: through the `vid` proxy on the cloud project, direct locally. */
+export const videoStreamUrl = (url: string): string => buildVideoUrl(url, { endpoint, proxy: videoProxy });

@@ -117,6 +117,10 @@ export interface ContentForm {
   transcript: string
   placement: string[]
   autoplay_muted: boolean
+  /** Vertical (9:16, reels-style) or horizontal (16:9) video. */
+  orientation: 'landscape' | 'portrait'
+  /** Width / height, detected from the uploaded file; null until known. */
+  aspect_ratio: number | null
 }
 
 /** `approve` signs it off; `approve_publish` also takes it live (or schedules it when a time was set). */

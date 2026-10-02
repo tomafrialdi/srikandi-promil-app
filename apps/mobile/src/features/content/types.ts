@@ -37,6 +37,10 @@ export interface VideoItem {
   videoUrl: string;
   durationSeconds: number | null;
   presenter: string | null;
+  /** Vertical (9:16, reels-style) or horizontal (16:9). */
+  orientation: "landscape" | "portrait";
+  /** Width / height detected from the file; null for videos added before this was recorded. */
+  aspectRatio: number | null;
 }
 
 export type ContentEvent = "impression" | "click" | "dismiss" | "read";

@@ -6,7 +6,8 @@ import { supabase } from "@/lib/supabase";
 import { MONTH_NAMES } from "@/utils/calendar";
 import type { ReportData, ReportDetails, ReportPreview, ReportRange, ReportRequest } from "../types";
 import { buildReportHtml } from "../utils/report-html";
-import { NotAvailableError, type ReportApi } from "./report-api";
+import { NotAvailableError } from "./not-available-error";
+import type { ReportApi } from "./report-api";
 
 type ReportRow = ReportDetails & {
   name: string;

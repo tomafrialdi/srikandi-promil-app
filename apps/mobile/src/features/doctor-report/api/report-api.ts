@@ -1,13 +1,7 @@
 import { supabaseReportApi } from "./supabase-report-api";
 import type { ReportData, ReportRange, ReportRequest } from "../types";
 
-/** Thrown by features that aren't built yet, so the screen can say so instead of faking success. */
-export class NotAvailableError extends Error {
-  constructor(feature: string) {
-    super(`${feature} isn't available yet.`);
-    this.name = "NotAvailableError";
-  }
-}
+export { NotAvailableError } from "./not-available-error";
 
 /**
  * What the Doctor report screen needs from the backend.
