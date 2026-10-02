@@ -1,16 +1,12 @@
 import type { InsightsData } from "../types";
-import { USE_DUMMY_INSIGHTS } from "./config";
-import { dummyInsightsApi } from "./dummy-insights-api";
-import { httpInsightsApi } from "./http-insights-api";
+import { supabaseInsightsApi } from "./supabase-insights-api";
 
 /**
- * What the Insights screen needs from the backend.
- *
- *   GET /insights?months=6 -> InsightsData
+ * What the Insights screen needs from the backend (Supabase RPC `app_insights`): statistics from the
+ * user's finished cycles and logs. Numbers that can't be known yet are null, never made up.
  */
 export interface InsightsApi {
   get(months?: number): Promise<InsightsData>;
 }
 
-/** The single switch between dummy data and the real backend. */
-export const insightsApi: InsightsApi = USE_DUMMY_INSIGHTS ? dummyInsightsApi : httpInsightsApi;
+export const insightsApi: InsightsApi = supabaseInsightsApi;

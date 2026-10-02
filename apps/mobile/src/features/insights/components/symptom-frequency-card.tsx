@@ -8,6 +8,9 @@ export function SymptomFrequencyCard({ symptoms }: { symptoms: SymptomFrequency[
   return (
     <View style={styles.card}>
       <Text style={styles.title}>Most logged symptoms</Text>
+      {symptoms.length === 0 ? (
+        <Text style={styles.empty}>Log symptoms to see which ones come up most often.</Text>
+      ) : null}
       {symptoms.map((s) => (
         <View key={s.id} style={styles.item}>
           <View style={styles.labels}>
@@ -30,6 +33,7 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
     backgroundColor: colors.card,
   },
+  empty: { fontFamily: fonts.medium, fontSize: 12, lineHeight: 17, color: colors.inkMuted },
   title: { fontFamily: fonts.bold, fontSize: 14, color: colors.ink },
   item: { gap: 6 },
   labels: { flexDirection: "row", justifyContent: "space-between" },

@@ -6,9 +6,9 @@ import type { InsightsData } from "../types";
 /** The three headline numbers: average cycle, average period, regularity. */
 export function StatRow({ stats }: { stats: InsightsData["stats"] }) {
   const items = [
-    { label: "Avg cycle", value: `${stats.avgCycleDays}d` },
-    { label: "Avg period", value: `${stats.avgPeriodDays}d` },
-    { label: "Regularity", value: `${stats.regularityPercent}%` },
+    { label: "Avg cycle", value: stats.avgCycleDays != null ? `${stats.avgCycleDays}d` : "–" },
+    { label: "Avg period", value: stats.avgPeriodDays != null ? `${stats.avgPeriodDays}d` : "–" },
+    { label: "Regularity", value: stats.regularityPercent != null ? `${stats.regularityPercent}%` : "–" },
   ];
 
   return (

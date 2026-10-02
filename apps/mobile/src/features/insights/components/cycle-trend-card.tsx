@@ -17,15 +17,20 @@ export function CycleTrendCard({ trend }: { trend: CycleTrendPoint[] }) {
         <Text style={styles.title}>Cycle length trend</Text>
         <Text style={styles.unit}>days</Text>
       </View>
-      <BarChart
-        axisMax={axisMax}
-        items={trend.map((p, i) => ({
-          key: p.month,
-          label: MONTH_NAMES[Number(p.month.slice(5)) - 1].slice(0, 3),
-          value: p.days,
-          highlighted: i === trend.length - 1,
-        }))}
-      />
+      {trend.length === 0 ? (
+        <Text style={styles.empty}>Your cycle lengths will appear here after your first full cycle.</Text>
+      ) : null}
+      {trend.length > 0 ? (
+        <BarChart
+          axisMax={axisMax}
+          items={trend.map((p, i) => ({
+            key: p.month,
+            label: MONTH_NAMES[Number(p.month.slice(5)) - 1].slice(0, 3),
+            value: p.days,
+            highlighted: i === trend.length - 1,
+          }))}
+        />
+      ) : null}
     </View>
   );
 }
@@ -41,5 +46,6 @@ const styles = StyleSheet.create({
   },
   head: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
   title: { fontFamily: fonts.bold, fontSize: 14, color: colors.ink },
+  empty: { fontFamily: fonts.medium, fontSize: 12, lineHeight: 17, color: colors.inkMuted },
   unit: { fontFamily: fonts.semibold, fontSize: 11, color: colors.inkFaint },
 });
